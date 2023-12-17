@@ -1,0 +1,62 @@
+﻿@page "/weather"
+@using Database.Data
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
+@inject ManagementSystemDatabaseContext _context
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (_roles == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!_roles.Any())
+{
+    <p>
+        <em>Empty</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var role in _roles)
+        {
+            <tr>
+                <td>@role.Id</td>
+                <td>@role.RoleName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private List<Role>? _roles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _roles = await _context.Roles.AsQueryable().AsNoTracking().ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            _roles = new List<Role>();
+        }
+    }
+}
