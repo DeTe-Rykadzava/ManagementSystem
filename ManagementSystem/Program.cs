@@ -1,3 +1,4 @@
+using Database.Core;
 using Database.Data;
 using ManagementSystem.Components;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+var connectionString = Settings.GetConnectionString(AppDomain.CurrentDomain.BaseDirectory).GetAwaiter().GetResult();
+
 builder.Services.AddDbContext<ManagementSystemDatabaseContext>(
-    opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("NPGSQLConnection")));
+    opt => opt.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
