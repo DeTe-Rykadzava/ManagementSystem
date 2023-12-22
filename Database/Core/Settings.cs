@@ -21,11 +21,17 @@ public class Settings
         return fileNode;
     }
 
-    public static async Task<string> GetConnectionString(string? domainDirectory = null)
+    public static async Task<string> GetConnectionString(string? domainDirectory = null, DataBaseServer? connectionFor = null)
     {
         var file = await GetFileConnectionNode(domainDirectory);
         if (file != null)
-            return file["Connection"] == null ? throw new NullReferenceException("Connection string is null") : file["Connection"]!.ToString();
+        {
+            if (connectionFor == null)
+                connectionFor = Servers.PostgreSql;
+            return file[$"{Servers.PostgreSql.NameConnection}"] == null || file[$"{Servers.Mssql.NameConnection}"] == null 
+                ? throw new NullReferenceException("Connection string is null") 
+                : file[$"{connectionFor.NameConnection}"]!.ToString();
+        }
         throw new FileNotFoundException("Connection file not found");
     }
 

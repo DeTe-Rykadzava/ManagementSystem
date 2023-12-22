@@ -9,7 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// PostgreSQL
 var connectionString = Settings.GetConnectionString(AppDomain.CurrentDomain.BaseDirectory).GetAwaiter().GetResult();
+// MSSQL
+//var connectionString = Settings.GetConnectionString(AppDomain.CurrentDomain.BaseDirectory, Servers.Mssql).GetAwaiter().GetResult();
 
 builder.Services.AddDbContext<ManagementSystemDatabaseContext>(
     opt => opt.UseNpgsql(connectionString));
@@ -24,6 +27,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetService<ManagementSystemDatabaseContext>();
+    dbContext?.Database.EnsureCreated();
+    // dbContext?.Roles.Load();
+}
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

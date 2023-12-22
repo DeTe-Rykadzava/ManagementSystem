@@ -1,3 +1,4 @@
 {
-  "Connection" : "Host=localhost;Port=5432;Database=ManagementSystemDatabase;Username=postgres;Password=root;"
+  "NPGSQLConnection" : "Host=localhost;Port=5432;Database=ManagementSystemDatabase;Username=postgres;Password=root;",
+  "MSSQLConnection" : "Server=.\\SQLEXPRESS;Database=ManagementSystemDatabase;Trusted_Connection=True;Trust Server Certificate=true;"
 }

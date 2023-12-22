@@ -49,6 +49,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadRoles();
+    }
+
+    private async Task LoadRoles()
+    {
         try
         {
             _roles = await _context.Roles.AsQueryable().AsNoTracking().ToListAsync();
@@ -59,4 +64,5 @@ else
             _roles = new List<Role>();
         }
     }
+
 }
