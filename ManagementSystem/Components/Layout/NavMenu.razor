@@ -1,29 +1,68 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">ManagementSystem</a>
+﻿@* <div class="w-auto h-auto navbar navbar-dark bg-dark align-items-baseline" > *@
+@*     <div class="container-fluid px-2 h-auto w-auto" style="background: lightgray"> *@
+@*         <a class="navbar-brand text-black" href=""> *@
+@*             <img src="Assets/product-50.png" alt="Logo"/> *@
+@*             Management system *@
+@*         </a> *@
+@*          <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home *@
+@*     </div> *@
+@*     <div class="px-2 d-flex justify-content-center"> *@
+@*         <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()"> *@
+@*             <nav class="flex-column"> *@
+@*                 <div class="nav-item px-3"> *@
+@*                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> *@
+@*                         <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home *@
+@*                     </NavLink> *@
+@*                 </div> *@
+@*          *@
+@*                 <div class="nav-item px-3"> *@
+@*                     <NavLink class="nav-link" href="counter"> *@
+@*                         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter *@
+@*                     </NavLink> *@
+@*                 </div> *@
+@*          *@
+@*                 <div class="nav-item px-3"> *@
+@*                     <NavLink class="nav-link" href="weather"> *@
+@*                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather *@
+@*                     </NavLink> *@
+@*                 </div> *@
+@*             </nav> *@
+@*         </div> *@
+@*     </div> *@
+@*     <input type="checkbox" title="Navigation menu" class="navbar-toggler"/> *@
+@* </div> *@
+
+<div class="w-100 h-auto">
+    <div class="w-100 h-100 bg-dark p-2">
+        <div class="w-100 h-100 px-2" style="height: 3em">
+            <div class="d-flex flex-wrap w-100 h-100">
+                <div class="d-flex col h-100 text-white px-1 align-self-end justify-content-start px-4">
+                    <a class="navbar-brand text-black d-flex justify-content-evenly align-items-center px-4" href=""
+                       style="    -ms-border-radius: 15px;
+                                  -o-border-radius: 15px;
+                                  -moz-border-radius: 15px;
+                                  -webkit-border-radius: 15px;
+                                  border-radius: 15px;
+                                  background:rgba(255,255,255,0);
+                                  background: -webkit-linear-gradient(0deg , rgba(33,37,41,1) 0%, rgba(217,217,217,1) 19%, rgba(217,217,217,1) 82%, rgba(33,37,41,1) 100%);
+                                  background: -o-linear-gradient(0deg , rgba(33,37,41,1) 0%, rgba(217,217,217,1) 19%, rgba(217,217,217,1) 82%, rgba(33,37,41,1) 100%);
+                                  background: -moz-linear-gradient(0deg , rgba(33,37,41,1) 0%, rgba(217,217,217,1) 19%, rgba(217,217,217,1) 82%, rgba(33,37,41,1) 100%);
+                                  background: -ms-linear-gradient(0deg , rgba(33,37,41,1) 0%, rgba(217,217,217,1) 19%, rgba(217,217,217,1) 82%, rgba(33,37,41,1) 100%);
+                                  background: linear-gradient(0deg , rgba(33,37,41,1) 0%, rgba(217,217,217,1) 19%, rgba(217,217,217,1) 82%, rgba(33,37,41,1) 100%);    "> 
+                        <img src="Assets/product-50.png" alt="Logo" class="px-2"/>
+                        Management system
+                    </a>
+                </div>
+                <div class="col h-100 text-white px-1 align-self-end">
+    navmenu
+                </div>
+                <div class="col h-100 text-white px-1 align-self-end">
+    log in / out
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
