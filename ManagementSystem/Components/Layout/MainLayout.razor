@@ -1,10 +1,18 @@
 ﻿@inherits LayoutComponentBase
  
-<div class="custom_sidebar">
-    <NavMenu/>
-</div>
-<div class="content_container">
-    @Body
+<header> @* оно так работает, не хочет быть выше, видимо blazor так хочет, хз *@
+    <NavLink Match="NavLinkMatch.All" href="/">
+        ManagementSystem
+    </NavLink>
+</header>
+
+<div class="body_container">
+    <div class="custom_sidebar">
+        <NavMenu/>
+    </div>
+    <div class="content_container">
+        @Body
+    </div>
 </div>
 
 <div id="blazor-error-ui">

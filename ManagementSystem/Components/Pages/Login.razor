@@ -1,0 +1,32 @@
+@page "/login"
+@layout Layout.EmptyLayout
+@rendermode InteractiveServer
+
+<PageTitle>Login</PageTitle>
+
+<div class="login_form">
+    <B class="ctext-darker" style="font-size: 24px; align-self: stretch; text-align: center">Login</B>
+    <div class="login_form-input_fields">
+        <div class="login_form-input_field">
+            <p class="p-0 ctext-darker" style="font-size: 14px;">login</p>
+            <input name="login" type="text" @bind="_login" placeholder="your login..."/>
+        </div>
+        <div class="login_form-input_field">
+            <p class="p-0 ctext-darker" style="font-size: 14px;">password</p>
+            <input name="password" type="password" @bind="_password" placeholder="your password..."/>
+        </div>
+    </div>
+    <button class="btn_style_1_ot" @onclick="OnLoginClick">Login</button>
+</div>
+
+@code {
+
+    private string _login = string.Empty;
+    private string _password = string.Empty;
+    
+    private void OnLoginClick()
+    {
+        Console.WriteLine(_login+"\t"+_password);
+    }
+
+}
