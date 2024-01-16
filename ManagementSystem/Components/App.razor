@@ -1,19 +1,31 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
+    <title>ManagementSystem</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="Styles/MainStyles.css"/>
     <link rel="stylesheet" href="app.css"/>
+    <link rel="stylesheet" href="Styles/BtnStyles.css"/>
+    <link rel="stylesheet" href="Styles/Fonts.css"/>
+    <link rel="stylesheet" href="Styles/Colors.css"/>
+    @* <link rel="stylesheet" href="bootstrap/bootstrap.min.css"/> *@
     <link rel="stylesheet" href="ManagementSystem.styles.css"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
     <HeadOutlet/>
 </head>
 
 <body>
-<Routes/>
+     <header> @* оно так работает, не хочет быть выше, видимо blazor так хочет, хз *@
+        <NavLink Match="NavLinkMatch.All" href="/">
+            ManagementSystem
+        </NavLink>
+    </header>
+    <div class="body_container">
+        <Routes/>
+    </div>
 <script src="_framework/blazor.web.js"></script>
 </body>
 

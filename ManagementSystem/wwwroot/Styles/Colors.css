@@ -1,0 +1,30 @@
+:root
+{
+    --darker-color : #668705;
+    --darker-color-opasity : rgba(102, 135, 5, 0.50);
+    --salate-color : #bed281;
+    --salate-color-opasity : rgba(190, 210, 129, 0.50);
+    --lighter-color : #E3F2B7;
+    --lighter-color-opasity : rgba(227, 242, 183, 0.50);
+    --white-color-half-opasity : rgba(255, 255, 255, 0.50);
+}
+ 
+.textColored-light
+{
+    color: var(--lighter-color);
+}
+
+.textColored-light-op
+{
+    color: var(--lighter-color-opasity);
+}
+
+.textColored-dark
+{
+    color: var(--darker-color);
+}
+
+.textColored-dark-op
+{
+    color: var(--darker-color-opasity);
+}
