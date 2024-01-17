@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class Report
 {
+    internal Report()
+    {
+        
+    }
+    
     public int Id { get; set; }
 
     public DateTime CreateDate { get; set; }

@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class OrderPaymentType
 {
+    internal OrderPaymentType()
+    {
+        
+    }
+    
     public int Id { get; set; }
 
     public string Type { get; set; } = null!;

@@ -9,13 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// select server
 // PostgreSQL
-var connectionString = Settings.GetConnectionString(AppDomain.CurrentDomain.BaseDirectory).GetAwaiter().GetResult();
-// MSSQL
-//var connectionString = Settings.GetConnectionString(AppDomain.CurrentDomain.BaseDirectory, Servers.Mssql).GetAwaiter().GetResult();
-
-builder.Services.AddDbContext<ManagementSystemDatabaseContext>(
-    opt => opt.UseNpgsql(connectionString));
+Settings.ChangeSelectedServer(Servers.PostgreSql);
+// MSSQL 
+Settings.ChangeSelectedServer(Servers.Mssql);
 
 var app = builder.Build();
 
@@ -26,13 +24,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+// check database connection
+ManagementSystemDatabaseContext.Context.Database.EnsureCreated();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetService<ManagementSystemDatabaseContext>();
-    dbContext?.Database.EnsureCreated();
-    // dbContext?.Roles.Load();
-}
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

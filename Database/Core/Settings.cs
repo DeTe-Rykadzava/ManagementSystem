@@ -1,4 +1,6 @@
 using System.Text.Json.Nodes;
+using Database.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.Core;
 
@@ -6,9 +8,17 @@ public class Settings
 {
     private const string ConnectionStringFilename = "ConnectionStrings.json";
     private const string ConnectionStringDirectory = "Data";
-    private static async Task<JsonNode?> GetFileConnectionNode(string? domainDirectory = null)
+
+    private static DataBaseServer _currentSelectedServer = Servers.PostgreSql;
+
+    public static void ChangeSelectedServer(DataBaseServer server)
     {
-        var path = string.IsNullOrWhiteSpace(domainDirectory) ? Path.Combine(ConnectionStringDirectory, ConnectionStringFilename) : Path.Combine(domainDirectory, ConnectionStringDirectory, ConnectionStringFilename);
+        _currentSelectedServer = server;
+    }
+
+    private static async Task<JsonNode?> GetFileConnectionNode()
+    {
+        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConnectionStringDirectory, ConnectionStringFilename);
 
         Console.WriteLine($"Path: {path}");
         if (!File.Exists(path))
@@ -21,18 +31,28 @@ public class Settings
         return fileNode;
     }
 
-    public static async Task<string> GetConnectionString(string? domainDirectory = null, DataBaseServer? connectionFor = null)
+    public static async Task<string> GetConnectionString()
     {
-        var file = await GetFileConnectionNode(domainDirectory);
+        var file = await GetFileConnectionNode();
         if (file != null)
         {
-            if (connectionFor == null)
-                connectionFor = Servers.PostgreSql;
             return file[$"{Servers.PostgreSql.NameConnection}"] == null || file[$"{Servers.Mssql.NameConnection}"] == null 
                 ? throw new NullReferenceException("Connection string is null") 
-                : file[$"{connectionFor.NameConnection}"]!.ToString();
+                : file[$"{_currentSelectedServer.NameConnection}"]!.ToString();
         }
         throw new FileNotFoundException("Connection file not found");
     }
 
+    public static ManagementSystemDatabaseContext CreateDbContext()
+    {
+        var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
+
+        var connectionString = GetConnectionString().GetAwaiter().GetResult();
+        if (_currentSelectedServer == Servers.PostgreSql)
+            builder.UseNpgsql(connectionString);
+        else
+            builder.UseSqlServer(connectionString);
+        return new ManagementSystemDatabaseContext(builder.Options);
+    }
+    
 }

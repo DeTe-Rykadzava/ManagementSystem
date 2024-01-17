@@ -5,6 +5,10 @@ namespace Database.Data;
 
 public partial class UserInfo
 {
+    internal UserInfo()
+    {
+        
+    }
     public int Id { get; set; }
 
     public string FirstName { get; set; } = null!;

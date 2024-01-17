@@ -5,6 +5,10 @@ namespace Database.Data;
 
 public partial class User
 {
+    internal User()
+    {
+        
+    }
     public int Id { get; set; }
 
     public string Login { get; set; } = null!;

@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class ProductWarehouse
 {
+    internal ProductWarehouse()
+    {
+        
+    }
+    
     public int Id { get; set; }
 
     public int ProductId { get; set; }

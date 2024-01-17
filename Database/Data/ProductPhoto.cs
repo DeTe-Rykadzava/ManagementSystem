@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class ProductPhoto
 {
+    internal ProductPhoto()
+    {
+        
+    }
+
     public int Id { get; set; }
 
     public byte[] Image { get; set; } = null!;

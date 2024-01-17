@@ -1,8 +1,9 @@
 ﻿@page "/weather"
 @using Database.Data
+@using Database.Models.RoleModels
+@using Database.UseCases
 @using Microsoft.EntityFrameworkCore
 @attribute [StreamRendering]
-@inject ManagementSystemDatabaseContext _context
  
 <PageTitle>Weather</PageTitle>
 
@@ -45,7 +46,7 @@ else
 
 @code {
 
-    private List<Role>? _roles;
+    private IEnumerable<RoleModel>? _roles;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,12 +57,12 @@ else
     {
         try
         {
-            _roles = await _context.Roles.AsQueryable().AsNoTracking().ToListAsync();
+            _roles = await Role_UseCases.GetRoles();
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            _roles = new List<Role>();
+            _roles = new List<RoleModel>();
         }
     }
 

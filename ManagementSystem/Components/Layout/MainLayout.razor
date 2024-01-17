@@ -1,9 +1,22 @@
-﻿@inherits LayoutComponentBase
+﻿@using Database.UseCases
+@inherits LayoutComponentBase
  
 <header> @* оно так работает, не хочет быть выше, видимо blazor так хочет, хз *@
     <NavLink Match="NavLinkMatch.All" href="/">
         ManagementSystem
     </NavLink>
+    <div>
+        @if (!_isLogged)
+        {
+            <button class="btn_style_4">Sign In</button>
+            <button class="btn_style_4">Sign Up</button>
+        }
+        else
+        {
+            @* <b>@User_UseCases.GetCurrentUser()!.UserInfo.FirstName</b> *@
+            <button class="btn_style_4">Log Out</button>
+        }
+    </div>
 </header>
 
 <div class="body_container">
@@ -20,3 +33,17 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code
+{
+    [Inject]
+    private HttpContext Context { get; set; } = default!;
+
+    private bool _isLogged = false;
+    
+    protected override void OnInitialized()
+    {
+        if (Context.Request.Cookies.ContainsKey("user-id"))
+            _isLogged = true;
+    }
+}

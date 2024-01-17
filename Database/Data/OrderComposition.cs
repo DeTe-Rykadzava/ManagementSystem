@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class OrderComposition
 {
+    internal OrderComposition()
+    {
+        
+    }
+    
     public int Id { get; set; }
 
     public int OrderId { get; set; }

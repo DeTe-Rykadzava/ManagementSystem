@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class Order
 {
+    internal Order()
+    {
+        
+    }
+    
     public int Id { get; set; }
 
     public DateTime CreateDate { get; set; }

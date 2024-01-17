@@ -5,6 +5,11 @@ namespace Database.Data;
 
 public partial class ReportType
 {
+    internal ReportType()
+    {
+        
+    }
+
     public int Id { get; set; }
 
     public string Name { get; set; } = null!;

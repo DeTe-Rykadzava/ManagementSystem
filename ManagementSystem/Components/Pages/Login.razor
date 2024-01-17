@@ -1,4 +1,5 @@
 @page "/login"
+@using Database.UseCases
 @layout Layout.EmptyLayout
 @rendermode InteractiveServer
 
@@ -21,12 +22,24 @@
 
 @code {
 
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
+    private HttpContext Context { get; set; } = default!;
+
     private string _login = string.Empty;
     private string _password = string.Empty;
     
-    private void OnLoginClick()
+    private async void OnLoginClick()
     {
-        Console.WriteLine(_login+"\t"+_password);
+        // var user = await User_UseCases.SignInUser(_login, _password);
+        // if (user == null)
+        // {
+        //     return;
+        // }
+        Context.Response.Cookies.Append("user-id", "test");
+        NavigationManager.NavigateTo("/");
     }
 
 }
