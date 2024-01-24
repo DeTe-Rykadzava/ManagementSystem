@@ -1,8 +1,8 @@
 ﻿namespace Database.Core;
 
-public class Servers
+public class DatabaseServers
 {
-    private Servers()
+    private DatabaseServers()
     {
     }
 

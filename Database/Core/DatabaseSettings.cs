@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.Core;
 
-public class Settings
+public class DatabaseSettings
 {
     private const string ConnectionStringFilename = "ConnectionStrings.json";
     private const string ConnectionStringDirectory = "Data";
 
-    private static DataBaseServer _currentSelectedServer = Servers.PostgreSql;
+    private static DataBaseServer _currentSelectedServer = DatabaseServers.PostgreSql;
 
     public static void ChangeSelectedServer(DataBaseServer server)
     {
@@ -36,7 +36,7 @@ public class Settings
         var file = await GetFileConnectionNode();
         if (file != null)
         {
-            return file[$"{Servers.PostgreSql.NameConnection}"] == null || file[$"{Servers.Mssql.NameConnection}"] == null 
+            return file[$"{DatabaseServers.PostgreSql.NameConnection}"] == null || file[$"{DatabaseServers.Mssql.NameConnection}"] == null 
                 ? throw new NullReferenceException("Connection string is null") 
                 : file[$"{_currentSelectedServer.NameConnection}"]!.ToString();
         }
@@ -48,7 +48,7 @@ public class Settings
         var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
 
         var connectionString = GetConnectionString().GetAwaiter().GetResult();
-        if (_currentSelectedServer == Servers.PostgreSql)
+        if (_currentSelectedServer == DatabaseServers.PostgreSql)
             builder.UseNpgsql(connectionString);
         else
             builder.UseSqlServer(connectionString);

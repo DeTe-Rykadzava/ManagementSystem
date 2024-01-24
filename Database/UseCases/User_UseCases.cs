@@ -13,17 +13,11 @@ public static class User_UseCases
         return _currentUser;
     }
 
-    public static async Task<UserModel?> CreateNewUser(NewUserModel newUser)
+    public static async Task<UserModel?> CreateNewUserInfo(IDataDatabaseContext context, NewUserInfoModel newUser)
     {
         try
         {
-            var user = new User
-            {
-                Login = newUser.Login,
-                HashPassword = BCrypt.Net.BCrypt.HashPassword(newUser.Password),
-            };
-
-            var role = newUser.Role == null ? newUser.Role : await Role_UseCases.GetRoleById(2);
+            var role = newUser.Role == null ? newUser.Role : await Role_UseCases.GetRoleById(context, 2);
             if (role == null)
             {
                 throw new Exception("Can not create a user, role problem");
@@ -37,15 +31,14 @@ public static class User_UseCases
                 RoleId =  role.Id
             };
 
-            await ManagementSystemDatabaseContext.Context.UserInfos.AddAsync(userInfo);
-            await ManagementSystemDatabaseContext.Context.Users.AddAsync(user);
-            await ManagementSystemDatabaseContext.Context.SaveChangesAsync();
+            await context.UserInfos.AddAsync(userInfo);
+            // await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
 
-            var userDb = await ManagementSystemDatabaseContext.Context.Users.AsQueryable().AsNoTracking()
-                .Include(i => i.UserInfo)
-                .ThenInclude(i => i.Role)
-                .FirstOrDefaultAsync(x => x.Id == user.Id);
-            return new UserModel(userDb!);
+            var userDb = await context.UserInfos.AsQueryable().AsNoTracking()
+                .Include(i => i.Role)
+                .FirstOrDefaultAsync(x => x.Id == newUser.UserId);
+            return new UserInfoModel(userDb!);
         }
         catch (Exception e)
         {
@@ -54,43 +47,18 @@ public static class User_UseCases
         }
     }
 
-    public static async Task<UserModel?> SignInUser(string login, string password)
+    public static async Task<UserInfoModel?> GetUserInfoByUserId(IDataDatabaseContext context, int id)
     {
         try
         {
-            var user = await ManagementSystemDatabaseContext.Context.Users.AsQueryable().AsNoTracking()
-                .Include(i => i.UserInfo)
-                .ThenInclude(i => i.Role)
-                .FirstOrDefaultAsync(x => x.Login == login);
-            
-            if (user == null)
-                return null;
-
-            if (!BCrypt.Net.BCrypt.Verify(password, user.HashPassword))
-                return null;
-
-            return new UserModel(user);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return null;
-        }
-    }
-
-    public static async Task<UserModel?> GetUserById(int id)
-    {
-        try
-        {
-            var user = await ManagementSystemDatabaseContext.Context.Users.AsQueryable().AsNoTracking()
-                .Include(i => i.UserInfo)
-                .ThenInclude(i => i.Role)
+            var userInfo = await context.UserInfos.AsQueryable().AsNoTracking()
+                .Include(i => i.Role)
                 .FirstOrDefaultAsync(x => x.Id == id);
             
-            if (user == null)
+            if (userInfo == null)
                 return null;
 
-            return new UserModel(user);
+            return new UserInfoModel(userInfo);
         }
         catch (Exception e)
         {
