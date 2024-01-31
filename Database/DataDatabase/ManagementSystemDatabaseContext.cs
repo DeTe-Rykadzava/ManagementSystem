@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.Data;
 
-public sealed partial class ManagementSystemDatabaseContext : DbContext, IDataDatabaseContext
+public sealed partial class ManagementSystemDatabaseContext : DbContext
 {
     internal ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
         : base(options)
@@ -13,31 +13,21 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IDataDa
         Database.EnsureCreated();
     }
 
-    // private static ManagementSystemDatabaseContext? _context;
-    //
-    // public static ManagementSystemDatabaseContext Context 
-    // {
-    //     get
-    //     {
-    //         if(_context == null)
-    //             _context = DatabaseSettings.CreateDbContext();
-    //         return _context;
-    //     }
-    // }
+    private static ManagementSystemDatabaseContext? _context;
+    
+    public static ManagementSystemDatabaseContext Context 
+    {
+        get
+        {
+            if(_context == null)
+                _context = DatabaseSettings.CreateDbContext();
+            return _context;
+        }
+    }
 
     public bool EnsureCreated()
     {
         return Database.EnsureCreated();
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-    {
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
-    {
-        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
     public DbSet<Order> Orders { get; set; }
