@@ -13,9 +13,9 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext
         Database.EnsureCreated();
     }
 
-    private static ManagementSystemDatabaseContext? _context;
+    private ManagementSystemDatabaseContext? _context;
     
-    public static ManagementSystemDatabaseContext Context 
+    public ManagementSystemDatabaseContext Context 
     {
         get
         {
@@ -25,10 +25,10 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext
         }
     }
 
-    public bool EnsureCreated()
-    {
-        return Database.EnsureCreated();
-    }
+    // public bool EnsureCreated()
+    // {
+    //     return Database.EnsureCreated();
+    // }
 
     public DbSet<Order> Orders { get; set; }
 

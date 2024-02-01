@@ -1,5 +1,8 @@
 @page "/login"
 @using Database.UseCases
+@using ManagementSystem.Auth
+@using ManagementSystem.Models
+@using Microsoft.AspNetCore.Components.Authorization
 @layout Layout.EmptyLayout
 @rendermode InteractiveServer
 
@@ -7,17 +10,18 @@
 
 <div class="login_form">
     <B class="ctext-darker" style="font-size: 24px; align-self: stretch; text-align: center">Login</B>
-    <div class="login_form-input_fields">
+    <form class="login_form-input_fields" @oninvalid="LoginAsync">
         <div class="login_form-input_field">
             <p class="p-0 ctext-darker" style="font-size: 14px;">login</p>
-            <input name="login" type="text" @bind="_login" placeholder="your login..."/>
+            <input name="login" type="text" @bind="Input.Login" placeholder="your login..."/>
         </div>
         <div class="login_form-input_field">
             <p class="p-0 ctext-darker" style="font-size: 14px;">password</p>
-            <input name="password" type="password" @bind="_password" placeholder="your password..."/>
+            <input name="password" type="password" @bind="Input.Password" placeholder="your password..."/>
         </div>
-    </div>
-    <button class="btn_style_1_ot" @onclick="OnLoginClick">Login</button>
+
+        <button class="btn_style_1_ot" type="submit">Login</button>
+    </form>
 </div>
 
 @code {
@@ -26,20 +30,24 @@
     private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject]
-    private HttpContext Context { get; set; } = default!;
+    private AuthProvider AuthProvider { get; set; } = default!;
 
-    private string _login = string.Empty;
-    private string _password = string.Empty;
+    private LoginModel Input { get; set; } = new();
     
-    private async void OnLoginClick()
+    private async void LoginAsync()
     {
-        // var user = await User_UseCases.SignInUser(_login, _password);
-        // if (user == null)
-        // {
-        //     return;
-        // }
-        Context.Response.Cookies.Append("user-id", "test");
-        NavigationManager.NavigateTo("/");
+        try
+        {
+            var result = await AuthProvider.LoginAsync(Input);
+            if (result.IsSuccess)
+            {
+                NavigationManager.NavigateTo($"api/auth/sign_in/{result.Token}&");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 }

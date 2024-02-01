@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.Core;
 
-public class DatabaseSettings
+public abstract class DatabaseSettings
 {
     private const string ConnectionStringFilename = "ConnectionStrings.json";
-    private const string ConnectionStringDirectory = "Data";
+    private const string ConnectionStringDirectory = "DataDatabase";
 
     private static DataBaseServer _currentSelectedServer = DatabaseServers.PostgreSql;
 

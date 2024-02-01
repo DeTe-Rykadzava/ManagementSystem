@@ -55,15 +55,7 @@ else
 
     private async Task LoadRoles()
     {
-        try
-        {
-            _roles = await Role_UseCases.GetRoles();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            _roles = new List<RoleModel>();
-        }
+        
     }
 
 }

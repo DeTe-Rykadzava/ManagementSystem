@@ -1,11 +1,7 @@
 ﻿namespace Database.Core;
 
-public class DatabaseServers
+public abstract class DatabaseServers
 {
-    private DatabaseServers()
-    {
-    }
-
     public static DataBaseServer PostgreSql { get; } = new DataBaseServer("NPGSQLConnection");
     public static DataBaseServer Mssql { get; } = new DataBaseServer("MSSQLConnection");
 }

@@ -8,6 +8,8 @@ public class UserModel
     
     public int UserInfoId { get; set; }
     
+    public string Login { get; set; }
+    
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
@@ -22,6 +24,7 @@ public class UserModel
     {
         Id = user.Id;
         UserInfoId = user.UserInfo.Id;
+        Login = user.Login;
         FirstName = user.UserInfo.FirstName;
         LastName = user.UserInfo.LastName;
         Patronymic = user.UserInfo.Patronymic;
