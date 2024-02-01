@@ -10,18 +10,21 @@
 
 <div class="login_form">
     <B class="ctext-darker" style="font-size: 24px; align-self: stretch; text-align: center">Login</B>
-    <form class="login_form-input_fields" @oninvalid="LoginAsync">
+    <p role="status">@_message</p>
+    <EditForm Model="Input" FormName="LoginForm" class="login_form-input_fields" OnValidSubmit="LoginAsync">
         <div class="login_form-input_field">
             <p class="p-0 ctext-darker" style="font-size: 14px;">login</p>
-            <input name="login" type="text" @bind="Input.Login" placeholder="your login..."/>
+            <InputText name="login" type="text" @bind-Value="Input.Login" placeholder="your login..."/>
+            <ValidationMessage For="() => Input.Login " />
         </div>
         <div class="login_form-input_field">
             <p class="p-0 ctext-darker" style="font-size: 14px;">password</p>
-            <input name="password" type="password" @bind="Input.Password" placeholder="your password..."/>
+            <InputText name="password" type="password" @bind-Value="Input.Password" placeholder="your password..."/>
+            <ValidationMessage For="() => Input.Password " />
         </div>
 
         <button class="btn_style_1_ot" type="submit">Login</button>
-    </form>
+    </EditForm>
 </div>
 
 @code {
@@ -33,6 +36,8 @@
     private AuthProvider AuthProvider { get; set; } = default!;
 
     private LoginModel Input { get; set; } = new();
+
+    private string _message = "";
     
     private async void LoginAsync()
     {
@@ -41,7 +46,15 @@
             var result = await AuthProvider.LoginAsync(Input);
             if (result.IsSuccess)
             {
+                _message = result.Message; 
                 NavigationManager.NavigateTo($"api/auth/sign_in/{result.Token}&");
+            }
+            else
+            {
+                if (result.Message == "Unauthorized")
+                {
+                    _message = "[KVAK] User is not found =(";
+                }
             }
         }
         catch (Exception e)

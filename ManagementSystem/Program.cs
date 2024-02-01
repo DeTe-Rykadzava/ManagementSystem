@@ -39,16 +39,11 @@ builder.Services.AddAuthenticationCore();
 
 // select server
 // PostgreSQL
-//DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
+DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 // MSSQL 
-DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+//DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
 
-builder.Services.AddScoped<ManagementSystemDatabaseContext>(opt =>
-{
-    var database = DatabaseSettings.CreateDbContext();
-    return database.Context;
-    
-});
+builder.Services.AddScoped<ManagementSystemDatabaseContext>(opt => DatabaseSettings.CreateDbContext());
 
 builder.Services.AddScoped<UserService>();
 

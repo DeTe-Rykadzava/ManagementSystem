@@ -13,22 +13,22 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext
         Database.EnsureCreated();
     }
 
-    private ManagementSystemDatabaseContext? _context;
-    
-    public ManagementSystemDatabaseContext Context 
-    {
-        get
-        {
-            if(_context == null)
-                _context = DatabaseSettings.CreateDbContext();
-            return _context;
-        }
-    }
-
-    // public bool EnsureCreated()
+    // private ManagementSystemDatabaseContext? _context;
+    //
+    // public ManagementSystemDatabaseContext Context 
     // {
-    //     return Database.EnsureCreated();
+    //     get
+    //     {
+    //         if(_context == null)
+    //             _context = DatabaseSettings.CreateDbContext();
+    //         return _context;
+    //     }
     // }
+    //
+    // // public bool EnsureCreated()
+    // // {
+    // //     return Database.EnsureCreated();
+    // // }
 
     public DbSet<Order> Orders { get; set; }
 

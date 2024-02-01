@@ -4,10 +4,10 @@ namespace ManagementSystem.Models;
 
 public class LoginModel
 {
-    [Required]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
     public string Login { get; set; } = null!;
 
-    [Required]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
     [DataType(DataType.Password)]
     public string Password { get; set; } = null!;
 }
