@@ -60,7 +60,7 @@ public class AuthProvider : AuthenticationStateProvider
         }
         catch (Exception e)
         {
-            _logger.LogError("Error on Login async AuthProvider.\n{Message}\n{InnerException}", e.Message, e.InnerException);
+            _logger.LogError("Error on SignIn async AuthProvider.\n{Message}\n{InnerException}", e.Message, e.InnerException);
             return new AuthResultModel { Message = "Error while login user", IsSuccess = false};
         }
     }

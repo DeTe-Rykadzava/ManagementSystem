@@ -2,9 +2,11 @@
 @using Database.Data
 @using Database.Models.RoleModels
 @using Database.UseCases
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @attribute [StreamRendering]
- 
+@attribute [Authorize] 
+
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>

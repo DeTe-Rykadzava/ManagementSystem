@@ -1,32 +1,116 @@
 ﻿@using Database.UseCases
+@using System.Security.Claims
 @inherits LayoutComponentBase
- 
-<header> @* оно так работает, не хочет быть выше, видимо blazor так хочет, хз *@
-    <NavLink Match="NavLinkMatch.All" href="/">
-        ManagementSystem
-    </NavLink>
-    @* <div> *@
-    @*     @if (!_isLogged) *@
-    @*     { *@
-    @*         <button class="btn_style_4">Sign In</button> *@
-    @*         <button class="btn_style_4">Sign Up</button> *@
-    @*     } *@
-    @*     else *@
-    @*     { *@
-    @*         $1$ <b>@User_UseCases.GetCurrentUser()!.UserInfo.FirstName</b> #1# *@
-    @*         <button class="btn_style_4">Log Out</button> *@
-    @*     } *@
-    @* </div> *@
-</header>
 
-<div class="body_container">
-    <div class="custom_sidebar">
+
+<div class="page">
+    <div class="bg_salate sidebar "> 
         <NavMenu/>
     </div>
-    <div class="content_container">
-        @Body
-    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <div class="btn-group justify-content-between gap-2">
+                <AuthorizeView>
+                    <Authorized> 
+                        <b>@context.User.Claims.First(x => x.ValueType == ClaimTypes.Email).Value</b>
+                        <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink Match="NavLinkMatch.All" href="/auth/sign_in" class="btn btn-secondary">Sign In</NavLink>
+                        <NavLink Match="NavLinkMatch.All" href="/auth/sign_up" class="btn btn-secondary">Sign Up</NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
+
+@* <div class="page"> *@
+@*     <main> *@
+@*         <div class="top-row px-4 d-flex justify-content-between"> *@
+@*             <NavLink Match="NavLinkMatch.All" href="/">ManagementSystem</NavLink> *@
+@*             <div class="btn-group justify-content-between gap-2"> *@
+@*                 <AuthorizeView> *@
+@*                     <Authorized> *@
+@*                         <b>@context.User.Claims.First(x => x.ValueType == ClaimTypes.Email).Value</b> *@
+@*                         <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink> *@
+@*                     </Authorized> *@
+@*                     <NotAuthorized> *@
+@*                         <NavLink Match="NavLinkMatch.All" href="/login" class="btn btn-secondary">Sign In</NavLink> *@
+@*                         <NavLink Match="NavLinkMatch.All" href="/" class="btn btn-secondary">Sign Up</NavLink> *@
+@*                     </NotAuthorized> *@
+@*                 </AuthorizeView> *@
+@*                  *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="d-flex"> *@
+@*             <div class="sidebar"> *@
+@*                 <NavMenu/> *@
+@*             </div> *@
+@*              *@
+@*             <article class="content px-4"> *@
+@*                 @Body *@
+@*             </article> *@
+@*         </div> *@
+@*     </main> *@
+@* </div> *@
+
+@* <div class="w-100 h-100 d-grid"> *@
+@*     <div class="row w-100 h-auto px-4 d-flex justify-content-between"> *@
+@*         <NavLink Match="NavLinkMatch.All" href="/">ManagementSystem</NavLink> *@
+@*         <AuthorizeView> *@
+@*             <Authorized> *@
+@*                 <b>@context.User.Claims.First(x => x.ValueType == ClaimTypes.Email).Value</b> *@
+@*                 <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink> *@
+@*             </Authorized> *@
+@*             <NotAuthorized> *@
+@*                 <NavLink Match="NavLinkMatch.All" href="/login" class="btn btn-secondary">Sign In</NavLink> *@
+@*                 <NavLink Match="NavLinkMatch.All" href="/" class="btn btn-secondary">Sign Up</NavLink> *@
+@*             </NotAuthorized> *@
+@*         </AuthorizeView> *@
+@*     </div> *@
+@*     <div class="row w-100 h-100"> *@
+@*         <div class="sidebar"> *@
+@*             <NavMenu/> *@
+@*         </div> *@
+@*         <div class="content p-4"> *@
+@*             @Body *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+
+@* <header> $1$ оно так работает, не хочет быть выше, видимо blazor так хочет, хз #1# *@
+@*     <NavLink Match="NavLinkMatch.All" href="/"> *@
+@*         ManagementSystem *@
+@*     </NavLink> *@
+@*     $1$ <div> #1# *@
+@*     $1$     @if (!_isLogged) #1# *@
+@*     $1$     { #1# *@
+@*     $1$         <button class="btn_style_4">Sign In</button> #1# *@
+@*     $1$         <button class="btn_style_4">Sign Up</button> #1# *@
+@*     $1$     } #1# *@
+@*     $1$     else #1# *@
+@*     $1$     { #1# *@
+@*     $1$         $2$ <b>@User_UseCases.GetCurrentUser()!.UserInfo.FirstName</b> #2# #1# *@
+@*     $1$         <button class="btn_style_4">Log Out</button> #1# *@
+@*     $1$     } #1# *@
+@*     $1$ </div> #1# *@
+@* </header> *@
+@* *@
+@* <div class="body_container"> *@
+@*     <div class="custom_sidebar"> *@
+@*         <NavMenu/> *@
+@*     </div> *@
+@*     <div class="content_container"> *@
+@*         @Body *@
+@*     </div> *@
+@* </div> *@
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

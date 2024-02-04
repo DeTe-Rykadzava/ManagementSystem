@@ -1,13 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ManagementSystem.Models;
 
 public class LoginModel
 {
-    [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
-    public string Login { get; set; } = null!;
+    [Required(ErrorMessage = "SignIn is required")]
+    [DataType(DataType.EmailAddress, ErrorMessage = "SignIn is email")]
+    [EmailAddress]
+    public string Login { get; set; }
 
-    [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
+    [Required( ErrorMessage = "Password is required", AllowEmptyStrings = false)]
     [DataType(DataType.Password)]
-    public string Password { get; set; } = null!;
+    public string Password { get; set; }
 }

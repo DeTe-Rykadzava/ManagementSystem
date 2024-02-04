@@ -1,0 +1,13 @@
+@page "/RedirectToLogin"
+<h3>RedirectToSignIn</h3>
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.NavigateTo("/auth/sign_in");
+    }
+
+}
