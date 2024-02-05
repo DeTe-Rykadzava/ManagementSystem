@@ -2,6 +2,8 @@ using Database.Data;
 using Database.Models.UserModels;
 using Database.UseCases;
 using ManagementSystem.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ManagementSystem.Service;
 
@@ -31,13 +33,13 @@ public class UserService
         }
     }
 
-    public async Task<UserModel?> GetUserByModel(LoginModel loginModel)
+    public async Task<UserModel?> GetUserByModel(SignInModel signInModel)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(loginModel.Login) || string.IsNullOrWhiteSpace(loginModel.Password))
+            if (string.IsNullOrWhiteSpace(signInModel.Login) || string.IsNullOrWhiteSpace(signInModel.Password))
                 return null;
-            var user = await User_UseCases.GetUserByLoginPassword(_context, loginModel.Login, loginModel.Password);
+            var user = await User_UseCases.GetUserByLoginPassword(_context, signInModel.Login, signInModel.Password);
             return user;
         }
         catch (Exception e)
@@ -45,6 +47,22 @@ public class UserService
             Console.WriteLine(e);
             _logger.LogError("Error with get user.\n{Message}\n{InnerException}", e.Message, e.InnerException);
             return null;
+        }
+    }
+
+    public async Task<bool> SignUpUser(SignUpModel model)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Password) ||
+                string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
+                return false;
+            return await User_UseCases.CreateUser(_context, model.ConvertToDatabaseModel());
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error with create user.\n{Message}\n{InnerException}", e.Message, e.InnerException);
+            return false;
         }
     }
 

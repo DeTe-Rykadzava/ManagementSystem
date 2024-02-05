@@ -47,4 +47,37 @@ public class User_UseCases
             return null;
         }
     }
+
+    public static async Task<bool> CreateUser(ManagementSystemDatabaseContext context, UserCreateModel model)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Password) ||
+                string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
+                return false;
+
+            var userInfo = new UserInfo
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Patronymic = model.Patronymic,
+                RoleId = model.RoleId
+            };
+            
+            var user = new User
+            {
+                Login = model.Login,
+                HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password)
+            };
+
+            await context.UserInfos.AddAsync(userInfo);
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }

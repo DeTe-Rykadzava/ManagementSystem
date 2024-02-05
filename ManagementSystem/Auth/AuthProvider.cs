@@ -42,7 +42,7 @@ public class AuthProvider : AuthenticationStateProvider
         }
     }
 
-    public async Task<AuthResultModel> LoginAsync(LoginModel model)
+    public async Task<AuthResultModel> LoginAsync(SignInModel model)
     {
         try
         {

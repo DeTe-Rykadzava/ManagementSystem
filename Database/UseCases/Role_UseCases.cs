@@ -17,4 +17,11 @@ public class Role_UseCases
             .FirstOrDefaultAsync(x => x.Id == id);
         return role == null ? null : new RoleModel(role);
     }
+    
+    public static async Task<RoleModel?> GetRoleByName(ManagementSystemDatabaseContext context, string name)
+    {
+        var role = await context.Roles.AsQueryable().AsNoTracking()
+            .FirstOrDefaultAsync(x => x.RoleName == name);
+        return role == null ? null : new RoleModel(role);
+    }
 }

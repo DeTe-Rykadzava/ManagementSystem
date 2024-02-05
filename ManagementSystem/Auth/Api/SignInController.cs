@@ -11,23 +11,14 @@ using Microsoft.IdentityModel.Tokens;
 namespace ManagementSystem.Auth.Api;
 
 [ApiController]
-public class AuthController : ControllerBase
+public class SignInController : ControllerBase
 {
-    private class AuthOptions
-    {
-        public const string ISSUER = "ManagementSystemIdentity";
-        public const string AUDIENCE = "ManagementSystemClient";
-        private const string KEY = "CWnIZcKzM8doT9nN8SpxO64NsgGEiZHr";
-
-        public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
-    }
     
-    private readonly ILogger<AuthController> _logger;
+    private readonly ILogger<SignInController> _logger;
 
     private readonly UserService _userService;
     
-    public AuthController(ILogger<AuthController> logger, UserService userService)
+    public SignInController(ILogger<SignInController> logger, UserService userService)
     {
         _logger = logger;
         _userService = userService;
@@ -35,7 +26,7 @@ public class AuthController : ControllerBase
     
     [HttpPost]
     [Route("api/auth/sign_in")]
-    public async Task<ActionResult<string>> LoginAsync(LoginModel model)
+    public async Task<ActionResult<string>> LoginAsync(SignInModel model)
     {
         try
         {

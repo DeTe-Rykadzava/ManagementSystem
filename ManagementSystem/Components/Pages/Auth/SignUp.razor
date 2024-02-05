@@ -1,9 +1,90 @@
 @page "/auth/sign_up"
+@using ManagementSystem.Service
+@using ManagementSystem.Models
 @layout EmptyLayout
+@rendermode InteractiveServer
 <PageTitle>SignUp</PageTitle>
 
+<div class="container  p-4 rounded-3 bg_salate shadow-lg d-grid">
+    <p class="color_darker text-center fs-2 fw-bold p-2 m-0" >Sign Up</p>
+    <p role="status" class="text-danger m-2">@_message</p>
+    <EditForm Model="Input" FormName="SignInForm" OnValidSubmit="SignUpAsync" class="d-flex flex-column align-items-stretch gap-4">
+        <DataAnnotationsValidator/>
+        @* эти поля можно было б не давать пользователю заполнять а автоматически, а затем изменять, но звучит геморно ↓ *@
+        <div class="gap-2 d-grid">
+            <p class="p-0 m-0 form-label color_darker form-label fs-6">Firstname</p>
+            <InputText type="text" @bind-Value="Input.FirstName" placeholder="your firstname..." class="form-control"/>
+            <ValidationMessage For="() => Input.FirstName" class="text-danger"/>
+        </div>
+        <div class="gap-2 d-grid">
+            <p class="p-0 m-0 form-label color_darker form-label fs-6">Lastname</p>
+            <InputText type="text" @bind-Value="Input.LastName" placeholder="your lastname..." class="form-control"/>
+            <ValidationMessage For="() => Input.LastName" class="text-danger"/>
+        </div>
+        <div class="gap-2 d-grid">
+            <p class="p-0 m-0 form-label color_darker form-label fs-6">Patronymic</p> 
+            <InputText type="text" @bind-Value="Input.Patronymic" placeholder="your patronymic..." class="form-control"/>
+            <ValidationMessage For="() => Input.Patronymic" class="text-danger"/>
+        </div>
+        @* эти поля можно было б не давать пользователю заполнять а автоматически, а затем изменять, но звучит геморно ↑ *@
+        <div class="gap-2 d-grid">
+            <p class="p-0 m-0 form-label color_darker form-label fs-6">Login</p>
+            <InputText type="email" @bind-Value="Input.Login" placeholder="your login..." class="form-control"/>
+            <ValidationMessage For="() => Input.Login" class="text-danger"/>
+        </div>
+        <div class="gap-2 d-grid">
+            <p class="p-0 m-0 form-label color_darker form-label fs-6">Password</p>
+            <InputText type="text" @bind-Value="Input.Password" placeholder="your password..." class="form-control"/>
+            <ValidationMessage For="() => Input.Password" class="text-danger"/>
+        </div>
 
+        <button class="btn btn-outline-primary text-end px-4 align-content-end align-self-end" type="submit" disabled="@_disabled">Sign In</button>
+    </EditForm>
+    <p class="m-0 px-3 d-flex justify-content-center align-self-center align-items-center">
+        Have a account? <NavLink class="color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline" href="/auth/sign_in">Login</NavLink>
+    </p>
+</div>
 
 @code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
+    private UserService UserService { get; set; } = default!;
     
+    [Inject] private ILogger<SignUp> Logger { get; set; } = default!;
+
+    private SignUpModel Input { get; set; } = new();
+
+    private string _message = "";
+
+    private bool _disabled = false;
+
+    private async void SignUpAsync()
+    {
+        _message = "";
+        _disabled = true;
+        StateHasChanged();
+        try
+        {
+            // var result = await UserService.SignUpUser(Input);
+            // if (result)
+            // {
+            //     _message = "Success registration. Go to Sign In for Authenticate in App <NavLink class=\"color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline\" href=\"/auth/sign_in\">Sign In</NavLink>";
+            //     _disabled = true;
+            // }
+            // else
+            // {
+            //     _message = "[KVAK] User was not created =(";
+            //     _disabled = false;
+            //     StateHasChanged();
+            // }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Logger.LogError("Error with login user.\n{Message}\n{InnerException}", e.Message, e.InnerException);
+        }
+    }
+
 }

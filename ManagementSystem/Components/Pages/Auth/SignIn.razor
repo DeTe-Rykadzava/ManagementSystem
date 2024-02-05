@@ -15,7 +15,7 @@
         <DataAnnotationsValidator/>
         <div class="gap-2 d-grid">
             <p class="p-0 m-0 form-label color_darker form-label fs-6">Login</p>
-            <InputText type="mail" @bind-Value="Input.Login" placeholder="your login..." class="form-control"/>
+            <InputText type="email" @bind-Value="Input.Login" placeholder="your login..." class="form-control"/>
             <ValidationMessage For="() => Input.Login" class="text-danger"/>
         </div>
         <div class="gap-2 d-grid">
@@ -39,16 +39,18 @@
     [Inject]
     private AuthProvider AuthProvider { get; set; } = default!;
 
-    private LoginModel Input { get; set; } = new();
+    [Inject] private ILogger<SignIn> Logger { get; set; } = default!;
+
+    private SignInModel Input { get; set; } = new();
 
     private string _message = "";
-    
-    override 
     
     private async void LoginAsync()
     {  
         try
         {
+            _message = "";
+            StateHasChanged();
             var result = await AuthProvider.LoginAsync(Input);
             if (result.IsSuccess)
             {
@@ -67,6 +69,7 @@
         catch (Exception e)
         {
             Console.WriteLine(e);
+            Logger.LogError("Error with login user.\n{Message}\n{InnerException}", e.Message, e.InnerException);
         }
     }
 
