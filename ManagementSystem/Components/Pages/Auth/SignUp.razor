@@ -67,18 +67,18 @@
         StateHasChanged();
         try
         {
-            // var result = await UserService.SignUpUser(Input);
-            // if (result)
-            // {
-            //     _message = "Success registration. Go to Sign In for Authenticate in App <NavLink class=\"color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline\" href=\"/auth/sign_in\">Sign In</NavLink>";
-            //     _disabled = true;
-            // }
-            // else
-            // {
-            //     _message = "[KVAK] User was not created =(";
-            //     _disabled = false;
-            //     StateHasChanged();
-            // }
+            var result = await UserService.SignUpUser(Input);
+            if (result)
+            {
+                _message = "Success registration. Go to Sign In for Authenticate in App <NavLink class=\"color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline\" href=\"/auth/sign_in\">Sign In</NavLink>";
+                _disabled = true;
+            }
+            else
+            {
+                _message = "[KVAK] User was not created =(";
+                _disabled = false;
+                StateHasChanged();
+            }
         }
         catch (Exception e)
         {

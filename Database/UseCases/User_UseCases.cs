@@ -1,6 +1,7 @@
 using Database.Data;
 using Database.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Database.UseCases;
 
@@ -48,7 +49,7 @@ public class User_UseCases
         }
     }
 
-    public static async Task<bool> CreateUser(ManagementSystemDatabaseContext context, UserCreateModel model)
+    public static async Task<bool> CreateUser(ManagementSystemDatabaseContext context, UserCreateModel model, ILogger? logger = null)
     {
         try
         {
@@ -77,6 +78,7 @@ public class User_UseCases
         }
         catch (Exception e)
         {
+            logger?.LogError("Can not save user in base. Exception:\n{Message}.\nInner Exception:\n{InnerException}",e.Message, e.InnerException);
             return false;
         }
     }

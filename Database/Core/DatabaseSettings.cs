@@ -31,7 +31,7 @@ public abstract class DatabaseSettings
         return fileNode;
     }
 
-    public static async Task<string> GetConnectionString()
+    internal static async Task<string> GetConnectionString()
     {
         var file = await GetFileConnectionNode();
         if (file != null)

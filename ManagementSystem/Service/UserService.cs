@@ -2,6 +2,7 @@ using Database.Data;
 using Database.Models.UserModels;
 using Database.UseCases;
 using ManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
