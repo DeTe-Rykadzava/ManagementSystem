@@ -11,9 +11,11 @@
         <div class="top-row px-4">
             <div class="btn-group justify-content-between gap-2">
                 <AuthorizeView>
-                    <Authorized> 
-                        <b>@context.User.Claims.First(x => x.Type == ClaimTypes.Email).Value</b>
-                        <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink>
+                    <Authorized>
+                        <div class="d-flex align-items-center">
+                            <b class="color_darker fs-3">@context.User.Claims.First(x => x.Type == ClaimTypes.Email).Value</b>
+                            <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink>
+                        </div>
                     </Authorized>
                     <NotAuthorized>
                         <NavLink Match="NavLinkMatch.All" href="/auth/sign_in" class="btn btn-secondary">Sign In</NavLink>

@@ -42,9 +42,9 @@ builder.Services.AddAuthenticationCore();
 
 // select server
 // PostgreSQL
-// DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
+DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 // MSSQL 
-DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+// DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
 
 // async Task<ManagementSystemDatabaseContext> GetDbContext(IServiceProvider serviceProvider) => DatabaseSettings.GetDbContext();
 
@@ -76,17 +76,7 @@ if (!app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var bdContext = scope.ServiceProvider.GetRequiredService<IManagementSystemDatabaseContext>();
-    if (bdContext == null)
-    {
-        app.Logger.LogCritical("Database is not include in DJ");
-        Environment.Exit(1);
-    }
-    else
-    {
-        bdContext.Database.EnsureCreated();
-    }
-
-    
+    bdContext.Database.EnsureCreated();
 }
 
 app.UseHttpsRedirection();
