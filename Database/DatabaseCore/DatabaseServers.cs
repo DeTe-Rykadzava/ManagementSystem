@@ -1,4 +1,4 @@
-﻿namespace Database.Core;
+﻿namespace Database.DatabaseCore;
 
 public abstract class DatabaseServers
 {

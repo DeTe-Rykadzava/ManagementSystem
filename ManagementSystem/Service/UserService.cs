@@ -1,7 +1,7 @@
 using Database.Data;
+using Database.Interfaces;
 using Database.Models.UserModels;
-using Database.UseCases;
-using ManagementSystem.Models;
+using ManagementSystem.AuthModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -10,21 +10,21 @@ namespace ManagementSystem.Service;
 
 public class UserService
 {
-    private readonly ManagementSystemDatabaseContext _context;
-
     private readonly ILogger<UserService> _logger;
+
+    private readonly IUserRepository _userRepository;
     
-    public UserService(ManagementSystemDatabaseContext context, ILogger<UserService> logger)
+    public UserService(ILogger<UserService> logger, IUserRepository repository)
     {
-        _context = context;
         _logger = logger;
+        _userRepository = repository;
     }
 
     public async Task<UserModel?> GetUserById(int id)
     {
         try
         {
-            var user = await User_UseCases.GetUserById(_context,id);
+            var user = await _userRepository.GetUserById(id);
             return user;
         }
         catch (Exception e)
@@ -40,7 +40,7 @@ public class UserService
         {
             if (string.IsNullOrWhiteSpace(signInModel.Login) || string.IsNullOrWhiteSpace(signInModel.Password))
                 return null;
-            var user = await User_UseCases.GetUserByLoginPassword(_context, signInModel.Login, signInModel.Password);
+            var user = await _userRepository.GetUserByLoginPassword(signInModel.Login, signInModel.Password);
             return user;
         }
         catch (Exception e)
@@ -58,7 +58,7 @@ public class UserService
             if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Password) ||
                 string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
                 return false;
-            return await User_UseCases.CreateUser(_context, model.ConvertToDatabaseModel());
+            return await _userRepository.CreateUser(model.ConvertToDatabaseModel(), _logger);
         }
         catch (Exception e)
         {

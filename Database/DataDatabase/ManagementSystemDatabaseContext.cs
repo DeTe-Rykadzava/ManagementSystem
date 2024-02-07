@@ -1,35 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Database.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database.Data;
 
-public sealed partial class ManagementSystemDatabaseContext : DbContext
+public sealed partial class ManagementSystemDatabaseContext : DbContext, IManagementSystemDatabaseContext
 {
-    internal ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
+    public ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
         : base(options)
     {
         Database.EnsureCreated();
     }
-
-    // private ManagementSystemDatabaseContext? _context;
-    //
-    // public ManagementSystemDatabaseContext Context 
-    // {
-    //     get
-    //     {
-    //         if(_context == null)
-    //             _context = DatabaseSettings.CreateDbContext();
-    //         return _context;
-    //     }
-    // }
-    //
-    // // public bool EnsureCreated()
-    // // {
-    // //     return Database.EnsureCreated();
-    // // }
-
+    
     public DbSet<Order> Orders { get; set; }
 
     public DbSet<OrderComposition> OrderCompositions { get; set; }
@@ -60,8 +42,10 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext
 
     public DbSet<Warehouse> Warehouses { get; set; }
 
-    // protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // => optionsBuilder.UseNpgsql(await DatabaseSettings.GetConnectionString());
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

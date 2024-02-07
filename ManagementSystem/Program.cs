@@ -1,5 +1,7 @@
-using Database.Core;
 using Database.Data;
+using Database.DatabaseCore;
+using Database.Interfaces;
+using Database.Repositories;
 using ManagementSystem.Auth;
 using ManagementSystem.Components;
 using ManagementSystem.Service;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,13 +42,26 @@ builder.Services.AddAuthenticationCore();
 
 // select server
 // PostgreSQL
-DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
+// DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 // MSSQL 
-//DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
 
-builder.Services.AddScoped<ManagementSystemDatabaseContext>(opt => DatabaseSettings.CreateDbContext());
+// async Task<ManagementSystemDatabaseContext> GetDbContext(IServiceProvider serviceProvider) => DatabaseSettings.GetDbContext();
+
+// builder.Services.AddScoped<ManagementSystemDatabaseContext>(sp => DatabaseSettings.GetDbContext());
+
+builder.Services.AddTransient<IManagementSystemDatabaseContext, ManagementSystemDatabaseContext>(
+    delegate(IServiceProvider provider) { return new ManagementSystemDatabaseContext(DatabaseSettings.GetContextOptionsSync());});
+
+// builder.Services.AddDbContext<ManagementSystemDatabaseContext>(opt => DatabaseSettings.GetDbContext());
+
+// builder.Services.AddDbContext<ManagementSystemDatabaseContext>(opt => opt.UseSqlServer(DatabaseSettings.GetConnectionString().GetAwaiter().GetResult()));
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RoleService>();
+
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IRoleRepository, RoleRepository>();
 
 var app = builder.Build();
 
@@ -59,7 +75,7 @@ if (!app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var bdContext = scope.ServiceProvider.GetRequiredService<ManagementSystemDatabaseContext>();
+    var bdContext = scope.ServiceProvider.GetRequiredService<IManagementSystemDatabaseContext>();
     if (bdContext == null)
     {
         app.Logger.LogCritical("Database is not include in DJ");

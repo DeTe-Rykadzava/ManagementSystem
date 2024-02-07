@@ -1,13 +1,11 @@
-using System.Text.Json.Nodes;
 using Database.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Database.Core;
+namespace Database.DatabaseCore;
 
 internal class DatabaseContextFactory : IDesignTimeDbContextFactory<ManagementSystemDatabaseContext>
 {
-    
     public ManagementSystemDatabaseContext CreateDbContext(string[] args)
     {
         // select database server

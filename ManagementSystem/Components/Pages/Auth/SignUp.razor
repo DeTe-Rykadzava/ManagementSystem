@@ -1,13 +1,26 @@
 @page "/auth/sign_up"
 @using ManagementSystem.Service
-@using ManagementSystem.Models
+@using ManagementSystem.AuthModels
 @layout EmptyLayout
 @rendermode InteractiveServer
 <PageTitle>SignUp</PageTitle>
 
 <div class="container  p-4 rounded-3 bg_salate shadow-lg d-grid">
     <p class="color_darker text-center fs-2 fw-bold p-2 m-0" >Sign Up</p>
-    <p role="status" class="text-danger m-2">@_message</p>
+    @{
+        if (_isSuccess)
+        {
+            <p role="status" class="text-success m-2">
+                @_message
+                <NavLink class="color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline" href="/auth/sign_in">Sign In</NavLink>
+            </p>
+        }
+        else
+        {
+        <p role="status" class="text-danger m-2">@_message</p>
+        }
+
+    }
     <EditForm Model="Input" FormName="SignInForm" OnValidSubmit="SignUpAsync" class="d-flex flex-column align-items-stretch gap-4">
         <DataAnnotationsValidator/>
         @* эти поля можно было б не давать пользователю заполнять а автоматически, а затем изменять, но звучит геморно ↓ *@
@@ -56,6 +69,8 @@
 
     private SignUpModel Input { get; set; } = new();
 
+    private bool _isSuccess = false;
+    
     private string _message = "";
 
     private bool _disabled = false;
@@ -70,14 +85,13 @@
             var result = await UserService.SignUpUser(Input);
             if (result)
             {
-                _message = "Success registration. Go to Sign In for Authenticate in App <NavLink class=\"color_darker_op text-center fs-5 fw-bold p-2 text-decoration-underline\" href=\"/auth/sign_in\">Sign In</NavLink>";
+                _message = "Success registration. Go to Sign In for Authenticate in App ";
                 _disabled = true;
             }
             else
             {
-                _message = "[KVAK] User was not created =(";
+                _message = "[KVAK] User was not created =( Maybe user with current login already exist";
                 _disabled = false;
-                StateHasChanged();
             }
         }
         catch (Exception e)
@@ -85,6 +99,7 @@
             Console.WriteLine(e);
             Logger.LogError("Error with login user.\n{Message}\n{InnerException}", e.Message, e.InnerException);
         }
+        StateHasChanged();
     }
 
 }

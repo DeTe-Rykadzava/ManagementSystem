@@ -1,5 +1,4 @@
-﻿@using Database.UseCases
-@using System.Security.Claims
+﻿@using System.Security.Claims
 @inherits LayoutComponentBase
 
 
@@ -13,7 +12,7 @@
             <div class="btn-group justify-content-between gap-2">
                 <AuthorizeView>
                     <Authorized> 
-                        <b>@context.User.Claims.First(x => x.ValueType == ClaimTypes.Email).Value</b>
+                        <b>@context.User.Claims.First(x => x.Type == ClaimTypes.Email).Value</b>
                         <NavLink Match="NavLinkMatch.All" href="api/auth/sign_out" class="btn btn-outline-secondary">Log Out</NavLink>
                     </Authorized>
                     <NotAuthorized>
@@ -97,7 +96,7 @@
 @*     $1$     } #1# *@
 @*     $1$     else #1# *@
 @*     $1$     { #1# *@
-@*     $1$         $2$ <b>@User_UseCases.GetCurrentUser()!.UserInfo.FirstName</b> #2# #1# *@
+@*     $1$         $2$ <b>@UserRepository.GetCurrentUser()!.UserInfo.FirstName</b> #2# #1# *@
 @*     $1$         <button class="btn_style_4">Log Out</button> #1# *@
 @*     $1$     } #1# *@
 @*     $1$ </div> #1# *@

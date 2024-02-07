@@ -1,17 +1,24 @@
 using Database.Data;
+using Database.Interfaces;
 using Database.Models.UserModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Database.UseCases;
+namespace Database.Repositories;
 
-public class User_UseCases
+public class UserRepository : IUserRepository
 {
-    public static async Task<UserModel?> GetUserById(ManagementSystemDatabaseContext context,int id)
+    private readonly IManagementSystemDatabaseContext _context;
+    public UserRepository(IManagementSystemDatabaseContext context)
+    {
+        _context = context;
+    }
+    
+    public async Task<UserModel?> GetUserById(int id)
     {
         try
         {
-            var user = await context.Users
+            var user = await _context.Users
                 .AsQueryable()
                 .AsNoTracking()
                 .Include(i => i.UserInfo)
@@ -27,14 +34,15 @@ public class User_UseCases
         }
     }
     
-    public static async Task<UserModel?> GetUserByLoginPassword(ManagementSystemDatabaseContext context, string login, string password)
+    public async Task<UserModel?> GetUserByLoginPassword(string login, string password)
     {
         try
         {
-            var user = await context.Users
+            var user = await _context.Users
                 .AsQueryable()
                 .AsNoTracking()
                 .Include(i => i.UserInfo)
+                .ThenInclude(i => i.Role)
                 .FirstOrDefaultAsync(x => x.Login == login);
             if (user == null)
                 return null;
@@ -49,7 +57,7 @@ public class User_UseCases
         }
     }
 
-    public static async Task<bool> CreateUser(ManagementSystemDatabaseContext context, UserCreateModel model, ILogger? logger = null)
+    public async Task<bool> CreateUser(UserCreateModel model, ILogger? logger = null)
     {
         try
         {
@@ -57,6 +65,10 @@ public class User_UseCases
                 string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
                 return false;
 
+            var existedUser = await _context.Users.FirstOrDefaultAsync(x => x.Login == model.Login);
+            if (existedUser != null)
+                return false;
+            
             var userInfo = new UserInfo
             {
                 FirstName = model.FirstName,
@@ -68,17 +80,19 @@ public class User_UseCases
             var user = new User
             {
                 Login = model.Login,
-                HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password),
             };
 
-            await context.UserInfos.AddAsync(userInfo);
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
+            await _context.UserInfos.AddAsync(userInfo);
+            await _context.SaveChangesAsync();
+            user.UserInfoId = userInfo.Id;
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return true;
         }
         catch (Exception e)
         {
-            logger?.LogError("Can not save user in base. Exception:\n{Message}.\nInner Exception:\n{InnerException}",e.Message, e.InnerException);
+            logger?.LogError("Can not save user in base.\nException:\t{Message}.\nInner Exception:\t{InnerException}",e.Message, e.InnerException);
             return false;
         }
     }

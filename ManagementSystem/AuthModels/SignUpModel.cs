@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Database.Models.UserModels;
 
-namespace ManagementSystem.Models;
+namespace ManagementSystem.AuthModels;
 
 public class SignUpModel
 {

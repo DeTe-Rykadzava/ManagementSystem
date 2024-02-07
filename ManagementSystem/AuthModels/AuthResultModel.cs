@@ -1,4 +1,4 @@
-﻿namespace ManagementSystem.Models;
+﻿namespace ManagementSystem.AuthModels;
 
 public class AuthResultModel
 {

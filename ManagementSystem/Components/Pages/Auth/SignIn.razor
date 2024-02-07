@@ -1,7 +1,6 @@
 @page "/auth/sign_in"
-@using Database.UseCases
 @using ManagementSystem.Auth
-@using ManagementSystem.Models
+@using ManagementSystem.AuthModels
 @using Microsoft.AspNetCore.Components.Authorization
 @layout Layout.EmptyLayout
 @rendermode InteractiveServer
@@ -55,7 +54,7 @@
             if (result.IsSuccess)
             {
                 _message = result.Message; 
-                NavigationManager.NavigateTo($"api/auth/sign_in/{result.Token}&");
+                NavigationManager.NavigateTo($"api/auth/sign_in/{result.Token}");
             }
             else
             {

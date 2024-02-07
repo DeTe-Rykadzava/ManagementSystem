@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
-using ManagementSystem.Models;
+using ManagementSystem.AuthModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -54,7 +54,7 @@ public class AuthProvider : AuthenticationStateProvider
             if (!result.IsSuccessStatusCode)
                 return new AuthResultModel { Message = "Unauthorized", IsSuccess = false};
 
-            var token = await JsonSerializer.DeserializeAsync<string>(await result.Content.ReadAsStreamAsync());
+            var token = await result.Content.ReadAsStringAsync();
 
             return new AuthResultModel { Message = "Success", IsSuccess = true, Token = token};
         }

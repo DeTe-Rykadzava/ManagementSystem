@@ -1,30 +1,31 @@
 using Database.Data;
+using Database.Interfaces;
 using Database.Models.RoleModels;
-using Database.UseCases;
+using Database.Repositories;
 
 namespace ManagementSystem.Service;
 
 public class RoleService
 {
-    private readonly ManagementSystemDatabaseContext _context;
+    private readonly IRoleRepository _roleRepository;
 
-    public RoleService(ManagementSystemDatabaseContext context)
+    public RoleService(IRoleRepository roleRepository)
     {
-        _context = context;
+        _roleRepository = roleRepository;
     }
     
     public async Task<IEnumerable<RoleModel>> GetRoles()
     {
-        return await Role_UseCases.GetRoles(_context);
+        return await _roleRepository.GetAll();
     }
     
     public async Task<RoleModel?> GetRolesById(int id)
     {
-        return await Role_UseCases.GetRoleById(_context, id);
+        return await _roleRepository.GetById(id);
     }
     
     public async Task<RoleModel?> GetRolesByName(string name)
     {
-        return await Role_UseCases.GetRoleByName(_context, name);
+        return await _roleRepository.GetByName(name);
     }
 }

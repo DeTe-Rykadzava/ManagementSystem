@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ManagementSystem.Models;
+using ManagementSystem.AuthModels;
 using ManagementSystem.Service;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -64,8 +64,8 @@ public class SignInController : ControllerBase
     }
     
     [HttpGet]
-    [Route("api/auth/sign_in/{jwtToken}&{redirectUrl}")]
-    public async Task<IActionResult> LoginInClientAsync(string jwtToken, string? redirectUrl = null)
+    [Route("api/auth/sign_in/{jwtToken}")]
+    public async Task<IActionResult> LoginInClientAsync(string jwtToken)
     {
         try
         {
@@ -80,7 +80,7 @@ public class SignInController : ControllerBase
 
             var identity = new ClaimsIdentity(token.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), new AuthenticationProperties());
-            return Redirect(redirectUrl ?? "/");
+            return Redirect("/");
         }
         catch (Exception e)
         {
