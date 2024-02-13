@@ -1,4 +1,4 @@
-using Database.Data;
+using Database.Context;
 using Database.DatabaseCore;
 using Database.Interfaces;
 using Database.Repositories;
@@ -50,8 +50,10 @@ DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 
 // builder.Services.AddScoped<ManagementSystemDatabaseContext>(sp => DatabaseSettings.GetDbContext());
 
-builder.Services.AddTransient<IManagementSystemDatabaseContext, ManagementSystemDatabaseContext>(
-    delegate(IServiceProvider provider) { return new ManagementSystemDatabaseContext(DatabaseSettings.GetContextOptionsSync());});
+builder.Services.AddSingleton<IManagementSystemDatabaseContext>(opt => DatabaseSettings.GetDbContext());
+
+// builder.Services.AddTransient<IManagementSystemDatabaseContext, ManagementSystemDatabaseContext>(
+    // delegate(IServiceProvider provider) { return new ManagementSystemDatabaseContext(DatabaseSettings.GetContextOptionsSync());});
 
 // builder.Services.AddDbContext<ManagementSystemDatabaseContext>(opt => DatabaseSettings.GetDbContext());
 

@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Database.DataDatabase;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
 
-namespace Database.Data;
+namespace Database.Context;
 
 public interface IManagementSystemDatabaseContext
 {
     public DatabaseFacade Database { get; }
+    
+    public DbSet<BasketProduct> BasketProducts { get; set; }
     
     public DbSet<Order> Orders { get; set; }
 
@@ -33,6 +35,8 @@ public interface IManagementSystemDatabaseContext
     public DbSet<Role> Roles { get; set; }
 
     public DbSet<User> Users { get; set; }
+    
+    public DbSet<UserBasket> UserBaskets { get; set; }
 
     public DbSet<UserInfo> UserInfos { get; set; }
 

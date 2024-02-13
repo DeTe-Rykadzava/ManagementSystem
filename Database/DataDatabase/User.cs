@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Database.Data;
+namespace Database.DataDatabase;
 
 public partial class User
 {
@@ -20,6 +20,8 @@ public partial class User
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    public virtual ICollection<UserBasket> UserBaskets { get; set; } = new List<UserBasket>();
 
     public virtual UserInfo UserInfo { get; set; } = null!;
 }

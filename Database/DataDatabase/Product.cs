@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Database.Data;
+namespace Database.DataDatabase;
 
 public partial class Product
 {
@@ -19,6 +19,8 @@ public partial class Product
     public decimal Cost { get; set; }
 
     public int CategoryId { get; set; }
+
+    public virtual ICollection<BasketProduct> BasketProducts { get; set; } = new List<BasketProduct>();
 
     public virtual ProductCategory Category { get; set; } = null!;
 

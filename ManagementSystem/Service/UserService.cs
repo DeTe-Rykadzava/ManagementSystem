@@ -1,4 +1,3 @@
-using Database.Data;
 using Database.Interfaces;
 using Database.Models.UserModels;
 using ManagementSystem.AuthModels;

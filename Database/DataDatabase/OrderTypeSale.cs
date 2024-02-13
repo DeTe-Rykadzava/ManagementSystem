@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Database.Data;
+namespace Database.DataDatabase;
 
 public partial class OrderTypeSale
 {

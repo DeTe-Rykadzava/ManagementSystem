@@ -1,5 +1,4 @@
-﻿using Database.Data;
-using Database.Models.RoleModels;
+﻿using Database.Models.RoleModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database.Interfaces;

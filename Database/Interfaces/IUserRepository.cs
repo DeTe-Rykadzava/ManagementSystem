@@ -1,5 +1,4 @@
-﻿using Database.Data;
-using Database.Models.UserModels;
+﻿using Database.Models.UserModels;
 using Microsoft.Extensions.Logging;
 
 namespace Database.Interfaces;

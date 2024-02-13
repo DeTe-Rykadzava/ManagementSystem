@@ -3,18 +3,17 @@ using System.Collections.Generic;
 
 namespace Database.DataDatabase;
 
-public partial class ProductPhoto
+public partial class BasketProduct
 {
-    internal ProductPhoto()
+    internal BasketProduct()
     {
-        
     }
 
-    public int Id { get; set; }
-
-    public byte[] Image { get; set; } = null!;
+    public int UserBasketId { get; set; }
 
     public int ProductId { get; set; }
 
     public virtual Product Product { get; set; } = null!;
+
+    public virtual UserBasket UserBasket { get; set; } = null!;
 }

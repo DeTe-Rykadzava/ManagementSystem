@@ -1,59 +1,94 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.DataDatabase;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.Data;
+namespace Database.Context;
 
-public sealed partial class ManagementSystemDatabaseContext : DbContext, IManagementSystemDatabaseContext
+public partial class ManagementSystemDatabaseContext : DbContext, IManagementSystemDatabaseContext
 {
     public ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
         : base(options)
     {
         Database.EnsureCreated();
     }
-    
-    public DbSet<Order> Orders { get; set; }
 
-    public DbSet<OrderComposition> OrderCompositions { get; set; }
+    public virtual DbSet<BasketProduct> BasketProducts { get; set; }
 
-    public DbSet<OrderPaymentType> OrderPaymentTypes { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-    public DbSet<OrderStatus> OrderStatuses { get; set; }
+    public virtual DbSet<OrderComposition> OrderCompositions { get; set; }
 
-    public DbSet<OrderTypeSale> OrderTypeSales { get; set; }
+    public virtual DbSet<OrderPaymentType> OrderPaymentTypes { get; set; }
 
-    public DbSet<Product> Products { get; set; }
+    public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
 
-    public DbSet<ProductCategory> ProductCategories { get; set; }
+    public virtual DbSet<OrderTypeSale> OrderTypeSales { get; set; }
 
-    public DbSet<ProductPhoto> ProductPhotos { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
 
-    public DbSet<ProductWarehouse> ProductWarehouses { get; set; }
+    public virtual DbSet<ProductCategory> ProductCategories { get; set; }
 
-    public DbSet<Report> Reports { get; set; }
+    public virtual DbSet<ProductPhoto> ProductPhotos { get; set; }
 
-    public DbSet<ReportType> ReportTypes { get; set; }
+    public virtual DbSet<ProductWarehouse> ProductWarehouses { get; set; }
 
-    public DbSet<Role> Roles { get; set; }
+    public virtual DbSet<Report> Reports { get; set; }
 
-    public DbSet<User> Users { get; set; }
+    public virtual DbSet<ReportType> ReportTypes { get; set; }
 
-    public DbSet<UserInfo> UserInfos { get; set; }
+    public virtual DbSet<Role> Roles { get; set; }
 
-    public DbSet<Warehouse> Warehouses { get; set; }
+    public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<UserBasket> UserBaskets { get; set; }
+
+    public virtual DbSet<UserInfo> UserInfos { get; set; }
+
+    public virtual DbSet<Warehouse> Warehouses { get; set; }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         return base.SaveChangesAsync(cancellationToken);
     }
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<BasketProduct>(entity =>
+        {
+            entity.HasKey(e => e.UserBasketId).HasName("basket_product_pk");
+
+            entity.ToTable("basket_product");
+
+            entity.Property(e => e.UserBasketId)
+                .ValueGeneratedNever()
+                .HasColumnName("user_basket_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.BasketProducts)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("basket_product_product_id_fk");
+
+            entity.HasOne(d => d.UserBasket).WithOne(p => p.BasketProduct)
+                .HasForeignKey<BasketProduct>(d => d.UserBasketId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("basket_product_basket_id_fk");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("order_pk");
 
             entity.ToTable("order");
+
+            entity.HasIndex(e => e.PaymentTypeId, "IX_order_payment_type_id");
+
+            entity.HasIndex(e => e.StatusId, "IX_order_status_id");
+
+            entity.HasIndex(e => e.TypeSaleId, "IX_order_type_sale_id");
+
+            entity.HasIndex(e => e.UserId, "IX_order_user_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BuyerEmail).HasColumnName("buyer_email");
@@ -92,6 +127,10 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
             entity.HasKey(e => e.Id).HasName("order_composition_pk");
 
             entity.ToTable("order_composition");
+
+            entity.HasIndex(e => e.OrderId, "IX_order_composition_order_id");
+
+            entity.HasIndex(e => e.ProductId, "IX_order_composition_product_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
@@ -143,6 +182,8 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
 
             entity.ToTable("product");
 
+            entity.HasIndex(e => e.CategoryId, "IX_product_category_id");
+
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("id");
@@ -172,6 +213,8 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
 
             entity.ToTable("product_photo");
 
+            entity.HasIndex(e => e.ProductId, "IX_product_photo_product_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
@@ -186,6 +229,10 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
             entity.HasKey(e => e.Id).HasName("product_warehouse_pk");
 
             entity.ToTable("product_warehouse");
+
+            entity.HasIndex(e => e.ProductId, "IX_product_warehouse_product_id");
+
+            entity.HasIndex(e => e.WarehouseId, "IX_product_warehouse_warehouse_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Count).HasColumnName("count");
@@ -207,6 +254,10 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
             entity.HasKey(e => e.Id).HasName("report_pk");
 
             entity.ToTable("report");
+
+            entity.HasIndex(e => e.TypeId, "IX_report_type_id");
+
+            entity.HasIndex(e => e.UserId, "IX_report_user_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreateDate)
@@ -251,6 +302,8 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
 
             entity.ToTable("user");
 
+            entity.HasIndex(e => e.UserInfoId, "IX_user_user_info_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.HashPassword).HasColumnName("hash_password");
             entity.Property(e => e.Login).HasColumnName("login");
@@ -261,11 +314,28 @@ public sealed partial class ManagementSystemDatabaseContext : DbContext, IManage
                 .HasConstraintName("user_fk");
         });
 
+        modelBuilder.Entity<UserBasket>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("user_basket_pk");
+
+            entity.ToTable("user_basket");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserBaskets)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("user_basket_user_fk");
+        });
+
         modelBuilder.Entity<UserInfo>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("user_info_pk");
 
             entity.ToTable("user_info");
+
+            entity.HasIndex(e => e.RoleId, "IX_user_info_role_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.FirstName).HasColumnName("first_name");
