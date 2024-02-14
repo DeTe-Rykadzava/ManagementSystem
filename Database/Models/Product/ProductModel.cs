@@ -14,9 +14,7 @@ public class ProductModel
     
     public string CategoryName { get; }
     
-    public List<byte[]> Images { get; }
-    
-    public List<string> B64Images { get; }
+    public List<ProductPhotoModel> Images { get; }
     
     public int CountOnStocks { get; }
 
@@ -29,8 +27,7 @@ public class ProductModel
         Cost = product.Cost;
         CategoryId = product.CategoryId;
         CategoryName = product.Category.CategoryName;
-        Images = product.ProductPhotos.Select(s => s.Image).ToList();
-        B64Images = Images.Select(Convert.ToBase64String).ToList();
+        Images = product.ProductPhotos.Select(s => new ProductPhotoModel(s)).ToList();
         CountOnStocks = product.ProductWarehouses.Sum(s => s.Count);
     }
 }
