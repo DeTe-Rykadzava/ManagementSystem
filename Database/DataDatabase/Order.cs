@@ -16,7 +16,7 @@ public partial class Order
 
     public int StatusId { get; set; }
 
-    public string? BuyerEmail { get; set; }
+    public string BuyerEmail { get; set; }
 
     public int TypeSaleId { get; set; }
 
@@ -26,7 +26,7 @@ public partial class Order
 
     public int PaymentTypeId { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
     public virtual ICollection<OrderComposition> OrderCompositions { get; set; } = new List<OrderComposition>();
 
