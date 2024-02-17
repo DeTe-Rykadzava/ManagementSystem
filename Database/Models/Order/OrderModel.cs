@@ -12,7 +12,18 @@ public class OrderModel
     
     public decimal Cost { get; }
     
-    public int PaymentTypeId { get; }
-    
-    public int UserId { get; }
+    public string PaymentTypeName { get; }
+
+    public string BuyerEmail { get; }
+
+    public OrderModel(DataDatabase.Order order)
+    {
+        Id = order.Id;
+        CreateDate = order.CreateDate;
+        StatusName = order.Status.StatusName;
+        StatusUpdateDate = order.StatusUpdateDate;
+        Cost = order.Cost;
+        PaymentTypeName = order.PaymentType.Type;
+        BuyerEmail = order.BuyerEmail;
+    }
 }
