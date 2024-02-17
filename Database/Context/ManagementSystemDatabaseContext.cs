@@ -58,20 +58,24 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
         modelBuilder.Entity<BasketProduct>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("basket_product_pk");
-            
+
             entity.ToTable("basket_product");
 
+            entity.HasIndex(e => e.ProductId, "IX_basket_product_product_id");
+
+            entity.HasIndex(e => e.UserBasketId, "IX_basket_product_user_basket_id");
+
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.UserBasketId).HasColumnName("user_basket_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.UserBasketId).HasColumnName("user_basket_id");
 
             entity.HasOne(d => d.Product).WithMany(p => p.BasketProducts)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("basket_product_product_id_fk");
 
-            entity.HasOne(d => d.UserBasket).WithOne(p => p.BasketProduct)
-                .HasForeignKey<BasketProduct>(d => d.UserBasketId)
+            entity.HasOne(d => d.UserBasket).WithMany(p => p.BasketProducts)
+                .HasForeignKey(d => d.UserBasketId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("basket_product_basket_id_fk");
         });

@@ -12,7 +12,7 @@ public partial class UserBasket
 
     public int UserId { get; set; }
 
-    public virtual BasketProduct? BasketProduct { get; set; }
+    public virtual ICollection<BasketProduct> BasketProducts { get; set; } = new List<BasketProduct>();
 
     public virtual User User { get; set; } = null!;
 }
