@@ -9,11 +9,11 @@ public abstract class DatabaseSettings
     private const string ConnectionStringFilename = "ConnectionStrings.json";
     private const string ConnectionStringDirectory = "DataDatabase";
 
-    private static DataBaseServer _currentSelectedServer = DatabaseServers.PostgreSql;
+    public static DataBaseServer CurrentSelectedServer { get; private set; } = DatabaseServers.PostgreSql;
 
     public static void ChangeSelectedServer(DataBaseServer server)
     {
-        _currentSelectedServer = server;
+        CurrentSelectedServer = server;
     }
 
     private static async Task<JsonNode?> GetFileConnectionNode()
@@ -38,7 +38,7 @@ public abstract class DatabaseSettings
         {
             return file[$"{DatabaseServers.PostgreSql.NameConnection}"] == null || file[$"{DatabaseServers.Mssql.NameConnection}"] == null 
                 ? throw new NullReferenceException("Connection string is null") 
-                : file[$"{_currentSelectedServer.NameConnection}"]!.ToString();
+                : file[$"{CurrentSelectedServer.NameConnection}"]!.ToString();
         }
         throw new FileNotFoundException("Connection file not found");
     }
@@ -48,7 +48,7 @@ public abstract class DatabaseSettings
         var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
 
         var connectionString = GetConnectionString().GetAwaiter().GetResult();
-        if (_currentSelectedServer == DatabaseServers.PostgreSql)
+        if (CurrentSelectedServer == DatabaseServers.PostgreSql)
             builder.UseNpgsql(connectionString);
         else
             builder.UseSqlServer(connectionString);
@@ -60,7 +60,7 @@ public abstract class DatabaseSettings
         var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
         
         var connectionString = GetConnectionString().GetAwaiter().GetResult();
-        if (_currentSelectedServer == DatabaseServers.PostgreSql)
+        if (CurrentSelectedServer == DatabaseServers.PostgreSql)
             builder.UseNpgsql(connectionString);
         else 
             builder.UseSqlServer(connectionString);

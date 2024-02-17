@@ -10,10 +10,9 @@ namespace Database.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-    public UserRepository(IManagementSystemDatabaseContext context)
-    {
-        _context = context;
-    }
+    private readonly ILogger<UserRepository> _logger;
+    
+    public UserRepository(IManagementSystemDatabaseContext context, ILogger<UserRepository> logger) => (_context, _logger) = (context, logger);
     
     public async Task<UserModel?> GetUserById(int id)
     {
@@ -30,7 +29,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error with get user by Id: {Id}.\nException:\t{Message}.\nInner Exception:\t{InnerException}", id, e.Message, e.InnerException);
             return null;
         }
     }
@@ -53,12 +52,12 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError("Error with get user by login: {Login} password.\nException:\t{Message}.\nInner Exception:\t{InnerException}",  login, e.Message, e.InnerException);
             return null;
         }
     }
 
-    public async Task<bool> CreateUser(UserCreateModel model, ILogger? logger = null)
+    public async Task<bool> CreateUser(UserCreateModel model)
     {
         try
         {
@@ -93,7 +92,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            logger?.LogError("Can not save user in base.\nException:\t{Message}.\nInner Exception:\t{InnerException}",e.Message, e.InnerException);
+            _logger.LogError("Can not save user in base.\nException:\t{Message}.\nInner Exception:\t{InnerException}",e.Message, e.InnerException);
             return false;
         }
     }

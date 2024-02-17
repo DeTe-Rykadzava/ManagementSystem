@@ -9,6 +9,8 @@ public partial class BasketProduct
     {
     }
 
+    public int Id { get; set; }
+    
     public int UserBasketId { get; set; }
 
     public int ProductId { get; set; }

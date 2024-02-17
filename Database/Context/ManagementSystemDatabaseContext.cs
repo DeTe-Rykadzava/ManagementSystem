@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Database.DatabaseCore;
 using Database.DataDatabase;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,13 +57,12 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     {
         modelBuilder.Entity<BasketProduct>(entity =>
         {
-            entity.HasKey(e => e.UserBasketId).HasName("basket_product_pk");
-
+            entity.HasKey(e => e.Id).HasName("basket_product_pk");
+            
             entity.ToTable("basket_product");
 
-            entity.Property(e => e.UserBasketId)
-                .ValueGeneratedNever()
-                .HasColumnName("user_basket_id");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.UserBasketId).HasColumnName("user_basket_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
 
             entity.HasOne(d => d.Product).WithMany(p => p.BasketProducts)
@@ -93,14 +93,33 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BuyerEmail).HasColumnName("buyer_email");
             entity.Property(e => e.Cost).HasColumnName("cost");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("create_date");
+            if (DatabaseSettings.CurrentSelectedServer == DatabaseServers.Mssql)
+            {
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_date");
+            }
+            else
+            {
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("create_date");
+            }
             entity.Property(e => e.PaymentTypeId).HasColumnName("payment_type_id");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
-            entity.Property(e => e.StatusUpdateDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("status_update_date");
+            if (DatabaseSettings.CurrentSelectedServer == DatabaseServers.Mssql)
+            {
+                entity.Property(e => e.StatusUpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("status_update_date");
+            }
+            else
+            {
+                entity.Property(e => e.StatusUpdateDate)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("status_update_date");
+            }
+
             entity.Property(e => e.TypeSaleId).HasColumnName("type_sale_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -260,9 +279,19 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
             entity.HasIndex(e => e.UserId, "IX_report_user_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreateDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("create_date");
+            if (DatabaseSettings.CurrentSelectedServer == DatabaseServers.Mssql)
+            {
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_date");
+            }
+            else
+            {
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("timestamp without time zone")
+                    .HasColumnName("create_date");
+            }
+
             entity.Property(e => e.Info).HasColumnName("info");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
@@ -298,7 +327,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("newtable_pk");
+            entity.HasKey(e => e.Id).HasName("user_pk");
 
             entity.ToTable("user");
 

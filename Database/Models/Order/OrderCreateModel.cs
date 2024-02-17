@@ -17,5 +17,5 @@ public class OrderCreateModel
 
     public int? UserId { get; set; }
 
-    public List<ProductModel> Products { get; set; } = new();
+    public List<OrderProductCreateModel> Products { get; set; } = new();
 }

@@ -9,59 +9,83 @@ namespace Database.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    private readonly IManagementSystemDatabaseContext _databaseContext;
+    private readonly IManagementSystemDatabaseContext _context;
 
-    private ILogger<ProductRepository> _logger;
+    private readonly ILogger<ProductRepository> _logger;
     
-    public ProductRepository(IManagementSystemDatabaseContext databaseContext, ILogger<ProductRepository> logger)=> (_databaseContext, _logger) = (databaseContext, logger);
+    public ProductRepository(IManagementSystemDatabaseContext databaseContext, ILogger<ProductRepository> logger) => (_context, _logger) = (databaseContext, logger);
     
     public async Task<IEnumerable<ProductModel>> GetProducts()
     {
-        return await _databaseContext.Products.Select(s => new ProductModel(s)).ToListAsync();
+        try
+        {
+            return await _context.Products.Select(s => new ProductModel(s)).ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error with get products from database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
+            return Array.Empty<ProductModel>();
+        }
     }
 
     public async Task<ProductModel?> GetProduct(int id)
     {
-        var product = await _databaseContext.Products.FirstOrDefaultAsync(s => s.Id == id);
-        return product == null ? null : new ProductModel(product);
+        try
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(s => s.Id == id);
+            return product == null ? null : new ProductModel(product);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error with get product by Id: {Id} from database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", id, e.Message, e.InnerException);
+            return null;
+        }
     }
 
     public async Task<IEnumerable<ProductModel>?> AddProducts(IEnumerable<ProductCreateModel> products)
     {
-        var returnData = new List<ProductModel>();
-        foreach (var product in products) 
+        try
         {
-            try
+            var returnData = new List<ProductModel>();
+            foreach (var product in products) 
             {
-                var newProduct = new Product
+                try
                 {
-                    Cost = product.Cost,
-                    Description = product.Description,
-                    CategoryId = product.CategoryId,
-                    Title = product.Title
-                };
-                await _databaseContext.Products.AddAsync(newProduct);
-                await _databaseContext.SaveChangesAsync();
-                foreach (var image in product.Images)
-                {
-                    var newProductImage = new ProductPhoto
+                    var newProduct = new Product
                     {
-                        Image = image,
-                        ProductId = newProduct.Id
+                        Cost = product.Cost,
+                        Description = product.Description,
+                        CategoryId = product.CategoryId,
+                        Title = product.Title
                     };
-                    await _databaseContext.ProductPhotos.AddAsync(newProductImage);
-                    await _databaseContext.SaveChangesAsync();
-                }
+                    await _context.Products.AddAsync(newProduct);
+                    await _context.SaveChangesAsync();
+                    foreach (var image in product.Images)
+                    {
+                        var newProductImage = new ProductPhoto
+                        {
+                            Image = image,
+                            ProductId = newProduct.Id
+                        };
+                        await _context.ProductPhotos.AddAsync(newProductImage);
+                        await _context.SaveChangesAsync();
+                    }
 
-                returnData.Add(new ProductModel(newProduct));
+                    returnData.Add(new ProductModel(newProduct));
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error with add product in database.\n{Message}.\n{InnerException}", e.Message, e.InnerException);
+                    return null;
+                }
             }
-            catch (Exception e)
-            {
-                _logger.LogError("Error with add product in database.\n{Message}.\n{InnerException}", e.Message, e.InnerException);
-                return null;
-            }
+            return returnData.Count == 0 ? null: returnData;
         }
-        return returnData.Count == 0 ? null: returnData;
+        catch (Exception e)
+        {
+            _logger.LogError("Error with add products into database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
+            return null;
+        }
     }
 
     public async Task<ProductModel?> AddProduct(ProductCreateModel product)
@@ -75,8 +99,8 @@ public class ProductRepository : IProductRepository
                 CategoryId = product.CategoryId,
                 Title = product.Title
             };
-            await _databaseContext.Products.AddAsync(newProduct);
-            await _databaseContext.SaveChangesAsync();
+            await _context.Products.AddAsync(newProduct);
+            await _context.SaveChangesAsync();
             foreach (var image in product.Images)
             {
                 var newProductImage = new ProductPhoto
@@ -84,8 +108,8 @@ public class ProductRepository : IProductRepository
                     Image = image,
                     ProductId = newProduct.Id
                 };
-                await _databaseContext.ProductPhotos.AddAsync(newProductImage);
-                await _databaseContext.SaveChangesAsync();
+                await _context.ProductPhotos.AddAsync(newProductImage);
+                await _context.SaveChangesAsync();
             }
 
             return new ProductModel(newProduct);
@@ -101,15 +125,15 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var product = await _databaseContext.Products.FirstOrDefaultAsync(x => x.Id == photoModel.ProductId);
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == photoModel.ProductId);
 
             if (product == null)
                 return null;
 
             var photo = new ProductPhoto { ProductId = product.Id, Image = photoModel.Image };
             
-            await _databaseContext.ProductPhotos.AddAsync(photo);
-            await _databaseContext.SaveChangesAsync();
+            await _context.ProductPhotos.AddAsync(photo);
+            await _context.SaveChangesAsync();
             
             return new ProductPhotoModel(photo);
         }
@@ -124,7 +148,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var dbProduct = await _databaseContext.Products
+            var dbProduct = await _context.Products
                 .FirstOrDefaultAsync(x => x.Id == product.Id);
 
             if (dbProduct == null)
@@ -153,7 +177,7 @@ public class ProductRepository : IProductRepository
                 dbProduct.CategoryId = product.CategoryId;
             }
             
-            await _databaseContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             
             return new ProductModel(dbProduct);
         }
@@ -171,13 +195,13 @@ public class ProductRepository : IProductRepository
             var products = new List<Product>();
             foreach (var id in ids)
             {
-                var product = await _databaseContext.Products.FirstOrDefaultAsync(s => s.Id == id);
+                var product = await _context.Products.FirstOrDefaultAsync(s => s.Id == id);
                     if(product!= null)
                         products.Add(product);
             }
 
-            _databaseContext.Products.RemoveRange(products);
-            await _databaseContext.SaveChangesAsync();
+            _context.Products.RemoveRange(products);
+            await _context.SaveChangesAsync();
             return true;
         }
         catch (Exception e)
@@ -191,13 +215,13 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var photo = await _databaseContext.ProductPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
+            var photo = await _context.ProductPhotos.FirstOrDefaultAsync(x => x.Id == photoId);
 
             if (photo == null)
                 return false;
 
-            _databaseContext.ProductPhotos.Remove(photo);
-            await _databaseContext.SaveChangesAsync();
+            _context.ProductPhotos.Remove(photo);
+            await _context.SaveChangesAsync();
             
             return true;
         }
@@ -212,11 +236,11 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var product = await _databaseContext.Products.FirstOrDefaultAsync(s => s.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(s => s.Id == id);
             if (product != null)
             {
-                _databaseContext.Products.Remove(product);
-                await _databaseContext.SaveChangesAsync();
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
                 return true;
             }
             return false;

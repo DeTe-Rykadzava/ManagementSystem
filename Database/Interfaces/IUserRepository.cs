@@ -9,5 +9,5 @@ public interface IUserRepository
 
     public Task<UserModel?> GetUserByLoginPassword(string login, string password);
 
-    public Task<bool> CreateUser(UserCreateModel model, ILogger? logger = null);
+    public Task<bool> CreateUser(UserCreateModel model);
 }

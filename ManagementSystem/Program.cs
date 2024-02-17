@@ -44,7 +44,7 @@ builder.Services.AddAuthenticationCore();
 // PostgreSQL
 DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 // MSSQL 
-// DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
 
 // async Task<ManagementSystemDatabaseContext> GetDbContext(IServiceProvider serviceProvider) => DatabaseSettings.GetDbContext();
 
@@ -65,6 +65,11 @@ builder.Services.AddScoped<RoleService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IRoleRepository, RoleRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IOrderPaymentTypeRepository, OrderPaymentTypeRepository>();
+builder.Services.AddTransient<IOrderSaleTypeRepository, OrderSaleTypeRepository>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IWarehouseRepository, WarehouseRepository>();
+
 
 var app = builder.Build();
 

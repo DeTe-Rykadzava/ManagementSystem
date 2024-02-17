@@ -1,6 +1,17 @@
 @page "/products"
+@using Database.Repositories
+@using Database.Interfaces
 <h3>Products</h3>
 
+<div class="container">
+    <div class="d-flex flex-wrap ">
+        
+    </div>
+</div>
+
 @code {
-    
+
+    [Inject]
+    private IProductRepository Repository { get; set; } = default!;
+
 }

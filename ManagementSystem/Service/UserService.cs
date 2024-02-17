@@ -57,7 +57,7 @@ public class UserService
             if (string.IsNullOrWhiteSpace(model.Login) || string.IsNullOrWhiteSpace(model.Password) ||
                 string.IsNullOrWhiteSpace(model.FirstName) || string.IsNullOrWhiteSpace(model.LastName))
                 return false;
-            return await _userRepository.CreateUser(model.ConvertToDatabaseModel(), _logger);
+            return await _userRepository.CreateUser(model.ConvertToDatabaseModel());
         }
         catch (Exception e)
         {

@@ -4,11 +4,11 @@ namespace Database.Models.Product;
 
 public class ProductPhotoModel
 {
-    public int Id { get; set; }
+    public int Id { get; }
 
-    public byte[] Image { get; set; }
+    public byte[] Image { get; }
 
-    public string B64Image { get; set; }
+    public string B64Image { get; }
 
     public ProductPhotoModel(ProductPhoto photo)
     {

@@ -1,3 +1,4 @@
+using Database.DataDatabase;
 using Database.Models.Product;
 
 namespace Database.Models.Warehouse;
@@ -5,18 +6,21 @@ namespace Database.Models.Warehouse;
 public class WarehouseProductModel
 {
     public int Id { get; }
+
+    public int ProductId { get; }
     
     public string Title { get; }
 
-    public string Description { get; }
-
-    public decimal Cost { get; }
-    
-    public int CategoryId { get; }
-    
-    public string CategoryName { get; }
-    
     public List<ProductPhotoModel> Images { get; }
 
     public int CountOnStock { get; }
+
+    public WarehouseProductModel(ProductWarehouse productWarehouse)
+    {
+        Id = productWarehouse.Id;
+        ProductId = productWarehouse.ProductId;
+        Title = productWarehouse.Product.Title;
+        Images = productWarehouse.Product.ProductPhotos.Select(s => new ProductPhotoModel(s)).ToList();
+        CountOnStock = productWarehouse.Count;
+    }
 }

@@ -8,6 +8,8 @@ public interface IWarehouseRepository
     public Task<WarehouseModel?> GetWarehouseAsync(int id);
     
     public Task<IEnumerable<WarehouseModel>> GetWarehousesAsync();
+
+    public Task<WarehouseModel?> AddWarehouseAsync(string name);
     
     public Task<bool> AppendProductToWarehouseAsync(WarehouseManageProductModel model);
     
