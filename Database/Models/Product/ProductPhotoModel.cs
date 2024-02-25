@@ -8,12 +8,14 @@ public class ProductPhotoModel
 
     public byte[] Image { get; }
 
-    public string B64Image { get; }
-
     public ProductPhotoModel(ProductPhoto photo)
     {
         Id = photo.Id;
         Image = photo.Image;
-        B64Image = Convert.ToBase64String(Image);
+    }
+
+    public string GetB64Image()
+    {
+        return Convert.ToBase64String(Image);
     }
 }

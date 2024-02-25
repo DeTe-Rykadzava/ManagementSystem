@@ -44,7 +44,7 @@ builder.Services.AddAuthenticationCore();
 // PostgreSQL
 DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 // MSSQL 
-DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+// DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
 
 // async Task<ManagementSystemDatabaseContext> GetDbContext(IServiceProvider serviceProvider) => DatabaseSettings.GetDbContext();
 
