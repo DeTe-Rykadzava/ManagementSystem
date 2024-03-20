@@ -17,36 +17,26 @@
 <div class="container">
     <div class="d-flex w-100 flex-column">
         <div class="d-flex p-3">
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-              <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-              </ol>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img class="d-block w-100" src="..." alt="First slide">
+            <div class="slider-container">
+                <div class="slider">
+                    <img src="https://i.postimg.cc/nhsTGkLQ/1.png" alt="Белый пушистый кот">
+                    <img src="https://i.postimg.cc/cLVh9nKk/2.png" alt="Рыжий пушистый кот в джинсах">
+                    <img src="https://i.postimg.cc/4NxWmZkP/3.png" alt="Бело-рыжий пушистый кот">
+                    <img src="https://i.postimg.cc/FFZPrzq1/8.png" alt="Золотистый пушистый кот">
+                    <img src="https://i.postimg.cc/jd3Zf9Rb/7.png" alt="Золотистый пушистый кот">
                 </div>
-                <div class="carousel-item">
-                  <img class="d-block w-100" src="..." alt="Second slide">
-                </div>
-                <div class="carousel-item">
-                  <img class="d-block w-100" src="..." alt="Third slide">
-                </div>
-              </div>
-              <a class="carousel-control-prev" href="products/#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="products/#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
+                <button class="prev-button" aria-label="Посмотреть предыдущий слайд" onclick="showPreviousSlide()">&lt;</button>
+                <button class="next-button" aria-label="Посмотреть следующий слайд" onclick="showNextSlide()">&gt;</button>
             </div>
         </div>
         <div class="d-flex p-3">
-            
+            <B>Product Title</B>
+            <p>CategoryName</p>
+            <p>Description: asdasdasdasdasddddddddddddddddddddddddddddddddd asdasdas  asda s asd asdasd  asd a asd as asd asds aasd as asd as ad asa sasd asd asd asd </p>
+            <p>Cost: 1220 p.</p>
+            <p>CountOnStocks</p>
         </div>
+        <button class="rounded-circle shadow-lg position-absolute top" style="width: 25px;height: 25px;">X</button>
     </div>
     <div class="d-flex flex-wrap justify-content-center gap-4">
         @* @foreach (var product in _products) *@
@@ -108,7 +98,12 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    initSlider();
+</script>
+
 @code {
+    
     [Inject] private IProductRepository ProductRepository { get; set; } = default!;
     private List<ProductModel> _products = new();
 
