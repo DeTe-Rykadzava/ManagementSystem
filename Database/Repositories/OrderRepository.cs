@@ -15,6 +15,8 @@ public class OrderRepository : IOrderRepository
     
     public OrderRepository(IManagementSystemDatabaseContext context, ILogger<OrderRepository> logger) => (_context, _logger) = (context, logger);
     
+    public OrderRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<OrderRepository>(new LoggerFactory()));
+    
     public async Task<OrderModel?> GetByIdAsync(int id)
     {
         try

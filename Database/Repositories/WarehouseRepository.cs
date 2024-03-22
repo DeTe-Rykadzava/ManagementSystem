@@ -19,6 +19,8 @@ public class WarehouseRepository : IWarehouseRepository
         _logger = logger;
     }
     
+    public WarehouseRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<WarehouseRepository>(new LoggerFactory()));
+    
     public async Task<WarehouseModel?> GetWarehouseAsync(int id)
     {
         try

@@ -2,6 +2,7 @@
 using ManagementSystem.ViewModels;
 using ManagementSystem.Views;
 using ReactiveUI;
+using MainView = ManagementSystem.Views.MainView;
 
 namespace ManagementSystem;
 

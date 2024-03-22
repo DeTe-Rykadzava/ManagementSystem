@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels"
+             xmlns:views="clr-namespace:ManagementSystem.Views.Main"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ManagementSystem.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <Grid ColumnDefinitions="Auto *">
+        <views:MainViewNavigation Grid.Column="0"/>
+        <Grid Grid.Column="1" 
+              RowDefinitions="Auto *">
+            <DockPanel Grid.Row="0"
+                       MaxHeight="55">
+                <StackPanel IsVisible="{Binding CurrentUser, 
+                                        Converter={x:Static ObjectConverters.IsNull}}"
+                            Spacing="10"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right">
+                    <Button Content="Sign In"/>
+                    <Button Content="Sign Up"/>
+                </StackPanel>
+                <Button Content="Sign Out" IsVisible="{Binding CurrentUser, 
+                                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+                        DockPanel.Dock="Right"
+                        Margin="5 0"/>
+                <TextBlock Text="{Binding CurrentUser.FullName}"
+                           IsVisible="{Binding CurrentUser,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"/>
+            </DockPanel>
+            <ContentControl Grid.Row="1"
+                            Content="{Binding SubNavigationService.CurrentViewModel}"/>
+        </Grid>
+    </Grid>
+</UserControl>

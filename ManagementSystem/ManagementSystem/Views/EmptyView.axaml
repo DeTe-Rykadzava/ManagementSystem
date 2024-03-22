@@ -1,0 +1,21 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ManagementSystem.Views.EmptyView">
+    <Grid RowDefinitions="* auto">
+        
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="Welcome to ManagementSystem"/>
+        <TextBlock Grid.Row="1"
+                   Background="#9600EFFF"
+                   Padding="2.5"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center"
+                   FontSize="12"
+                   Text="If this is the main page, please notify the administrator"/>
+    </Grid>
+</UserControl>

@@ -2,6 +2,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using ManagementSystem.ViewModels;
+using ManagementSystem.ViewModels.Core;
 
 namespace ManagementSystem;
 

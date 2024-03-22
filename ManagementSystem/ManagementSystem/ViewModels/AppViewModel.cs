@@ -1,57 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Database.Context;
+using Database.Interfaces;
+using Database.Repositories;
+using ManagementSystem.Services;
+using ManagementSystem.ViewModels.Auth;
+using ManagementSystem.ViewModels.Core;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using Splat;
+using ILogger = Splat.ILogger;
 
 namespace ManagementSystem.ViewModels;
 
-public class AppViewModel : ViewModelBase, IScreen
+public class AppViewModel : ViewModelBase
 {
     public string? UrlPathSegment { get; } = "app";
-    public RoutingState Router { get; }
     
-    public ReactiveCommand<Unit, IRoutableViewModel?> GoNext { get; }
+    public NavigationService NavigationService { get; }
 
-    // The command that navigates a user back.
-    public ReactiveCommand<Unit, Unit> GoBack { get; }
     public AppViewModel()
     {
-        Router = new RoutingState();
+        // register database
+        Locator.GetLocator().RegisterConstant(Database.DatabaseCore.DatabaseSettings.GetDbContext);
         
-        Locator.GetLocator().Register<MainViewModel>(() => new MainViewModel(this));
+        // register database services
+        Locator.GetLocator().Register<IUserRepository>(            () => new UserRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IRoleRepository>(            () => new RoleRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IBasketRepository>(          () => new BasketRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IOrderPaymentTypeRepository>(() => new OrderPaymentTypeRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IOrderRepository>(           () => new OrderRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IOrderSaleTypeRepository>(   () => new OrderSaleTypeRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IProductRepository>(         () => new ProductRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+        Locator.GetLocator().Register<IWarehouseRepository>(       () => new WarehouseRepository(Locator.GetLocator().GetService<IManagementSystemDatabaseContext>()!));
+
+        // register services
+        Locator.GetLocator().RegisterConstant(new NavigationService(), typeof(NavigationService), "MainNavManager");
         
-        // Locator.CurrentMutable.Register(() => new MainViewModel(this), typeof(IViewFor<MainViewModel>));
+        // register ViewModels
+        Locator.GetLocator().RegisterConstant<MainViewModel>(new MainViewModel());
+        Locator.GetLocator().Register<LoginViewModel>(() => new LoginViewModel());
+        Locator.GetLocator().Register<RegistrationViewModel>(() => new RegistrationViewModel());
+
+        NavigationService = Locator.GetLocator().GetService<NavigationService>("MainNavManager")!;
         
-        GoNext = ReactiveCommand.CreateFromObservable(() =>
-            {
-                try
-                {
-                    var vm = Locator.GetLocator().GetService<IViewFor<MainViewModel>>();
-                    if (vm == null || vm.ViewModel == null) return null;
-                    return Router.Navigate.Execute(vm.ViewModel);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-                return null;
-            }
-            );
-        // You can also ask the router to go back. One option is to 
-        // execute the default Router.NavigateBack command. Another
-        // option is to define your own command with custom
-        // canExecute condition as such:
-        var canGoBack = this
-            .WhenAnyValue(x => x.Router.NavigationStack.Count)
-            .Select(count => count > 0);
-        GoBack = ReactiveCommand.Create(
-            () =>
-            {
-                Router.NavigateBack.Execute(Unit.Default);
-                return Unit.Default;
-            },
-            canGoBack);
+        Task.Run(LoadMainView);
     }
 
+    private async void LoadMainView()
+    {
+        await NavigationService.NavigateTo<MainViewModel>();
+    }
 }

@@ -12,6 +12,7 @@ public class UserRepository : IUserRepository
     private readonly IManagementSystemDatabaseContext _context;
     private readonly ILogger<UserRepository> _logger;
     
+    public UserRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<UserRepository>(new LoggerFactory()));
     public UserRepository(IManagementSystemDatabaseContext context, ILogger<UserRepository> logger) => (_context, _logger) = (context, logger);
     
     public async Task<UserModel?> GetUserById(int id)

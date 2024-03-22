@@ -55,7 +55,7 @@ public abstract class DatabaseSettings
         return builder.Options;
     }
     
-    public static ManagementSystemDatabaseContext GetDbContext()
+    public static IManagementSystemDatabaseContext GetDbContext()
     {
         var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
         

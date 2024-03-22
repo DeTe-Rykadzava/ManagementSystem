@@ -14,6 +14,7 @@ public class ProductRepository : IProductRepository
     private readonly ILogger<ProductRepository> _logger;
     
     public ProductRepository(IManagementSystemDatabaseContext databaseContext, ILogger<ProductRepository> logger) => (_context, _logger) = (databaseContext, logger);
+    public ProductRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<ProductRepository>(new LoggerFactory()));
     
     public async Task<IEnumerable<ProductModel>> GetProducts()
     {

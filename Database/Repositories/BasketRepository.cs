@@ -15,6 +15,8 @@ public class BasketRepository : IBasketRepository
     public BasketRepository(IManagementSystemDatabaseContext context, ILogger<BasketRepository> logger) =>
         (_context, _logger) = (context, logger);
     
+    public BasketRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<BasketRepository>(new LoggerFactory()));
+    
     public async Task<BasketModel?> Get(int userId)
     {
         try
