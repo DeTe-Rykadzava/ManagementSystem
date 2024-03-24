@@ -1,14 +1,17 @@
 ﻿using System.Reactive;
 using System.Threading.Tasks;
 using ManagementSystem.Services;
+using ManagementSystem.Services.NavigationService;
 
 namespace ManagementSystem.ViewModels.Core;
 
 public abstract class RoutableViewModelBase : ViewModelBase
 {
-    public abstract NavigationService RootNavManager { get; protected set; }
+    public abstract INavigationService RootNavManager { get; protected set; }
 
-    public virtual async Task OnInitialized(NavigationService rootNavManager)
+    public abstract string ViewModelViewPath { get; }
+
+    public virtual void OnInitialized(INavigationService rootNavManager)
     {
         RootNavManager = rootNavManager;
     }

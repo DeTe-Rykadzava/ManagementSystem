@@ -2,11 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace ManagementSystem.Views;
+namespace ManagementSystem.Views.Auth;
 
-public partial class RegistrationView : UserControl
+public partial class SignOut : UserControl
 {
-    public RegistrationView()
+    public SignOut()
     {
         InitializeComponent();
     }

@@ -4,8 +4,6 @@ namespace Database.Models.Product;
 
 public class ProductCreateModel
 {
-    public int Id { get; set; }
-
     [Required(ErrorMessage = "Title is required")]
     [Display(Name = "Title")]
     public string Title { get; set; } = null!;

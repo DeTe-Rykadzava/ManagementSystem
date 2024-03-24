@@ -4,33 +4,44 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels"
              xmlns:views="clr-namespace:ManagementSystem.Views.Main"
+             xmlns:staticData="clr-namespace:ManagementSystem.Assets"
+             xmlns:main="clr-namespace:ManagementSystem.ViewModels.Main"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ManagementSystem.Views.MainView"
-             x:DataType="vm:MainViewModel">
+             x:Class="ManagementSystem.Views.Main.MainView"
+             x:DataType="main:MainViewModel">
     <Grid ColumnDefinitions="Auto *">
         <views:MainViewNavigation Grid.Column="0"/>
         <Grid Grid.Column="1" 
               RowDefinitions="Auto *">
             <DockPanel Grid.Row="0"
                        MaxHeight="55">
-                <StackPanel IsVisible="{Binding CurrentUser, 
+                <StackPanel IsVisible="{Binding UserStorageService.CurrentUser, 
                                         Converter={x:Static ObjectConverters.IsNull}}"
                             Spacing="10"
                             Orientation="Horizontal"
                             DockPanel.Dock="Right">
-                    <Button Content="Sign In"/>
+                    <Button Content="Sign In"
+                            Command="{Binding GoToSignInCommand}"/>
                     <Button Content="Sign Up"/>
                 </StackPanel>
-                <Button Content="Sign Out" IsVisible="{Binding CurrentUser, 
+                <Button Content="Sign Out" IsVisible="{Binding UserStorageService.CurrentUser, 
                                                         Converter={x:Static ObjectConverters.IsNotNull}}"
                         DockPanel.Dock="Right"
                         Margin="5 0"/>
-                <TextBlock Text="{Binding CurrentUser.FullName}"
-                           IsVisible="{Binding CurrentUser,
-                                        Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                <TextBlock Text="{Binding UserStorageService.CurrentUser.FullName, StringFormat='User: \{0}'}"
+                           IsVisible="{Binding UserStorageService.CurrentUser,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center"
+                           FontSize="18"
+                           TextDecorations="Underline"
+                           FontWeight="Bold"
+                           Foreground="#668705"
+                           Margin="0 0 10 0"/>
             </DockPanel>
             <ContentControl Grid.Row="1"
-                            Content="{Binding SubNavigationService.CurrentViewModel}"/>
+                            Content="{Binding SubNavigationService.CurrentViewModel}"
+                            Margin="10"/>
         </Grid>
     </Grid>
 </UserControl>

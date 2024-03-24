@@ -3,25 +3,23 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using ManagementSystem.ViewModels;
 using ManagementSystem.ViewModels.Core;
-using ReactiveUI;
 using Splat;
 
-namespace ManagementSystem.Services;
+namespace ManagementSystem.Services.NavigationService;
 
-public sealed class NavigationService : INotifyPropertyChanged
+public sealed class NavigationService : INavigationService
 {
-    private ViewModelBase? _currentViewModel;
-    public ViewModelBase? CurrentViewModel
+    private RoutableViewModelBase? _currentViewModel;
+    public RoutableViewModelBase? CurrentViewModel
     {
         get => _currentViewModel;
-        set => Set(ref _currentViewModel, value);
+        private set => Set(ref _currentViewModel, value);
     }
 
     private int _currentIndex = 0;
     
-    private List<ViewModelBase> _history = new List<ViewModelBase>();
+    private List<RoutableViewModelBase> _history = new List<RoutableViewModelBase>();
 
     public async Task GoBack()
     {
@@ -29,15 +27,15 @@ public sealed class NavigationService : INotifyPropertyChanged
         if (_currentIndex < 0)
             _currentIndex = 0;
         CurrentViewModel = _history[_currentIndex];
-        if (CurrentViewModel is RoutableViewModelBase routableVM)
-            await routableVM.OnShowed();
+        if (CurrentViewModel != null)
+            await CurrentViewModel.OnShowed();
     }
 
     public async Task NavigateTo<T>()
     {
         var vm = Locator.GetLocator().GetService<T>();
         if(vm == null) return;
-        if (vm is not ViewModelBase viewModel) return;
+        if (vm is not RoutableViewModelBase viewModel) return;
         var historyVm = _history.FirstOrDefault(x => x == viewModel);
         if (historyVm == null)
         {
@@ -47,12 +45,9 @@ public sealed class NavigationService : INotifyPropertyChanged
         }
         CurrentViewModel = historyVm;
         _currentIndex = _history.IndexOf(historyVm);
-        if (CurrentViewModel is RoutableViewModelBase routVm)
-        {
-            await routVm.OnInitialized(this);
-            await routVm.OnShowed();
-        }
-
+        
+        CurrentViewModel.OnInitialized(this); 
+        await CurrentViewModel.OnShowed();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

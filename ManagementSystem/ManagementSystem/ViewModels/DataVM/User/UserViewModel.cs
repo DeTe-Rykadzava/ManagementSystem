@@ -25,11 +25,19 @@ public class UserViewModel : ViewModelBase
 
     public string Role => _user.Role.RoleName;
 
-    public string FullName => $"{LastName} {FirstName} {Patronymic}";
+    public string FullName => 
+        $"{(string.IsNullOrWhiteSpace(LastName) ? "" : $"{LastName} ")}" +
+        $"{(string.IsNullOrWhiteSpace(FirstName)? "" : $"{FirstName} ")}" +
+        $"{(string.IsNullOrWhiteSpace(Patronymic)? "" : $"{Patronymic} ")}";
     
     public UserViewModel(UserModel model)
     {
         _user = model;
+    }
+
+    public UserViewModel()
+    {
+        _user = new UserModel();
     }
 
     public static async Task<UserViewModel?> GetUserById(int id)
@@ -47,7 +55,6 @@ public class UserViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            
             return null;
         }
     }

@@ -12,7 +12,7 @@ public class OrderCreateModel
     [Required(ErrorMessage = "Type of sale cannot be empty")]
     public int TypeSaleId { get; set; }
 
-    [Required(ErrorMessage = "Cost cannot be empty")]
+    [Required(ErrorMessage = "Type of payment cannot be empty")]
     public int PaymentTypeId { get; set; }
 
     public int? UserId { get; set; }

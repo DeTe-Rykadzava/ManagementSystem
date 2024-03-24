@@ -4,9 +4,9 @@ namespace Database.Models.Basket;
 
 public class BasketProductModel
 {
-    public int BasketId { get; set; }
+    public int BasketId { get; }
     
-    public int ProductId { get; set; }
+    public int ProductId { get; }
 
     public BasketProductModel(BasketProduct basketProduct)
     {

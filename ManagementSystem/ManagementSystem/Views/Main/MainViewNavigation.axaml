@@ -2,22 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:ManagementSystem.ViewModels"
+             xmlns:main="clr-namespace:ManagementSystem.ViewModels.Main"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Main.MainViewNavigation"
-             x:DataType="vm:MainViewModel">
-    <Grid RowDefinitions="Auto *"
-          Background="{StaticResource ResourceKey=DarkerColor}"> 
-        <Button Grid.Row="0" 
-                Content="ManagementSystem"
-                Foreground="White"
-                FontStyle="Italic"
-                FontSize="18"
-                Classes="Flat" 
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"/>
-    </Grid>
+             x:DataType="main:MainViewModel">
+    <Panel Background="{StaticResource ResourceKey=DarkerColor}">
+        <Grid RowDefinitions="Auto *" Margin="5">
+            <Button Grid.Row="0" 
+                    Foreground="White"
+                    FontStyle="Italic"
+                    FontSize="18"
+                    Classes="Flat" 
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Command="{Binding GoToHomeCommand}">
+                <DockPanel>
+                    <Image Source="avares://ManagementSystem/Assets/icon-white.png"
+                           Width="32"
+                           Height="32"
+                           DockPanel.Dock="Left"
+                           Margin="5 0"/>
+                    <TextBlock Text="ManagementSystem"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Button>
+        </Grid> 
+    </Panel>
     
 </UserControl>

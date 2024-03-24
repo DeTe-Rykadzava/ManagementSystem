@@ -31,4 +31,9 @@ public class UserModel
         RoleId = user.UserInfo.RoleId;
         Role = user.UserInfo.Role;
     }
+
+    public UserModel()
+    {
+        FirstName = "test";
+    }
 }

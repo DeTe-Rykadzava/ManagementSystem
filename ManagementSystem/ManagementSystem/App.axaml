@@ -10,7 +10,7 @@
              </Application.DataTemplates>
 
              <Application.Styles>
-                 <themes:MaterialTheme BaseTheme="Light" PrimaryColor="Lime" SecondaryColor="Cyan" />
+                 <themes:MaterialTheme BaseTheme="Light" PrimaryColor="LightGreen" SecondaryColor="Green" />
              </Application.Styles>
              
              <Application.Resources>
