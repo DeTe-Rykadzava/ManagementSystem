@@ -1,20 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Database.Interfaces;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.ViewModels.DataVM.Product;
+using Microsoft.Extensions.Logging;
 
 namespace ManagementSystem.Services.DatabaseServices.Services;
 
 public class ProductService : IProductService
 {
-    public Task<IEnumerable<ProductViewModel>> GetProducts()
+    private readonly IProductRepository _productRepository;
+    private readonly ILogger<IProductService> _logger;
+
+    public ProductService(IProductRepository productRepository, ILogger<IProductService> logger) =>
+        (_productRepository, _logger) = (productRepository, logger);
+    
+    public async Task<IEnumerable<ProductViewModel>> GetProducts()
     {
-        throw new System.NotImplementedException();
+        try
+        {
+            var products = await _productRepository.GetProducts();
+            var productVms = products.Select(s => new ProductViewModel(s)).ToList();
+            return productVms;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with get all products.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            return Array.Empty<ProductViewModel>();
+        }
     }
 
-    public Task<ProductViewModel?> GetProduct(int id)
+    public async Task<ProductViewModel?> GetProduct(int id)
     {
-        throw new System.NotImplementedException();
+        try
+        {
+            var product = await _productRepository.GetProduct(id);
+            if (product == null)
+                return null;
+            var productVm = new ProductViewModel(product);
+            return productVm;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with get products by Id: {id}.\nException: {Message}.\nInnerException: {InnerException}", id, e.Message, e.InnerException);
+            return null;
+        }
     }
 
     public Task<ProductViewModel?> AddProduct(ProductCreateViewModel product)

@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using Database.Models.Product;
 using ManagementSystem.ViewModels.Core;
 using ReactiveUI;
 
@@ -41,4 +43,9 @@ public class ProductCreateViewModel : ViewModelBase
     public int CategoryId { get; set; }
     
     public ObservableCollection<byte[]> Images { get; set; }
+
+    public ActionStatusViewModel<ProductCreateModel> ToBaseCreateModel()
+    {
+        return new ActionStatusViewModel<ProductCreateModel>(new List<string>(), null);
+    }
 }
