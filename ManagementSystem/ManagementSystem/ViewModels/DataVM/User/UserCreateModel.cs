@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.ComponentModel.DataAnnotations;
 using Database.Models.UserModels;
 using ManagementSystem.Assets;
@@ -9,7 +11,6 @@ namespace ManagementSystem.ViewModels.DataVM.User;
 
 public class UserCreateViewModel : ViewModelBase
 {
-
     private string _login = string.Empty;
     
     [Required]
@@ -55,6 +56,29 @@ public class UserCreateViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _patronymic, value);
     }
 
+    private bool _isValid = default;
+    public bool IsValid
+    {
+        get => _isValid;
+        set => this.RaiseAndSetIfChanged(ref _isValid, value);
+    }
+
+    public UserCreateViewModel()
+    {
+        this.WhenAnyValue(
+                x => x.Login,
+                x => x.Password,
+                x => x.FirstName,
+                x => x.LastName)
+            .Subscribe(param =>
+            {
+                var context = new ValidationContext(this);
+                var results = new List<ValidationResult>();
+
+                IsValid = Validator.TryValidateObject(this, context, results, true);
+            });
+    }
+    
     public UserCreateModel ToBaseModel()
     {
         return new UserCreateModel
@@ -67,5 +91,4 @@ public class UserCreateViewModel : ViewModelBase
             RoleId = StaticResources.ClientRoleId
         };
     }
-
 }

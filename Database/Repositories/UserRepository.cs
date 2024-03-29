@@ -10,10 +10,9 @@ namespace Database.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-    private readonly ILogger<UserRepository> _logger;
+    private readonly ILogger<IUserRepository> _logger;
     
-    public UserRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<UserRepository>(new LoggerFactory()));
-    public UserRepository(IManagementSystemDatabaseContext context, ILogger<UserRepository> logger) => (_context, _logger) = (context, logger);
+    public UserRepository(IManagementSystemDatabaseContext context, ILogger<IUserRepository> logger) => (_context, _logger) = (context, logger);
     
     public async Task<UserModel?> GetUserById(int id)
     {
@@ -25,7 +24,11 @@ public class UserRepository : IUserRepository
                 .Include(i => i.UserInfo)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
+            {
+                _logger.LogWarning("User with Id: {Id} not founded", id);
                 return null;
+            }
+
             return new UserModel(user);
         }
         catch (Exception e)

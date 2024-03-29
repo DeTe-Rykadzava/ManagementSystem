@@ -10,6 +10,8 @@ namespace ManagementSystem.Services.NavigationService;
 
 public sealed class NavigationService : INavigationService
 {
+    private readonly IDependencyResolver _locator;
+    
     private RoutableViewModelBase? _currentViewModel;
     public RoutableViewModelBase? CurrentViewModel
     {
@@ -17,12 +19,19 @@ public sealed class NavigationService : INavigationService
         private set => Set(ref _currentViewModel, value);
     }
 
-    private int _currentIndex = 0;
+    private int _currentIndex = -1;
     
-    private List<RoutableViewModelBase> _history = new List<RoutableViewModelBase>();
+    private readonly List<RoutableViewModelBase> _history = new List<RoutableViewModelBase>();
 
+    public NavigationService(IDependencyResolver locator)
+    {
+        _locator = locator;
+    }
+    
     public async Task GoBack()
     {
+        if(_currentIndex != 0)
+            _history.RemoveAt(_currentIndex);
         _currentIndex -= 1;
         if (_currentIndex < 0)
             _currentIndex = 0;
@@ -31,22 +40,31 @@ public sealed class NavigationService : INavigationService
             await CurrentViewModel.OnShowed();
     }
 
-    public async Task NavigateTo<T>()
+    public async Task NavigateTo<T>(bool navigateToNew = false)
     {
-        var vm = Locator.GetLocator().GetService<T>();
+        var vm = _locator.GetService<T>();
         if(vm == null) return;
         if (vm is not RoutableViewModelBase viewModel) return;
-        var historyVm = _history.FirstOrDefault(x => x == viewModel);
-        if (historyVm == null)
+        var historyVm = _history.FirstOrDefault(x => x.ViewModelViewPath == viewModel.ViewModelViewPath);
+        _currentIndex += 1;
+        if (historyVm == null || navigateToNew)
         {
-            _history.Add(viewModel);
-            historyVm = viewModel;
-            _currentIndex = _history.Count - 1;
+            if (historyVm != null)
+            {
+                _history.Remove(historyVm);
+                _currentIndex -= 1;
+            }
+            _history.Insert(_currentIndex, viewModel);
+            CurrentViewModel = viewModel;
+            CurrentViewModel.OnInitialized(this); 
         }
-        CurrentViewModel = historyVm;
-        _currentIndex = _history.IndexOf(historyVm);
-        
-        CurrentViewModel.OnInitialized(this); 
+        else
+        {
+            _history.Remove(historyVm);
+            _currentIndex -= 1;
+            _history.Insert(_currentIndex, historyVm);
+            CurrentViewModel = historyVm;
+        }
         await CurrentViewModel.OnShowed();
     }
 

@@ -2,6 +2,94 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Auth"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ManagementSystem.Views.Auth.SignUpView">
+             x:Class="ManagementSystem.Views.Auth.SignUpView"
+             x:DataType="vm:SignUpViewModel">
+    <Panel Background="{StaticResource ResourceKey=DarkerColor}">
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Padding="10"
+                CornerRadius="12"
+                Background="{StaticResource ResourceKey=SaladColor}"
+                MinWidth="250">
+            <Grid RowDefinitions="Auto * Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Sign Up"
+                           Foreground="{StaticResource DarkerColor}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="5"/>
+                <StackPanel Grid.Row="1"
+                            Spacing="10"
+                            Orientation="Vertical"
+                            Margin="5 10 5 20">
+                    <StackPanel Spacing="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="lastname*"
+                                   FontSize="12"/>
+                        <TextBox Watermark="Ivanov"
+                                 FontSize="14"
+                                 Text="{Binding UserCreateModel.LastName}"/>
+                    </StackPanel>
+                    <StackPanel Spacing="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="firstname*"
+                                   FontSize="12"/>
+                        <TextBox Watermark="Ivan"
+                                 FontSize="14"
+                                 Text="{Binding UserCreateModel.FirstName}"/>
+                    </StackPanel>
+                    <StackPanel Spacing="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="patronymic"
+                                   FontSize="12"/>
+                        <TextBox Watermark="Ivanovich"
+                                 FontSize="14"
+                                 Text="{Binding UserCreateModel.Patronymic}"/>
+                    </StackPanel>
+                    <StackPanel Spacing="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="login*"
+                                   FontSize="12"/>
+                        <TextBox Watermark="example@mail.com"
+                                 FontSize="14"
+                                 Text="{Binding UserCreateModel.Login}"/>
+                    </StackPanel>
+                    <StackPanel Spacing="0"
+                                Orientation="Vertical">
+                        <TextBlock Text="password*"
+                                   FontSize="12"/>
+                        <TextBox Watermark="password"
+                                 FontSize="14"
+                                 Text="{Binding UserCreateModel.Password}"/>
+                    </StackPanel>
+                </StackPanel>
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="* 2 Auto">
+                    <Button Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Sign Up"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Padding="20 5"
+                            Foreground="{StaticResource DarkerColor}"
+                            Command="{Binding SignUpCommand}"/>
+                    <Panel Grid.Column="1"
+                           Background="{StaticResource DarkerColor}"/>
+                    <Button Grid.Column="2" 
+                            Content="Back"
+                            Classes="Flat"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="5 0"
+                            Foreground="{StaticResource DarkerColor}"
+                            Command="{Binding GoToBackCommand}"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Panel>
 </UserControl>

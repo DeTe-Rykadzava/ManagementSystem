@@ -31,6 +31,10 @@ public class MainViewModel : RoutableViewModelBase
     
     public MainViewModel(IUserStorageService userStorageService)
     {
+        UserStorageService = userStorageService;
+        Locator.GetLocator().RegisterConstant(new NavigationService(Locator.GetLocator()), typeof(INavigationService), "SubNavManager");
+        SubNavigationService = Locator.GetLocator().GetService<INavigationService>("SubNavManager")!;
+        
         // sign commands
         GoToSignInCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -51,9 +55,6 @@ public class MainViewModel : RoutableViewModelBase
             await SubNavigationService.NavigateTo<HomeViewModel>();
         });
         
-        UserStorageService = userStorageService;
-        Locator.GetLocator().RegisterConstant(new NavigationService(), typeof(INavigationService), "SubNavManager");
-        SubNavigationService = Locator.GetLocator().GetService<INavigationService>("SubNavManager")!;
 
         GoToHomeCommand.Execute(null);
     }

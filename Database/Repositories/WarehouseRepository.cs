@@ -11,15 +11,10 @@ public class WarehouseRepository : IWarehouseRepository
 {
     private IManagementSystemDatabaseContext _context;
 
-    private ILogger<WarehouseRepository> _logger;
-    
-    public WarehouseRepository(IManagementSystemDatabaseContext context, ILogger<WarehouseRepository> logger)
-    {
-        _context = context;
-        _logger = logger;
-    }
-    
-    public WarehouseRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<WarehouseRepository>(new LoggerFactory()));
+    private ILogger<IWarehouseRepository> _logger;
+
+    public WarehouseRepository(IManagementSystemDatabaseContext context, ILogger<IWarehouseRepository> logger) =>
+        (_context, _logger) = (context, logger);
     
     public async Task<WarehouseModel?> GetWarehouseAsync(int id)
     {

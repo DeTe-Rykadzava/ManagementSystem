@@ -22,12 +22,14 @@
                             DockPanel.Dock="Right">
                     <Button Content="Sign In"
                             Command="{Binding GoToSignInCommand}"/>
-                    <Button Content="Sign Up"/>
+                    <Button Content="Sign Up"
+                            Command="{Binding GoToSignUpCommand}"/>
                 </StackPanel>
                 <Button Content="Sign Out" IsVisible="{Binding UserStorageService.CurrentUser, 
                                                         Converter={x:Static ObjectConverters.IsNotNull}}"
                         DockPanel.Dock="Right"
-                        Margin="5 0"/>
+                        Margin="5 0"
+                        Command="{Binding GoToSignOutCommand}"/>
                 <TextBlock Text="{Binding UserStorageService.CurrentUser.FullName, StringFormat='User: \{0}'}"
                            IsVisible="{Binding UserStorageService.CurrentUser,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"

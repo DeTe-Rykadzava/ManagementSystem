@@ -30,6 +30,20 @@
                                VerticalAlignment="Center"/>
                 </DockPanel>
             </Button>
+            <StackPanel Grid.Row="1"
+                        Margin="10"
+                        Spacing="10"
+                        Orientation="Vertical">
+                <Button Content="Products"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"/>
+                <Button Content="Basket"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"/>
+                <Button Content="Orders"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"/>
+            </StackPanel>
         </Grid> 
     </Panel>
     

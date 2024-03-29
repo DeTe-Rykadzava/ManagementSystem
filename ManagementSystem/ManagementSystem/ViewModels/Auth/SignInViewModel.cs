@@ -7,6 +7,7 @@ using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Core;
+using ManagementSystem.ViewModels.Main;
 using ReactiveUI;
 
 namespace ManagementSystem.ViewModels.Auth;
@@ -16,15 +17,22 @@ public class SignInViewModel : RoutableViewModelBase
     public override string ViewModelViewPath { get; } = "signIn";
     public override INavigationService RootNavManager { get; protected set; } = null!;
     
-    // Services
-    public IUserStorageService UserStorageService { get; }
-    public IUserService UserRepository { get; }
+    // services
+    private readonly IUserStorageService _userStorageService;
+    private readonly IUserService _userService;
     
-    // Commands
+    // commands
     public ICommand GoToBackCommand { get; }
     public ICommand SignInCommand { get; }
     
     // fields
+    private string _status = string.Empty;
+    public string Status
+    {
+        get => _status;
+        private set => this.RaiseAndSetIfChanged(ref _status, value);
+    }
+
     private string _login = string.Empty;
     [Required(AllowEmptyStrings = false, ErrorMessage = "The login is required")]
     [EmailAddress(ErrorMessage = "The login must be an email address")]
@@ -44,8 +52,8 @@ public class SignInViewModel : RoutableViewModelBase
     
     public SignInViewModel(IUserStorageService userStorageService, IUserService userService)
     {
-        UserStorageService = userStorageService;
-        UserRepository = userService;
+        _userStorageService = userStorageService;
+        _userService = userService;
         GoToBackCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await RootNavManager.GoBack();
@@ -59,8 +67,15 @@ public class SignInViewModel : RoutableViewModelBase
         {
             try
             {
-                var user = await UserRepository.GetUserByLoginPassword(Login, Password);
-                
+                Status = "";
+                var user = await _userService.GetUserByLoginPassword(Login, Password);
+                if (user == null)
+                {
+                    Status = "User is not founded, check input data";
+                    return;
+                }
+                _userStorageService.CurrentUser = user;
+                await RootNavManager!.NavigateTo<MainViewModel>();
             }
             catch (Exception)
             {

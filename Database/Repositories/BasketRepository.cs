@@ -10,12 +10,10 @@ namespace Database.Repositories;
 public class BasketRepository : IBasketRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-    private readonly ILogger<BasketRepository> _logger;
+    private readonly ILogger<IBasketRepository> _logger;
 
-    public BasketRepository(IManagementSystemDatabaseContext context, ILogger<BasketRepository> logger) =>
+    public BasketRepository(IManagementSystemDatabaseContext context, ILogger<IBasketRepository> logger) =>
         (_context, _logger) = (context, logger);
-    
-    public BasketRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<BasketRepository>(new LoggerFactory()));
     
     public async Task<BasketModel?> Get(int userId)
     {

@@ -8,5 +8,5 @@ public interface INavigationService : INotifyPropertyChanged
 {
     public RoutableViewModelBase? CurrentViewModel { get; }
     public Task GoBack();
-    public Task NavigateTo<T>();
+    public Task NavigateTo<T>(bool navigateToNew = false);
 }

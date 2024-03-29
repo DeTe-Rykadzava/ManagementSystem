@@ -9,12 +9,10 @@ namespace Database.Repositories;
 public class OrderPaymentTypeRepository : IOrderPaymentTypeRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-    private readonly ILogger<OrderPaymentTypeRepository> _logger;
+    private readonly ILogger<IOrderPaymentTypeRepository> _logger;
 
-    public OrderPaymentTypeRepository(IManagementSystemDatabaseContext context, ILogger<OrderPaymentTypeRepository> logger) =>
+    public OrderPaymentTypeRepository(IManagementSystemDatabaseContext context, ILogger<IOrderPaymentTypeRepository> logger) =>
         (_context, _logger) = (context, logger);
-    
-    public OrderPaymentTypeRepository(IManagementSystemDatabaseContext context) => (_context, _logger) = (context, new Logger<OrderPaymentTypeRepository>(new LoggerFactory()));
     
     public async Task<IEnumerable<OrderPaymentTypeModel>> GetAllAsync()
     {

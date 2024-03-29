@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace ManagementSystem.Views.Auth;
 
-public partial class SignOut : UserControl
+public partial class SignOutView : UserControl
 {
-    public SignOut()
+    public SignOutView()
     {
         InitializeComponent();
     }
