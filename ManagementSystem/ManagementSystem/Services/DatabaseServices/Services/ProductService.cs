@@ -14,7 +14,7 @@ public class ProductService : IProductService
     private readonly IProductRepository _productRepository;
     private readonly ILogger<IProductService> _logger;
 
-    public ProductService(IProductRepository productRepository, ILogger<IProductService> logger) =>
+    public ProductService(IProductRepository productRepository, ILogger<ProductService> logger) =>
         (_productRepository, _logger) = (productRepository, logger);
     
     public async Task<IEnumerable<ProductViewModel>> GetProducts()
@@ -51,9 +51,17 @@ public class ProductService : IProductService
         }
     }
 
-    public Task<ProductViewModel?> AddProduct(ProductCreateViewModel product)
+    public async Task<ProductViewModel?> AddProduct(ProductCreateViewModel product)
     {
-        throw new System.NotImplementedException();
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return null;
     }
 
     public Task<ProductPhotoViewModel?> AddProductPhoto(int productId, byte[] image)

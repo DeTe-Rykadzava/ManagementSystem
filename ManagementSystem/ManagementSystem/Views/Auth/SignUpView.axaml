@@ -13,7 +13,7 @@
                 CornerRadius="12"
                 Background="{StaticResource ResourceKey=SaladColor}"
                 MinWidth="250">
-            <Grid RowDefinitions="Auto * Auto">
+            <Grid RowDefinitions="Auto Auto * Auto">
                 <TextBlock Grid.Row="0"
                            Text="Sign Up"
                            Foreground="{StaticResource DarkerColor}"
@@ -22,7 +22,15 @@
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            Margin="5"/>
-                <StackPanel Grid.Row="1"
+                <Border Grid.Row="1"
+                        Background="IndianRed"
+                        IsVisible="{Binding Status, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Padding="15">
+                    <TextBlock HorizontalAlignment="Stretch" 
+                               Text="{Binding Status}"
+                               Foreground="White"/>
+                </Border>
+                <StackPanel Grid.Row="2"
                             Spacing="10"
                             Orientation="Vertical"
                             Margin="5 10 5 20">
@@ -67,7 +75,7 @@
                                  Text="{Binding UserCreateModel.Password}"/>
                     </StackPanel>
                 </StackPanel>
-                <Grid Grid.Row="2"
+                <Grid Grid.Row="3"
                       ColumnDefinitions="* 2 Auto">
                     <Button Grid.Column="0"
                             HorizontalAlignment="Center"

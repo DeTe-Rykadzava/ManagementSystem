@@ -10,10 +10,9 @@ namespace Database.Repositories;
 public class OrderRepository : IOrderRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-
     private readonly ILogger<IOrderRepository> _logger;
     
-    public OrderRepository(IManagementSystemDatabaseContext context, ILogger<IOrderRepository> logger) => (_context, _logger) = (context, logger);
+    public OrderRepository(IManagementSystemDatabaseContext context, ILogger<OrderRepository> logger) => (_context, _logger) = (context, logger);
     
     public async Task<OrderModel?> GetByIdAsync(int id)
     {

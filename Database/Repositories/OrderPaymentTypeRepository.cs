@@ -11,7 +11,7 @@ public class OrderPaymentTypeRepository : IOrderPaymentTypeRepository
     private readonly IManagementSystemDatabaseContext _context;
     private readonly ILogger<IOrderPaymentTypeRepository> _logger;
 
-    public OrderPaymentTypeRepository(IManagementSystemDatabaseContext context, ILogger<IOrderPaymentTypeRepository> logger) =>
+    public OrderPaymentTypeRepository(IManagementSystemDatabaseContext context, ILogger<OrderPaymentTypeRepository> logger) =>
         (_context, _logger) = (context, logger);
     
     public async Task<IEnumerable<OrderPaymentTypeModel>> GetAllAsync()

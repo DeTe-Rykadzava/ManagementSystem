@@ -12,7 +12,7 @@ public class BasketRepository : IBasketRepository
     private readonly IManagementSystemDatabaseContext _context;
     private readonly ILogger<IBasketRepository> _logger;
 
-    public BasketRepository(IManagementSystemDatabaseContext context, ILogger<IBasketRepository> logger) =>
+    public BasketRepository(IManagementSystemDatabaseContext context, ILogger<BasketRepository> logger) =>
         (_context, _logger) = (context, logger);
     
     public async Task<BasketModel?> Get(int userId)

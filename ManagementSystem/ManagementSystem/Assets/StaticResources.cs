@@ -14,7 +14,5 @@ public class StaticResources
     public static string AppIconResourceLink { get; } = "avares://ManagementSystem/Assets/icon.png";
 
     public static int ClientRoleId { get; set; } = 1;
-    
-    public static UserViewModel? CurrentUser { get; set; }
 
 }

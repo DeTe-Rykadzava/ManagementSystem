@@ -11,7 +11,7 @@ public class RoleRepository : IRoleRepository
     private readonly IManagementSystemDatabaseContext _context;
     private readonly ILogger<IRoleRepository> _logger;
     
-    public RoleRepository(IManagementSystemDatabaseContext context, ILogger<IRoleRepository> logger) => (_context, _logger) = (context, logger);
+    public RoleRepository(IManagementSystemDatabaseContext context, ILogger<RoleRepository> logger) => (_context, _logger) = (context, logger);
     
     public async Task<IEnumerable<RoleModel>> GetAll()
     {

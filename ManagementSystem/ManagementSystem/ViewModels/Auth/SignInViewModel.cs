@@ -26,8 +26,8 @@ public class SignInViewModel : RoutableViewModelBase
     public ICommand SignInCommand { get; }
     
     // fields
-    private string _status = string.Empty;
-    public string Status
+    private string? _status = null;
+    public string? Status
     {
         get => _status;
         private set => this.RaiseAndSetIfChanged(ref _status, value);
@@ -67,14 +67,14 @@ public class SignInViewModel : RoutableViewModelBase
         {
             try
             {
-                Status = "";
-                var user = await _userService.GetUserByLoginPassword(Login, Password);
-                if (user == null)
+                Status = null;
+                var userResult = await _userService.GetUserByLoginPassword(Login, Password);
+                if (!userResult.IsSuccess || userResult.Value == null)
                 {
-                    Status = "User is not founded, check input data";
+                    Status = $"User not founded, purpose:\n\t* {string.Join("\n\t* ", userResult.Statuses)}";
                     return;
                 }
-                _userStorageService.CurrentUser = user;
+                _userStorageService.CurrentUser = userResult.Value;
                 await RootNavManager!.NavigateTo<MainViewModel>();
             }
             catch (Exception)

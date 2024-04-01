@@ -25,8 +25,8 @@ public class SignUpViewModel : RoutableViewModelBase
     public override INavigationService RootNavManager { get; protected set; } = null!;
 
     // fields
-    private string _status = string.Empty;
-    public string Status
+    private string? _status = null;
+    public string? Status
     {
         get => _status;
         private set => this.RaiseAndSetIfChanged(ref _status, value);
@@ -47,21 +47,18 @@ public class SignUpViewModel : RoutableViewModelBase
         var canSignUp = this.WhenAnyValue(x => x.UserCreateModel.IsValid).DistinctUntilChanged();
         SignUpCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            Status = "";
+            Status = null;
             var createResult = await _userService.CreateUser(UserCreateModel);
-            if (createResult == false)
+            if (!createResult.IsSuccess || createResult.Value == null)
             {
-                Status = "Cannot create user, check value, may be user with current login already exist";
-                var box = MessageBoxManager.GetMessageBoxStandard("SignUpErr", "sorry, but the user was not registered",
+                Status = $"Cannot create user, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}";
+                var box = MessageBoxManager.GetMessageBoxStandard("SignUpErr", $"sorry, but the user was not registered, purpose:{string.Join("\n\t* ", createResult.Statuses)}",
                     ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner);
                 var result = await box.ShowAsync();
                 return;
             }
 
-            var user = await _userService.GetUserByLoginPassword(UserCreateModel.Login, UserCreateModel.Password);
-            if(user == null)
-                return;
-            _userStorageService.CurrentUser = user;
+            _userStorageService.CurrentUser = createResult.Value;
             await RootNavManager.NavigateTo<MainViewModel>();
         }, canSignUp);
         GoToBackCommand = ReactiveCommand.CreateFromTask(async () =>

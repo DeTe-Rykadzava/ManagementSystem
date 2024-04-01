@@ -11,7 +11,7 @@ public class OrderSaleTypeRepository : IOrderSaleTypeRepository
     private readonly IManagementSystemDatabaseContext _context;
     private readonly ILogger<IOrderSaleTypeRepository> _logger;
 
-    public OrderSaleTypeRepository(IManagementSystemDatabaseContext context, ILogger<IOrderSaleTypeRepository> logger) =>
+    public OrderSaleTypeRepository(IManagementSystemDatabaseContext context, ILogger<OrderSaleTypeRepository> logger) =>
         (_context, _logger) = (context, logger);
     
     public async Task<IEnumerable<OrderSaleTypeModel>> GetAllAsync()

@@ -10,10 +10,9 @@ namespace Database.Repositories;
 public class ProductRepository : IProductRepository
 {
     private readonly IManagementSystemDatabaseContext _context;
-
     private readonly ILogger<IProductRepository> _logger;
 
-    public ProductRepository(IManagementSystemDatabaseContext context, ILogger<IProductRepository> logger) =>
+    public ProductRepository(IManagementSystemDatabaseContext context, ILogger<ProductRepository> logger) =>
         (_context, _logger) = (context, logger);
     
     public async Task<IEnumerable<ProductModel>> GetProducts()

@@ -9,11 +9,10 @@ namespace Database.Repositories;
 
 public class WarehouseRepository : IWarehouseRepository
 {
-    private IManagementSystemDatabaseContext _context;
+    private readonly IManagementSystemDatabaseContext _context;
+    private readonly ILogger<IWarehouseRepository> _logger;
 
-    private ILogger<IWarehouseRepository> _logger;
-
-    public WarehouseRepository(IManagementSystemDatabaseContext context, ILogger<IWarehouseRepository> logger) =>
+    public WarehouseRepository(IManagementSystemDatabaseContext context, ILogger<WarehouseRepository> logger) =>
         (_context, _logger) = (context, logger);
     
     public async Task<WarehouseModel?> GetWarehouseAsync(int id)

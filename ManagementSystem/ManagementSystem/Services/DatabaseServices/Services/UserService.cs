@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Database.Interfaces;
+using Database.Models.Core;
+using DynamicData;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
+using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.User;
 using Microsoft.Extensions.Logging;
 
@@ -12,50 +15,94 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly ILogger<IUserService> _logger;
 
-    public UserService(IUserRepository userRepository, ILogger<IUserService> logger) =>
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger) =>
         (_userRepository, _logger) = (userRepository, logger);
     
-    public async Task<UserViewModel?> GetUserById(int id)
+    public async Task<ActionResultViewModel<UserViewModel>> GetUserById(int id)
     {
+        var result = new ActionResultViewModel<UserViewModel>();
         try
         {
-            var user = await _userRepository.GetUserById(id);
-            return user == null ? null : new UserViewModel(user);
+            var userResult = await _userRepository.GetUserById(id);
+            if (!userResult.Success || userResult.Value == null)
+            {
+                result.Statuses.Add("Failed get data");
+                result.Statuses.Add("User not found");
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.Value = new UserViewModel(userResult.Value);
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Error with get user by Id: {Id}.\nException:\t{Message}.\nInner Exception:\t{InnerException}", id, e.Message, e.InnerException);
-            return null;
+            result.Statuses.Add("Failed get data");
+            result.Statuses.Add("Application Error");
         }
+
+        return result;
     }
 
-    public async Task<UserViewModel?> GetUserByLoginPassword(string login, string password)
+    public async Task<ActionResultViewModel<UserViewModel>> GetUserByLoginPassword(string login, string password)
     {
+        var result = new ActionResultViewModel<UserViewModel>();
         try
         {
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
-                return null;
-            var user = await _userRepository.GetUserByLoginPassword(login, password);
-            return user == null ? null : new UserViewModel(user);
+            {
+                result.Statuses.Add("Failed get data");
+                result.Statuses.Add("Input data not valid");
+            }
+            else
+            {
+                var userResult = await _userRepository.GetUserByLoginPassword(login, password);
+                if (!userResult.Success || userResult.Value == null)
+                {
+                    result.Statuses.Add("Failed get data");
+                    result.Statuses.Add("User not found");
+                }
+                else
+                {
+                    result.IsSuccess = true;
+                    result.Value = new UserViewModel(userResult.Value);
+                }
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Error with get user by login and password.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
-            return null;
+            result.Statuses.Add("Failed get data");
+            result.Statuses.Add("Application error");
         }
+        return result;
     }
 
-    public async Task<bool> CreateUser(UserCreateViewModel model)
+    public async Task<ActionResultViewModel<UserViewModel>> CreateUser(UserCreateViewModel model)
     {
+        var result = new ActionResultViewModel<UserViewModel>();
         try
         {
-            var result = await _userRepository.CreateUser(model.ToBaseModel());
-            return result;
+            var userResult = await _userRepository.CreateUser(model.ToBaseModel());
+            if (!userResult.Success || userResult.Value == null)
+            {
+                result.Statuses.Add("Failed add data");
+                result.Statuses.Add("User not created");
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.Value = new UserViewModel(userResult.Value);
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Can not save user in base.\nException:\t{Message}.\nInner Exception:\t{InnerException}",e.Message, e.InnerException);
-            return false;
+            result.Statuses.Add("Failed get data");
+            result.Statuses.Add("Application error");
         }
+
+        return result;
     }
 }

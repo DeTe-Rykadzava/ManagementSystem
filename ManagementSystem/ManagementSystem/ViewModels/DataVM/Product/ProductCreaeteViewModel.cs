@@ -44,8 +44,8 @@ public class ProductCreateViewModel : ViewModelBase
     
     public ObservableCollection<byte[]> Images { get; set; }
 
-    public ActionStatusViewModel<ProductCreateModel> ToBaseCreateModel()
+    public ActionResultViewModel<ProductCreateModel> ToBaseCreateModel()
     {
-        return new ActionStatusViewModel<ProductCreateModel>(new List<string>(), null);
+        return new ActionResultViewModel<ProductCreateModel>(new List<string>(), null);
     }
 }
