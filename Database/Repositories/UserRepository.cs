@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
             }
             else
             {
-                result.Success = true;
+                result.IsSuccess = true;
                 result.ResultTypes.Add(ActionResultType.SuccessGet);
                 result.Value = new UserModel(user);
             }
@@ -71,7 +71,7 @@ public class UserRepository : IUserRepository
                 }
                 else
                 {
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.ResultTypes.Add(ActionResultType.SuccessGet);
                     result.Value = new UserModel(user);
                 }
@@ -125,7 +125,7 @@ public class UserRepository : IUserRepository
                     await _context.SaveChangesAsync();
                     
                     result.Value = new UserModel(user);
-                    result.Success = true;
+                    result.IsSuccess = true;
                     result.ResultTypes.Add(ActionResultType.SuccessAdd);
                     result.ResultTypes.Add(ActionResultType.SuccessSave);
                 }

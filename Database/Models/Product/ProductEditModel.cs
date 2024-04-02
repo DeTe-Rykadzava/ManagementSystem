@@ -5,13 +5,13 @@ namespace Database.Models.Product;
 public class ProductEditModel
 {
     [Required]
-    public int Id { get; }
-    
-    [Required]
-    public string Title { get; set; }
+    public int Id { get; set; }
 
     [Required]
-    public string Description { get; set; }
+    public string Title { get; set; } = string.Empty;
+
+    [Required]
+    public string Description { get; set; } = string.Empty;
 
     [Required]
     public decimal Cost { get; set; }
@@ -27,4 +27,6 @@ public class ProductEditModel
         Cost = product.Cost;
         CategoryId = product.CategoryId;
     }
+
+    public ProductEditModel() { }
 }

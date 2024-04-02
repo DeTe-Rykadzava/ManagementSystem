@@ -24,7 +24,7 @@ public class UserService : IUserService
         try
         {
             var userResult = await _userRepository.GetUserById(id);
-            if (!userResult.Success || userResult.Value == null)
+            if (!userResult.IsSuccess || userResult.Value == null)
             {
                 result.Statuses.Add("Failed get data");
                 result.Statuses.Add("User not found");
@@ -58,7 +58,7 @@ public class UserService : IUserService
             else
             {
                 var userResult = await _userRepository.GetUserByLoginPassword(login, password);
-                if (!userResult.Success || userResult.Value == null)
+                if (!userResult.IsSuccess || userResult.Value == null)
                 {
                     result.Statuses.Add("Failed get data");
                     result.Statuses.Add("User not found");
@@ -85,7 +85,7 @@ public class UserService : IUserService
         try
         {
             var userResult = await _userRepository.CreateUser(model.ToBaseModel());
-            if (!userResult.Success || userResult.Value == null)
+            if (!userResult.IsSuccess || userResult.Value == null)
             {
                 result.Statuses.Add("Failed add data");
                 result.Statuses.Add("User not created");

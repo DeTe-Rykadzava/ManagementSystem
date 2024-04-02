@@ -32,4 +32,16 @@ public class ProductViewModel : ViewModelBase
             _product.Images.Select(s => new ProductPhotoViewModel(s))
                 .ToList());
     }
+
+    public ProductEditViewModel ToEditViewModel()
+    {
+        return new ProductEditViewModel
+        {
+            Id = this.Id,
+            Title = this.Title,
+            Description = this.Description,
+            CategoryId = this.CategoryId,
+            Cost = (double)this.Cost
+        };
+    }
 }

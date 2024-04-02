@@ -7,5 +7,5 @@ namespace ManagementSystem.ViewModels.Main;
 public class HomeViewModel : RoutableViewModelBase
 {
     public override string ViewModelViewPath { get; } = "home";
-    public override INavigationService RootNavManager { get; protected set; }
+    public override INavigationService RootNavManager { get; protected set; } = null!;
 }

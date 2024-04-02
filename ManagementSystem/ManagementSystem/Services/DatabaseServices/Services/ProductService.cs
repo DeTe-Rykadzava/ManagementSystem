@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Database.Interfaces;
+using Database.Models.Product;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
+using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
 using Microsoft.Extensions.Logging;
 
@@ -17,75 +19,227 @@ public class ProductService : IProductService
     public ProductService(IProductRepository productRepository, ILogger<ProductService> logger) =>
         (_productRepository, _logger) = (productRepository, logger);
     
-    public async Task<IEnumerable<ProductViewModel>> GetProducts()
+    public async Task<ActionResultViewModel<IEnumerable<ProductViewModel>>> GetProducts()
     {
+        var result = new ActionResultViewModel<IEnumerable<ProductViewModel>>();
         try
-        {
-            var products = await _productRepository.GetProducts();
-            var productVms = products.Select(s => new ProductViewModel(s)).ToList();
-            return productVms;
+        { 
+            var productsResult = await _productRepository.GetProducts();
+            if (!productsResult.IsSuccess || productsResult.Value == null)
+            {
+                result.Statuses.Add("Failed get");
+                result.Statuses.Add("Products is null");
+            }
+            else
+            {
+                var productVms = productsResult.Value.Select(s => new ProductViewModel(s)).ToList();
+                result.Value = productVms;
+                result.IsSuccess = true;
+            }
         }
         catch (Exception e)
         {
             _logger.LogError(
                 "Exception with get all products.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
-            return Array.Empty<ProductViewModel>();
+            result.Statuses.Add("Failed get");
+            result.Statuses.Add("Unknown problem");
         }
+        return result;
     }
 
-    public async Task<ProductViewModel?> GetProduct(int id)
+    public async Task<ActionResultViewModel<ProductViewModel>> GetProduct(int id)
     {
+        var result = new ActionResultViewModel<ProductViewModel>();
         try
         {
-            var product = await _productRepository.GetProduct(id);
-            if (product == null)
-                return null;
-            var productVm = new ProductViewModel(product);
-            return productVm;
+            var productResult = await _productRepository.GetProduct(id);
+            if (productResult.IsSuccess && productResult.Value != null)
+            {
+                var productVm = new ProductViewModel(productResult.Value);
+                result.IsSuccess = true;
+                result.Value = productVm;
+            }
         }
         catch (Exception e)
         {
             _logger.LogError(
-                "Exception with get products by Id: {id}.\nException: {Message}.\nInnerException: {InnerException}", id, e.Message, e.InnerException);
-            return null;
+                "Exception with get product by Id: {Id}.\nException: {Message}.\nInnerException: {InnerException}", id, e.Message, e.InnerException);
+            result.Statuses.Add("Failed get");
+            result.Statuses.Add("Unknown problem");
         }
+        return result;
     }
 
-    public async Task<ProductViewModel?> AddProduct(ProductCreateViewModel product)
+    public async Task<ActionResultViewModel<ProductViewModel>> AddProduct(ProductCreateViewModel model)
     {
+        var result = new ActionResultViewModel<ProductViewModel>();
         try
         {
-            throw new NotImplementedException();
+            var addResult = await _productRepository.AddProduct(model.ToBaseModel());
+            if (addResult.IsSuccess && addResult.Value != null)
+            {
+                result.IsSuccess = true;
+                result.Value = new ProductViewModel(addResult.Value);
+            }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(
+                "Exception with add product.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed add product");
+            result.Statuses.Add("Unknown problem");
         }
-        return null;
+
+        return result;
     }
 
-    public Task<ProductPhotoViewModel?> AddProductPhoto(int productId, byte[] image)
+    public async Task<ActionResultViewModel<ProductPhotoViewModel>> AddProductPhoto(int productId, byte[] image)
     {
-        throw new System.NotImplementedException();
+        var result = new ActionResultViewModel<ProductPhotoViewModel>();
+        try
+        {
+            if (productId == 0 && image.Length == 0)
+            {
+                result.Statuses.Add("Failed add photo");
+                result.Statuses.Add("Input data is not valid");
+            }
+            else
+            {
+                var addPhotoResult = await _productRepository.AddProductPhoto(new ProductPhotoAppendModel{ProductId = productId, Image = image});
+                if (addPhotoResult.IsSuccess && addPhotoResult.Value != null)
+                {
+                    result.IsSuccess = true;
+                    result.Value = new ProductPhotoViewModel(addPhotoResult.Value);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with add product photo.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed add product photo");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
     }
 
-    public Task<ProductViewModel?> UpdateProduct(ProductEditViewModel product)
+    public async Task<ActionResultViewModel<ProductViewModel>> UpdateProduct(ProductEditViewModel model)
     {
-        throw new System.NotImplementedException();
+        var result = new ActionResultViewModel<ProductViewModel>();
+        try
+        {
+            if (model.Id == 0)
+            {
+                result.Statuses.Add("Failed update product");
+                result.Statuses.Add("Input data is not valid");
+            }
+            else
+            {
+                var updateResult = await _productRepository.UpdateProduct(model.ToBaseModel());
+                if (updateResult.IsSuccess && updateResult.Value != null)
+                {
+                    result.IsSuccess = true;
+                    result.Value = new ProductViewModel(updateResult.Value);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with update product.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed update product");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
     }
 
-    public Task<bool> DeleteProducts(IEnumerable<int> ids)
+    public async Task<ActionResultViewModel<bool>> DeleteProducts(IEnumerable<int> ids)
     {
-        throw new System.NotImplementedException();
+        var result = new ActionResultViewModel<bool>();
+        try
+        {
+            if (!ids.Any())
+            {
+                result.Statuses.Add("Failed delete products");
+                result.Statuses.Add("Objects not exist");
+            }
+            else
+            {
+                var deleteResult = await _productRepository.DeleteProducts(ids);
+                if (deleteResult.IsSuccess && deleteResult.Value != false)
+                {
+                    result.IsSuccess = true;
+                    result.Value = deleteResult.Value;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with delete products.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed delete products");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
     }
 
-    public Task<bool> RemoveProductPhoto(int photoId)
+    public async Task<ActionResultViewModel<bool>> RemoveProductPhoto(int photoId)
     {
-        throw new System.NotImplementedException();
+        var result = new ActionResultViewModel<bool>();
+        try
+        {
+            if (photoId == 0)
+            {
+                result.Statuses.Add("Failed delete product");
+                result.Statuses.Add("Input data is not valid");
+            }
+            else
+            {
+                var deletePhotoResult = await _productRepository.RemoveProductPhoto(photoId);
+                if (deletePhotoResult.IsSuccess && deletePhotoResult.Value != false)
+                {
+                    result.IsSuccess = true;
+                    result.Value = deletePhotoResult.Value;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with delete product photo.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed remove product photo");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
     }
 
-    public Task<bool> DeleteProduct(int id)
+    public async Task<ActionResultViewModel<bool>> DeleteProduct(int id)
     {
-        throw new System.NotImplementedException();
+        var result = new ActionResultViewModel<bool>();
+        try
+        {
+            if (id == 0)
+            {
+                result.Statuses.Add("Failed delete product");
+                result.Statuses.Add("Input data is not valid");
+            }
+            else
+            {
+                var deleteProductResult = await _productRepository.DeleteProduct(id);
+                if (deleteProductResult.IsSuccess && deleteProductResult.Value != false)
+                {
+                    result.IsSuccess = true;
+                    result.Value = deleteProductResult.Value;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with delete product.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed remove product");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
     }
 }

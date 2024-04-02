@@ -15,7 +15,7 @@ namespace ManagementSystem.ViewModels.Main;
 public class MainViewModel : RoutableViewModelBase
 {
     public override string ViewModelViewPath { get; } = "main";
-    public override INavigationService? RootNavManager { get; protected set; } = null;
+    public override INavigationService RootNavManager { get; protected set; } = null!;
     
     // services
     public INavigationService SubNavigationService { get; }

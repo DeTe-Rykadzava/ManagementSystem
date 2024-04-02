@@ -13,6 +13,8 @@ public class StaticResources
     
     public static string AppIconResourceLink { get; } = "avares://ManagementSystem/Assets/icon.png";
 
-    public static int ClientRoleId { get; set; } = 1;
+    public static int ClientRoleId { get; } = 1;
+
+    public static string AdminRoleName { get; } = "admin";
 
 }

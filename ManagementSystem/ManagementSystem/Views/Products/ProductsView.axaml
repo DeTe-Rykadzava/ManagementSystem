@@ -1,0 +1,84 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ManagementSystem.Views.Products.ProductsView"
+             x:DataType="vm:ProductsViewModel">
+    <Grid RowDefinitions="Auto *"
+          Margin="5">
+        <DockPanel Grid.Row="0">
+            <Button DockPanel.Dock="Right"
+                    VerticalAlignment="Center"
+                    Content="Add product"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Command="{Binding CreateProductCommand}"
+                    Padding="10 5"/>
+            <TextBlock Text="Products"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       DockPanel.Dock="Left"
+                       VerticalAlignment="Center"/>
+            <ItemsControl ItemsSource="{Binding Products}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource SaladColor}"
+                                Padding="10"
+                                CornerRadius="8"
+                                Margin="10">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" OffsetX="5" OffsetY="5" BlurRadius="2.5"/>
+                            </Border.Effect>
+                            <Grid ColumnDefinitions="* Auto">
+                                <Grid Grid.Column="0" 
+                                      RowDefinitions="2* *"
+                                      Margin="5">
+                                    <Image Grid.Row="0"
+                                           Source="{Binding Images[0]}"
+                                           Stretch="Uniform"/>
+                                    <StackPanel Grid.Row="1" Spacing="20">
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="10">
+                                            <TextBlock Text="Title:"
+                                                       FontWeight="Bold"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="16"/>
+                                        </StackPanel>
+                                        <StackPanel Spacing="10">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="10">
+                                                <TextBlock Text="Description:"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Description}"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="10">
+                                                <TextBlock Text="Cost:"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Cost}"
+                                                           Foreground="{StaticResource DarkerColor}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                                <StackPanel Grid.Column="1"
+                                            Spacing="10">
+                                    <Button Padding="0"></Button>
+                                    <Button Padding="0"></Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+    </Grid>
+</UserControl>

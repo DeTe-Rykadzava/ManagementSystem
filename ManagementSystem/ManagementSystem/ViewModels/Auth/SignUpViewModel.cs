@@ -17,13 +17,13 @@ namespace ManagementSystem.ViewModels.Auth;
 
 public class SignUpViewModel : RoutableViewModelBase
 {
+    public override string ViewModelViewPath { get; } = "signUp";
+    public override INavigationService RootNavManager { get; protected set; } = null!;
+    
     // services
     private readonly IUserService _userService;
     private readonly IUserStorageService _userStorageService;
     
-    public override string ViewModelViewPath { get; } = "signUp";
-    public override INavigationService RootNavManager { get; protected set; } = null!;
-
     // fields
     private string? _status = null;
     public string? Status

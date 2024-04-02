@@ -1,10 +1,10 @@
 ﻿using ManagementSystem.Services.NavigationService;
 using ManagementSystem.ViewModels.Core;
 
-namespace ManagementSystem.ViewModels.Product;
+namespace ManagementSystem.ViewModels.Products;
 
-public class ProductsViewModel : RoutableViewModelBase
+public class EditProductViewModel : RoutableViewModelBase
 {
+    public override string ViewModelViewPath { get; } = "edit_product";
     public override INavigationService RootNavManager { get; protected set; } = null!;
-    public override string ViewModelViewPath { get; } = "products";
 }
