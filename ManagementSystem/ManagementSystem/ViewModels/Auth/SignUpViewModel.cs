@@ -52,9 +52,9 @@ public class SignUpViewModel : RoutableViewModelBase
             if (!createResult.IsSuccess || createResult.Value == null)
             {
                 Status = $"Cannot create user, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}";
-                var box = MessageBoxManager.GetMessageBoxStandard("SignUpErr", $"sorry, but the user was not registered, purpose:{string.Join("\n\t* ", createResult.Statuses)}",
-                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner);
-                var result = await box.ShowAsync();
+                var box = MessageBoxManager.GetMessageBoxStandard("SignUpErr", $"sorry, but the user was not registered, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}",
+                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner); 
+                await box.ShowAsync();
                 return;
             }
 

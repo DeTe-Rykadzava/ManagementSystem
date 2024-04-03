@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Database.Context;
 using Database.Interfaces;
@@ -11,12 +14,15 @@ using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DatabaseServices.Services;
 using ManagementSystem.Services.Logger;
 using ManagementSystem.Services.NavigationService;
+using ManagementSystem.Services.Storage;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Auth;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.Main;
+using ManagementSystem.ViewModels.Products;
 using ManagementSystem.Views.Auth;
 using ManagementSystem.Views.Main;
+using ManagementSystem.Views.Products;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using Splat;
@@ -56,6 +62,13 @@ public class AppViewModel : ViewModelBase
 
     private async Task LoadApp()
     {
+        var lifeRuntime = Application.Current?.ApplicationLifetime;
+        if (lifeRuntime == null)
+        {
+            Status = "The application lifetime cannot be obtained, please restart the program and contact your administrator.";
+            return;
+        }
+
         // register logger
         Status = "Start register application logger";
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
@@ -140,7 +153,24 @@ public class AppViewModel : ViewModelBase
         Status = "Successful register 1/2 program service";
         _locator.RegisterConstant(new UserStorageService(), typeof(IUserStorageService));
         _logger.LogInformation("IUserStorageService registered");
-        Status = "Successful register 2/2 program service";
+        Status = "Successful register 2/3 program service";
+        TopLevel? topLevel = null;
+        if (lifeRuntime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            topLevel = TopLevel.GetTopLevel(desktopLifetime.MainWindow);
+        }
+        else if (lifeRuntime is ISingleViewApplicationLifetime singleViewLifetime)
+        {
+            topLevel = TopLevel.GetTopLevel(singleViewLifetime.MainView);
+        }
+        if (topLevel == null)
+        {
+            Status = "The program cannot obtain the storage provider, so the application will stop running, contact your administrator.";
+            return;
+        }
+        _locator.RegisterConstant(new StorageService(topLevel.StorageProvider, loggerFactory.CreateLogger<StorageService>()), typeof(IStorageService));
+        _logger.LogInformation("IStorageService registered");
+        Status = "Successful register 3/3 program service";
         Status = "Successful register all program services";
         _logger.LogInformation("Successful register program services");
 
@@ -152,9 +182,11 @@ public class AppViewModel : ViewModelBase
             new SignUpViewModel(_locator.GetService<IUserService>()!, _locator.GetService<IUserStorageService>()!));
         _locator.Register<SignOutViewModel>(() => new SignOutViewModel(_locator.GetService<IUserStorageService>()!));
         _locator.Register<HomeViewModel>(() => new HomeViewModel());
+        _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!));
         
         // register constant ViewModels
-        _locator.RegisterConstant<MainViewModel>(new MainViewModel(Locator.GetLocator().GetService<IUserStorageService>()!));
+        _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!));
+        _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!));
 
         // register Views
         _locator.Register(() => new MainView(), typeof(IViewFor<MainViewModel>));
@@ -162,6 +194,8 @@ public class AppViewModel : ViewModelBase
         _locator.Register(() => new SignInView(), typeof(IViewFor<SignInViewModel>));
         _locator.Register(() => new SignUpView(), typeof(IViewFor<SignUpViewModel>));
         _locator.Register(() => new SignOutView(), typeof(IViewFor<SignOutViewModel>));
+        _locator.Register(() => new ProductsView(), typeof(IViewFor<ProductsViewModel>));
+        _locator.Register(() => new CreateProductView(), typeof(IViewFor<CreateProductViewModel>));
         Status = "Successful register all views";
 
         Status = "Starting...";

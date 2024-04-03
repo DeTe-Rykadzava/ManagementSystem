@@ -34,10 +34,6 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
 
     public virtual DbSet<ProductWarehouse> ProductWarehouses { get; set; }
 
-    public virtual DbSet<Report> Reports { get; set; }
-
-    public virtual DbSet<ReportType> ReportTypes { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -270,53 +266,6 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
             entity.HasOne(d => d.Warehouse).WithMany(p => p.ProductWarehouses)
                 .HasForeignKey(d => d.WarehouseId)
                 .HasConstraintName("product_warehouse_warehouse_fk");
-        });
-
-        modelBuilder.Entity<Report>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("report_pk");
-
-            entity.ToTable("report");
-
-            entity.HasIndex(e => e.TypeId, "IX_report_type_id");
-
-            entity.HasIndex(e => e.UserId, "IX_report_user_id");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            if (DatabaseSettings.CurrentSelectedServer == DatabaseServers.Mssql)
-            {
-                entity.Property(e => e.CreateDate)
-                    .HasColumnType("datetime")
-                    .HasColumnName("create_date");
-            }
-            else
-            {
-                entity.Property(e => e.CreateDate)
-                    .HasColumnType("timestamp without time zone")
-                    .HasColumnName("create_date");
-            }
-
-            entity.Property(e => e.Info).HasColumnName("info");
-            entity.Property(e => e.TypeId).HasColumnName("type_id");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.Type).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.TypeId)
-                .HasConstraintName("report_type_fk");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("report_user_fk");
-        });
-
-        modelBuilder.Entity<ReportType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("report_type_pk");
-
-            entity.ToTable("report_type");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
         });
 
         modelBuilder.Entity<Role>(entity =>

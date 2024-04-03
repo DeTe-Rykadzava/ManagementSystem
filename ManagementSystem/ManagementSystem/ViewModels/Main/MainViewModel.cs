@@ -7,6 +7,7 @@ using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Auth;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.User;
+using ManagementSystem.ViewModels.Products;
 using ReactiveUI;
 using Splat;
 
@@ -28,6 +29,10 @@ public class MainViewModel : RoutableViewModelBase
     
     // Navigation Commands
     public ICommand GoToHomeCommand { get; }
+    public ICommand GoToProductsCommand { get; }
+    public ICommand GoToWarehousesCommand { get; }
+    public ICommand GoToUserBasketCommand { get; }
+    public ICommand GoToUserOrdersCommand { get; }
     
     public MainViewModel(IUserStorageService userStorageService)
     {
@@ -54,7 +59,22 @@ public class MainViewModel : RoutableViewModelBase
         {
             await SubNavigationService.NavigateTo<HomeViewModel>();
         });
-        
+        GoToProductsCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SubNavigationService.NavigateTo<ProductsViewModel>();
+        });
+        GoToWarehousesCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SubNavigationService.NavigateTo<ProductsViewModel>();
+        });
+        GoToUserBasketCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SubNavigationService.NavigateTo<ProductsViewModel>();
+        });
+        GoToUserOrdersCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SubNavigationService.NavigateTo<ProductsViewModel>();
+        });
 
         GoToHomeCommand.Execute(null);
     }

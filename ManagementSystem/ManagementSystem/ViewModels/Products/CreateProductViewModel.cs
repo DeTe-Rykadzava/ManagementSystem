@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using ManagementSystem.Assets;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.NavigationService;
+using ManagementSystem.Services.Storage;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
@@ -22,6 +26,7 @@ public class CreateProductViewModel : RoutableViewModelBase
     // services
     private readonly IProductService _productService;
     private readonly IUserStorageService _userStorageService;
+    private readonly IStorageService _storageService;
     
     // fields
     private bool _canUserCreateProduct = false;
@@ -44,11 +49,14 @@ public class CreateProductViewModel : RoutableViewModelBase
     // commands 
     public ICommand CanselCommand { get; }
     public ICommand SaveCommand { get; }
+    public ICommand AddProductPhotoCommand { get; }
 
-    public CreateProductViewModel(IUserStorageService userStorageService, IProductService productService)
+
+    public CreateProductViewModel(IUserStorageService userStorageService, IProductService productService, IStorageService storageService)
     {
         _productService = productService;
         _userStorageService = userStorageService;
+        _storageService = storageService;
         Model = new ProductCreateViewModel();
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -68,6 +76,27 @@ public class CreateProductViewModel : RoutableViewModelBase
                     windowStartupLocation: WindowStartupLocation.CenterOwner);
                 await box.ShowAsync();
                 await RootNavManager.GoBack();
+            }
+        });
+        AddProductPhotoCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            var options = new FilePickerOpenOptions()
+            {
+                Title = "Select photo",
+                AllowMultiple = false,
+                FileTypeFilter = new []{new FilePickerFileType("image"){MimeTypes = new []{"image/png", "image/jpg"}}}
+            };
+            var result = await _storageService.OpenFileAsync(options);
+            if (!result.IsSuccess || result.Value == null)
+            {
+                var box = MessageBoxManager.GetMessageBoxStandard("Open file result", $"Open file result is false, purpose:\n\t* {string.Join("\n\t* ", result.Statuses)}",
+                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner); 
+                await box.ShowAsync();
+            }
+            else
+            {
+                var fileBinaries = File.ReadAllBytes(result.Value.Path.ToString()); 
+                Model.Images.Add(fileBinaries);
             }
         });
     }

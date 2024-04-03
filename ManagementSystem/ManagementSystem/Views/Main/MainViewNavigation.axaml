@@ -37,16 +37,21 @@
                         Orientation="Vertical">
                 <Button Content="Products"
                         HorizontalContentAlignment="Center"
-                        FontSize="14"/>
+                        FontSize="14"
+                        Command="{Binding GoToProductsCommand}"
+                        Foreground="White"/>
                 <Button Content="Warehouse"
                         HorizontalContentAlignment="Center"
-                        FontSize="14"/>
+                        FontSize="14"
+                        Command="{Binding GoToWarehousesCommand}"/>
                 <Button Content="Basket"
                         HorizontalContentAlignment="Center"
-                        FontSize="14"/>
+                        FontSize="14"
+                        Command="{Binding GoToUserBasketCommand}"/>
                 <Button Content="Orders"
                         HorizontalContentAlignment="Center"
-                        FontSize="14"/>
+                        FontSize="14"
+                        Command="{Binding GoToUserOrdersCommand}"/>
             </StackPanel>
         </Grid> 
     </Panel>

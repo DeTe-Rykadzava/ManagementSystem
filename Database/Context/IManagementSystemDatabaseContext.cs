@@ -28,10 +28,6 @@ public interface IManagementSystemDatabaseContext
 
     public DbSet<ProductWarehouse> ProductWarehouses { get; set; }
 
-    public DbSet<Report> Reports { get; set; }
-
-    public DbSet<ReportType> ReportTypes { get; set; }
-
     public DbSet<Role> Roles { get; set; }
 
     public DbSet<User> Users { get; set; }

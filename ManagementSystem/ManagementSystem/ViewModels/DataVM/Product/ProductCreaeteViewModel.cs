@@ -45,8 +45,23 @@ public class ProductCreateViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _categoryId, value);
     }
 
+    private bool _imagesIsEmpty = true;
+    public bool ImagesIsEmpty
+    {
+        get => _imagesIsEmpty;
+        set => this.RaiseAndSetIfChanged(ref _imagesIsEmpty, value);
+    }
+    
     public ObservableCollection<byte[]> Images { get; } = new();
 
+    public ProductCreateViewModel()
+    {
+        Images.CollectionChanged += (sender, args) =>
+        {
+            ImagesIsEmpty = !Images.Any();
+        };
+    }
+    
     public ProductCreateModel ToBaseModel()
     {
         return new ProductCreateModel
