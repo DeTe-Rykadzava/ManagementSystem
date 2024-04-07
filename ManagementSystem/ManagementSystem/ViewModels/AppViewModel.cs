@@ -68,7 +68,7 @@ public class AppViewModel : ViewModelBase
             Status = "The application lifetime cannot be obtained, please restart the program and contact your administrator.";
             return;
         }
-
+        
         // register logger
         Status = "Start register application logger";
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
@@ -158,10 +158,12 @@ public class AppViewModel : ViewModelBase
         if (lifeRuntime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
             topLevel = TopLevel.GetTopLevel(desktopLifetime.MainWindow);
+            _locator.RegisterConstant(desktopLifetime.MainWindow, typeof(ContentControl), "AppBaseContent");
         }
         else if (lifeRuntime is ISingleViewApplicationLifetime singleViewLifetime)
         {
             topLevel = TopLevel.GetTopLevel(singleViewLifetime.MainView);
+            _locator.RegisterConstant(singleViewLifetime.MainView, typeof(ContentControl), "AppBaseContent");
         }
         if (topLevel == null)
         {
@@ -182,7 +184,7 @@ public class AppViewModel : ViewModelBase
             new SignUpViewModel(_locator.GetService<IUserService>()!, _locator.GetService<IUserStorageService>()!));
         _locator.Register<SignOutViewModel>(() => new SignOutViewModel(_locator.GetService<IUserStorageService>()!));
         _locator.Register<HomeViewModel>(() => new HomeViewModel());
-        _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!));
+        _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<ContentControl>("AppBaseContent")!));
         
         // register constant ViewModels
         _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!));

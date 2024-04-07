@@ -27,6 +27,7 @@ public class CreateProductViewModel : RoutableViewModelBase
     private readonly IProductService _productService;
     private readonly IUserStorageService _userStorageService;
     private readonly IStorageService _storageService;
+    private readonly ContentControl _appBaseControl;
     
     // fields
     private bool _canUserCreateProduct = false;
@@ -52,11 +53,15 @@ public class CreateProductViewModel : RoutableViewModelBase
     public ICommand AddProductPhotoCommand { get; }
 
 
-    public CreateProductViewModel(IUserStorageService userStorageService, IProductService productService, IStorageService storageService)
+    public CreateProductViewModel(IUserStorageService userStorageService,
+                                  IProductService productService,
+                                  IStorageService storageService,
+                                  ContentControl appBaseControl)
     {
         _productService = productService;
         _userStorageService = userStorageService;
         _storageService = storageService;
+        _appBaseControl = appBaseControl;
         Model = new ProductCreateViewModel();
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -74,7 +79,7 @@ public class CreateProductViewModel : RoutableViewModelBase
                 var box = MessageBoxManager.GetMessageBoxStandard("Info",
                     "Success", icon: Icon.Success,
                     windowStartupLocation: WindowStartupLocation.CenterOwner);
-                await box.ShowAsync();
+                await box.ShowAsPopupAsync(_appBaseControl);
                 await RootNavManager.GoBack();
             }
         });
@@ -84,13 +89,13 @@ public class CreateProductViewModel : RoutableViewModelBase
             {
                 Title = "Select photo",
                 AllowMultiple = false,
-                FileTypeFilter = new []{new FilePickerFileType("image"){MimeTypes = new []{"image/png", "image/jpg"}}}
+                FileTypeFilter = new []{ FilePickerFileTypes.ImageAll }
             };
             var result = await _storageService.OpenFileAsync(options);
             if (!result.IsSuccess || result.Value == null)
             {
                 var box = MessageBoxManager.GetMessageBoxStandard("Open file result", $"Open file result is false, purpose:\n\t* {string.Join("\n\t* ", result.Statuses)}",
-                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner); 
+                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner);
                 await box.ShowAsync();
             }
             else
@@ -108,7 +113,7 @@ public class CreateProductViewModel : RoutableViewModelBase
             var box = MessageBoxManager.GetMessageBoxStandard("Error",
                 "Sorry but you cannot create product into system", icon: Icon.Error,
                 windowStartupLocation: WindowStartupLocation.CenterOwner);
-            await box.ShowAsync();
+            await box.ShowAsPopupAsync(_appBaseControl);
             CanUserCreateProduct = false;
             await RootNavManager.GoBack(); 
         }
