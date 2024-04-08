@@ -2,11 +2,16 @@
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Controls;
+using ManagementSystem.Assets;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
+using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace ManagementSystem.ViewModels.Products;
@@ -18,7 +23,8 @@ public class ProductsViewModel : RoutableViewModelBase
 
     // services
     private readonly IProductService _productService;
-    public IUserStorageService UserStorageService { get; }
+    private readonly IDialogService _dialogService;
+    private readonly IUserStorageService _userStorageService;
     
     // fields
     public ObservableCollection<ProductViewModel> Products { get; } = new ObservableCollection<ProductViewModel>();
@@ -34,13 +40,23 @@ public class ProductsViewModel : RoutableViewModelBase
     public ICommand CreateProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> DeleteProductCommand { get; }
 
-    public ProductsViewModel(IUserStorageService userStorageService, IProductService productService)
+    public ProductsViewModel(IUserStorageService userStorageService,
+                             IProductService productService,
+                             IDialogService dialogService)
     {
         _productService = productService;
-        UserStorageService = userStorageService;
+        _userStorageService = userStorageService;
+        _dialogService = dialogService;
         CreateProductCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await RootNavManager.NavigateTo<CreateProductViewModel>();
+            if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
+            }
+            else
+            {
+                await RootNavManager.NavigateTo<CreateProductViewModel>();
+            }
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) => { });
         Task.Run(LoadProducts);

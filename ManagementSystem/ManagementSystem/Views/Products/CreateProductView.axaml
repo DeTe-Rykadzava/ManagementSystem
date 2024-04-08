@@ -3,11 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
+             xmlns:converter="clr-namespace:ManagementSystem.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.CreateProductView"
              x:DataType="vm:CreateProductViewModel">
+    <UserControl.Resources>
+        <converter:BytesImageConverter x:Key="ImageConverter"/>
+    </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-        <Grid RowDefinitions="Auto Auto Auto">
+        <Grid RowDefinitions="Auto Auto Auto"
+              Margin="0 0 25 0">
             <Border Grid.Row="0"
                     Padding="20"
                     CornerRadius="8"
@@ -85,7 +90,7 @@
                                 <Image Width="250"
                                        Height="250"
                                        Stretch="Uniform"
-                                       Source="{Binding .}"/>
+                                       Source="{Binding ., Converter={StaticResource ImageConverter}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

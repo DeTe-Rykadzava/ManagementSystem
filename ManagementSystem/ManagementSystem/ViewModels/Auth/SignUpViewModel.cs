@@ -12,6 +12,7 @@ using ManagementSystem.ViewModels.Main;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using ReactiveUI;
+using IDialogService = ManagementSystem.Services.DialogService.IDialogService;
 
 namespace ManagementSystem.ViewModels.Auth;
 
@@ -23,6 +24,7 @@ public class SignUpViewModel : RoutableViewModelBase
     // services
     private readonly IUserService _userService;
     private readonly IUserStorageService _userStorageService;
+    private readonly IDialogService _dialogService;
     
     // fields
     private string? _status = null;
@@ -39,10 +41,11 @@ public class SignUpViewModel : RoutableViewModelBase
     public ICommand SignUpCommand { get; }
     public ICommand GoToBackCommand { get; }
 
-    public SignUpViewModel(IUserService userService, IUserStorageService userStorageService)
+    public SignUpViewModel(IUserService userService, IUserStorageService userStorageService, IDialogService dialogService)
     {
         _userService = userService;
         _userStorageService = userStorageService;
+        _dialogService = dialogService;
         UserCreateModel = new UserCreateViewModel();
         var canSignUp = this.WhenAnyValue(x => x.UserCreateModel.IsValid).DistinctUntilChanged();
         SignUpCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -52,9 +55,7 @@ public class SignUpViewModel : RoutableViewModelBase
             if (!createResult.IsSuccess || createResult.Value == null)
             {
                 Status = $"Cannot create user, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}";
-                var box = MessageBoxManager.GetMessageBoxStandard("SignUpErr", $"sorry, but the user was not registered, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}",
-                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner); 
-                await box.ShowAsync();
+                await _dialogService.ShowPopupDialogAsync("SignUpErr", $"Sorry, but the user was not registered, purpose:\n\t* {string.Join("\n\t* ", createResult.Statuses)}", icon: Icon.Error);
                 return;
             }
 

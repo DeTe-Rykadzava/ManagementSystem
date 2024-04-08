@@ -21,11 +21,17 @@
                        FontWeight="Bold"
                        VerticalAlignment="Center"/>
         </DockPanel>
-        <TextBlock Grid.Row="1"
-                   Text="Products is empty"
-                   IsVisible="{Binding ProductsIsEmpty}"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+        <Border Grid.Row="1"
+                Padding="10"
+                CornerRadius="8"
+                Background="White"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            <TextBlock Text="Products is empty"
+                       IsVisible="{Binding ProductsIsEmpty}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"/>
+        </Border>
         <ItemsControl Grid.Row="1"
                       ItemsSource="{Binding Products}"
                       IsVisible="{Binding !ProductsIsEmpty}">

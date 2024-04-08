@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -6,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ManagementSystem.Assets;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
+using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.Storage;
 using ManagementSystem.Services.UserStorage;
@@ -27,7 +29,7 @@ public class CreateProductViewModel : RoutableViewModelBase
     private readonly IProductService _productService;
     private readonly IUserStorageService _userStorageService;
     private readonly IStorageService _storageService;
-    private readonly ContentControl _appBaseControl;
+    private readonly IDialogService _dialogService;
     
     // fields
     private bool _canUserCreateProduct = false;
@@ -56,12 +58,12 @@ public class CreateProductViewModel : RoutableViewModelBase
     public CreateProductViewModel(IUserStorageService userStorageService,
                                   IProductService productService,
                                   IStorageService storageService,
-                                  ContentControl appBaseControl)
+                                  IDialogService dialogService)
     {
         _productService = productService;
         _userStorageService = userStorageService;
         _storageService = storageService;
-        _appBaseControl = appBaseControl;
+        _dialogService = dialogService;
         Model = new ProductCreateViewModel();
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -76,10 +78,7 @@ public class CreateProductViewModel : RoutableViewModelBase
             }
             else
             {
-                var box = MessageBoxManager.GetMessageBoxStandard("Info",
-                    "Success", icon: Icon.Success,
-                    windowStartupLocation: WindowStartupLocation.CenterOwner);
-                await box.ShowAsPopupAsync(_appBaseControl);
+                await _dialogService.ShowPopupDialogAsync("Info", "Success", icon: Icon.Success);
                 await RootNavManager.GoBack();
             }
         });
@@ -91,35 +90,24 @@ public class CreateProductViewModel : RoutableViewModelBase
                 AllowMultiple = false,
                 FileTypeFilter = new []{ FilePickerFileTypes.ImageAll }
             };
-            var result = await _storageService.OpenFileAsync(options);
-            if (!result.IsSuccess || result.Value == null)
+            try
             {
-                var box = MessageBoxManager.GetMessageBoxStandard("Open file result", $"Open file result is false, purpose:\n\t* {string.Join("\n\t* ", result.Statuses)}",
-                    ButtonEnum.Ok, Icon.Error, WindowStartupLocation.CenterOwner);
-                await box.ShowAsync();
+                var result = await _storageService.OpenFileAsync(options);
+                if (!result.IsSuccess || result.Value == null)
+                {
+                    await _dialogService.ShowPopupDialogAsync("Open file result", $"Open file result is false, purpose:\n\t* {string.Join("\n\t* ", result.Statuses)}", icon: Icon.Error);
+                }
+                else
+                {
+                    var fileBinaries = File.ReadAllBytes(result.Value.Path.LocalPath); 
+                    Model.Images.Add(fileBinaries);
+                }
             }
-            else
+            catch (Exception)
             {
-                var fileBinaries = File.ReadAllBytes(result.Value.Path.ToString()); 
-                Model.Images.Add(fileBinaries);
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry, but we have a problem with adding photo to product");
             }
         });
     }
-
-    public override async Task OnShowed()
-    {
-        if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
-        {
-            var box = MessageBoxManager.GetMessageBoxStandard("Error",
-                "Sorry but you cannot create product into system", icon: Icon.Error,
-                windowStartupLocation: WindowStartupLocation.CenterOwner);
-            await box.ShowAsPopupAsync(_appBaseControl);
-            CanUserCreateProduct = false;
-            await RootNavManager.GoBack(); 
-        }
-        else
-        {
-            CanUserCreateProduct = true;
-        }
-    }
+    
 }
