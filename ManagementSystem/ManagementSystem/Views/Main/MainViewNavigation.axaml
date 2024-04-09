@@ -38,8 +38,7 @@
                 <Button Content="Products"
                         HorizontalContentAlignment="Center"
                         FontSize="14"
-                        Command="{Binding GoToProductsCommand}"
-                        Foreground="White"/>
+                        Command="{Binding GoToProductsCommand}"/>
                 <Button Content="Warehouse"
                         HorizontalContentAlignment="Center"
                         FontSize="14"

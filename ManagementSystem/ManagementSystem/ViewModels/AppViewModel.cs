@@ -136,15 +136,18 @@ public class AppViewModel : ViewModelBase
             _locator.RegisterConstant<IProductService>(          new ProductService(_locator.GetService<IProductRepository>()!, programLoggerFactory.CreateLogger<ProductService>()));
             _logger.LogInformation("IProductService registered");
             Status = "Successful register 5/8 database service";
+            _locator.RegisterConstant<IProductCategoryService>(          new ProductCategoryService(_locator.GetService<IProductCategoryRepository>()!, programLoggerFactory.CreateLogger<ProductCategoryService>()));
+            _logger.LogInformation("IProductCategoryService registered");
+            Status = "Successful register 6/8 database service";
             _locator.RegisterConstant<IRoleService>(             new RoleService());
             _logger.LogInformation("IRoleService registered");
-            Status = "Successful register 6/8 database service";
+            Status = "Successful register 7/8 database service";
             _locator.RegisterConstant<IUserService>(             new UserService(_locator.GetService<IUserRepository>()!, programLoggerFactory.CreateLogger<UserService>()));
             _logger.LogInformation("IUserService registered");
-            Status = "Successful register 7/8 database service";
+            Status = "Successful register 8/8 database service";
             _locator.RegisterConstant<IWarehouseService>(        new WarehouseService());
             _logger.LogInformation("IWarehouseService registered");
-            Status = "Successful register 8/8 database service";
+            Status = "Successful register 9/9 database service";
             Status = "Successful register all database services";
             _logger.LogInformation("Successful register database services");
             
@@ -187,7 +190,7 @@ public class AppViewModel : ViewModelBase
                 new SignUpViewModel(_locator.GetService<IUserService>()!, _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
             _locator.Register<SignOutViewModel>(() => new SignOutViewModel(_locator.GetService<IUserStorageService>()!));
             _locator.Register<HomeViewModel>(() => new HomeViewModel());
-            _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
             
             // register constant ViewModels
             _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!));

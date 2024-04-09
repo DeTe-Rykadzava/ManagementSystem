@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -27,6 +29,7 @@ public class CreateProductViewModel : RoutableViewModelBase
     
     // services
     private readonly IProductService _productService;
+    private readonly IProductCategoryService _productCategoryService;
     private readonly IUserStorageService _userStorageService;
     private readonly IStorageService _storageService;
     private readonly IDialogService _dialogService;
@@ -45,6 +48,8 @@ public class CreateProductViewModel : RoutableViewModelBase
         get => _status;
         set => this.RaiseAndSetIfChanged(ref _status, value);
     }
+
+    public ObservableCollection<ProductCategoryViewModel> Categories { get; } = new ();
     
     // models
     public ProductCreateViewModel Model { get; }
@@ -58,9 +63,11 @@ public class CreateProductViewModel : RoutableViewModelBase
     public CreateProductViewModel(IUserStorageService userStorageService,
                                   IProductService productService,
                                   IStorageService storageService,
-                                  IDialogService dialogService)
+                                  IDialogService dialogService,
+                                  IProductCategoryService productCategoryService)
     {
         _productService = productService;
+        _productCategoryService = productCategoryService;
         _userStorageService = userStorageService;
         _storageService = storageService;
         _dialogService = dialogService;
@@ -109,5 +116,31 @@ public class CreateProductViewModel : RoutableViewModelBase
             }
         });
     }
-    
+
+    public override async Task OnShowed()
+    {
+        await Task.Run(LoadCategories);
+    }
+
+    private async Task LoadCategories()
+    {
+        try
+        {
+            var categoriesResult = await _productCategoryService.GetAll();
+            if (!categoriesResult.IsSuccess || categoriesResult.Value == null || !categoriesResult.Value.Any())
+            {
+                await _dialogService.ShowPopupDialogAsync("error", "sorry but categories of product is empty =(");
+                return;
+            }
+
+            foreach (var productCategory in categoriesResult.Value)
+            {
+                Categories.Add(productCategory);
+            }            
+        }
+        catch (Exception e)
+        {
+            return;
+        }
+    }
 }
