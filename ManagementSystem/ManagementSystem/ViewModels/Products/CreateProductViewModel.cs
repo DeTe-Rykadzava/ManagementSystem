@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using ManagementSystem.Assets;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DialogService;
@@ -129,7 +131,13 @@ public class CreateProductViewModel : RoutableViewModelBase
             var categoriesResult = await _productCategoryService.GetAll();
             if (!categoriesResult.IsSuccess || categoriesResult.Value == null || !categoriesResult.Value.Any())
             {
-                await _dialogService.ShowPopupDialogAsync("error", "sorry but categories of product is empty =(");
+                Dispatcher.UIThread.Invoke(new Action(async() =>
+                {
+                    if(categoriesResult.Statuses.Any())
+                        await _dialogService.ShowPopupDialogAsync("error", $"sorry but categories of product is empty =( Purposes:\n\t{string.Join("\n\t", categoriesResult.Statuses)}");
+                    else
+                        await _dialogService.ShowPopupDialogAsync("error", "sorry but categories of product is empty =(");
+                }));
                 return;
             }
 

@@ -25,10 +25,10 @@
                 Padding="10"
                 CornerRadius="8"
                 Background="White"
+                IsVisible="{Binding ProductsIsEmpty}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
             <TextBlock Text="Products is empty"
-                       IsVisible="{Binding ProductsIsEmpty}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
         </Border>

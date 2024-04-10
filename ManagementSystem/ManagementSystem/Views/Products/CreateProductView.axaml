@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
+             xmlns:productVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Product"
              xmlns:converter="clr-namespace:ManagementSystem.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.CreateProductView"
@@ -14,8 +15,7 @@
         <Grid RowDefinitions="* * Auto"
               Margin="0 0 25 0">
             <Panel Grid.Row="0"
-                   Background="{StaticResource LighterColor}"
-                   MinWidth="250">
+                   Background="{StaticResource LighterColor}">
                 <StackPanel Spacing="10"
                             Orientation="Vertical"
                             Margin="25">
@@ -26,24 +26,35 @@
                     <StackPanel Spacing="0"
                                 Orientation="Vertical">
                         <TextBlock Text="title"/>
-                        <TextBox Watermark="Title of product"/>
+                        <TextBox Watermark="Title of product"
+                                 Text="{Binding Model.Title}"/>
                     </StackPanel>
                     <StackPanel Spacing="0"
                                 Orientation="Vertical">
                         <TextBlock Text="description"/>
                         <TextBox Watermark="Description of product"
+                                 Text="{Binding Model.Description}"
                                  TextWrapping="Wrap"
                                  MaxHeight="150"/>
                     </StackPanel>
                     <StackPanel Spacing="0"
                                 Orientation="Vertical">
                         <TextBlock Text="cost"/>
-                        <TextBox Watermark="Cost of product"/>
+                        <TextBox Watermark="Cost of product"
+                                 Text="{Binding Model.Cost}"/>
                     </StackPanel>
                     <StackPanel Spacing="30"
                                 Orientation="Vertical">
                         <TextBlock Text="category"/>
-                        <ComboBox PlaceholderText="product category"/>
+                        <ComboBox ItemsSource="{Binding Categories}"
+                                  SelectedValueBinding="{Binding Id}"
+                                  SelectedItem="{Binding Model.CategoryId}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="productVms:ProductCategoryViewModel">
+                                    <TextBlock Text="{Binding CategoryName}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
                 </StackPanel>
             </Panel>
@@ -91,12 +102,22 @@
             </Panel>
             <Grid Grid.Row="2"
                   ColumnDefinitions="* 2 Auto">
-                <Button Grid.Column="0"
-                        Content="Save"
-                        Padding="20 5"
-                        Margin="20 2.5"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"/>
+                <DockPanel Grid.Column="0">
+                    <Button Content="Save"
+                            Padding="20 5"
+                            Margin="20 2.5"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Command="{Binding SaveCommand}"/>
+                    <Panel Background="Brown"
+                           IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding Status, StringFormat='errors: \{0}'}"
+                                   Foreground="White"
+                                   FontSize="14"
+                                   TextWrapping="Wrap"
+                                   Margin="20"/>
+                    </Panel>
+                </DockPanel>
                 <Panel Grid.Column="1"
                        Background="{StaticResource DarkerColor}"/>
                 <Button Grid.Column="2"

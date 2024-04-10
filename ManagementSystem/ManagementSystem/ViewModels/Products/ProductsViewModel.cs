@@ -49,14 +49,14 @@ public class ProductsViewModel : RoutableViewModelBase
         _dialogService = dialogService;
         CreateProductCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
-            {
-                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
-            }
-            else
-            {
+            // if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
+            // {
+            //     await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
+            // }
+            // else
+            // {
+            // }
                 await RootNavManager.NavigateTo<CreateProductViewModel>();
-            }
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) => { });
         Task.Run(LoadProducts);

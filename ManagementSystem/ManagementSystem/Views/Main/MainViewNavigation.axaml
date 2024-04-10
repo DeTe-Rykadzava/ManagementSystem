@@ -39,6 +39,10 @@
                         HorizontalContentAlignment="Center"
                         FontSize="14"
                         Command="{Binding GoToProductsCommand}"/>
+                <Button Content="Categories"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"
+                        Command="{Binding GoToProductCategoriesCommand}"/>
                 <Button Content="Warehouse"
                         HorizontalContentAlignment="Center"
                         FontSize="14"

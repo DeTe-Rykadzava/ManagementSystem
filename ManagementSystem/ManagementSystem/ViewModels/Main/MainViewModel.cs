@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ManagementSystem.Assets;
 using ManagementSystem.Services;
+using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Auth;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.User;
 using ManagementSystem.ViewModels.Products;
+using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using Splat;
 
@@ -19,6 +22,7 @@ public class MainViewModel : RoutableViewModelBase
     public override INavigationService RootNavManager { get; protected set; } = null!;
     
     // services
+    private readonly IDialogService _dialogService;
     public INavigationService SubNavigationService { get; }
     public IUserStorageService UserStorageService { get; }
 
@@ -30,16 +34,21 @@ public class MainViewModel : RoutableViewModelBase
     // Navigation Commands
     public ICommand GoToHomeCommand { get; }
     public ICommand GoToProductsCommand { get; }
+    public ICommand GoToProductCategoriesCommand { get; }
     public ICommand GoToWarehousesCommand { get; }
     public ICommand GoToUserBasketCommand { get; }
     public ICommand GoToUserOrdersCommand { get; }
-    
-    public MainViewModel(IUserStorageService userStorageService)
+
+    public MainViewModel(IUserStorageService userStorageService,
+                         IDialogService dialogService)
+
     {
         UserStorageService = userStorageService;
-        Locator.GetLocator().RegisterConstant(new NavigationService(Locator.GetLocator()), typeof(INavigationService), "SubNavManager");
+        _dialogService = dialogService;
+            Locator.GetLocator().RegisterConstant(new NavigationService(Locator.GetLocator()),
+                typeof(INavigationService), "SubNavManager");
         SubNavigationService = Locator.GetLocator().GetService<INavigationService>("SubNavManager")!;
-        
+
         // sign commands
         GoToSignInCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -53,7 +62,7 @@ public class MainViewModel : RoutableViewModelBase
         {
             await RootNavManager!.NavigateTo<SignOutViewModel>();
         });
-        
+
         // navigation Commands
         GoToHomeCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -62,6 +71,18 @@ public class MainViewModel : RoutableViewModelBase
         GoToProductsCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await SubNavigationService.NavigateTo<ProductsViewModel>();
+        });
+        GoToProductCategoriesCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || UserStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
+            }
+            else
+            {
+                await SubNavigationService.NavigateTo<ProductCategoriesViewModel>();
+            }
+            // await SubNavigationService.NavigateTo<ProductCategoriesViewModel>();
         });
         GoToWarehousesCommand = ReactiveCommand.CreateFromTask(async () =>
         {

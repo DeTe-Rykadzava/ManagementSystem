@@ -93,28 +93,31 @@ public class AppViewModel : ViewModelBase
             Status = "Start register database repository";        
             _locator.RegisterConstant<IUserRepository>(            new UserRepository(            _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<UserRepository>()));
             _logger.LogInformation("IUserRepository registered");
-            Status = "Successful register 1/8 database repository";
+            Status = "Successful register 1/9 database repository";
             _locator.RegisterConstant<IRoleRepository>(            new RoleRepository(            _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<RoleRepository>()));
             _logger.LogInformation("IRoleRepository registered");
-            Status = "Successful register 2/8 database repository";
+            Status = "Successful register 2/9 database repository";
             _locator.RegisterConstant<IBasketRepository>(          new BasketRepository(          _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<BasketRepository>()));
             _logger.LogInformation("IBasketRepository registered");
-            Status = "Successful register 3/8 database repository";
+            Status = "Successful register 3/9 database repository";
             _locator.RegisterConstant<IOrderPaymentTypeRepository>(new OrderPaymentTypeRepository(_locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderPaymentTypeRepository>()));
             _logger.LogInformation("IOrderPaymentTypeRepository registered");
-            Status = "Successful register 4/8 database repository";
+            Status = "Successful register 4/9 database repository";
             _locator.RegisterConstant<IOrderRepository>(           new OrderRepository(           _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderRepository>()));
             _logger.LogInformation("IOrderRepository registered");
-            Status = "Successful register 5/8 database repository";
+            Status = "Successful register 5/9 database repository";
             _locator.RegisterConstant<IOrderSaleTypeRepository>(   new OrderSaleTypeRepository(   _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderSaleTypeRepository>()));
             _logger.LogInformation("IOrderSaleTypeRepository registered");
-            Status = "Successful register 6/8 database repository";
+            Status = "Successful register 6/9 database repository";
             _locator.RegisterConstant<IProductRepository>(         new ProductRepository(         _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<ProductRepository>()));
             _logger.LogInformation("IProductRepository registered");
-            Status = "Successful register 7/8 database repository";
+            Status = "Successful register 7/9 database repository";
+            _locator.RegisterConstant<IProductCategoryRepository>( new ProductCategoryRepository( _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<ProductCategoryRepository>()));
+            _logger.LogInformation("IProductRepository registered");
+            Status = "Successful register 8/9 database repository";
             _locator.RegisterConstant<IWarehouseRepository>(       new WarehouseRepository(       _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<WarehouseRepository>()));
             _logger.LogInformation("IWarehouseRepository registered");
-            Status = "Successful register 8/8 database repository";
+            Status = "Successful register 9/9 database repository";
             Status = "Successful register all database repository";
             _logger.LogInformation("Successful register database repositories");
     
@@ -123,28 +126,28 @@ public class AppViewModel : ViewModelBase
             Status = "Start register database services";  
             _locator.RegisterConstant<IBasketService>(           new BasketService());
             _logger.LogInformation("IBasketService registered");
-            Status = "Successful register 1/8 database service";
+            Status = "Successful register 1/9 database service";
             _locator.RegisterConstant<IOrderPaymentTypeService>( new OrderPaymentTypeService());
             _logger.LogInformation("IOrderPaymentTypeService registered");
-            Status = "Successful register 2/8 database service";
+            Status = "Successful register 2/9 database service";
             _locator.RegisterConstant<IOrderSaleTypeService>(    new OrderSaleTypeService());
             _logger.LogInformation("IOrderSaleTypeService registered");
-            Status = "Successful register 3/8 database service";
+            Status = "Successful register 3/9 database service";
             _locator.RegisterConstant<IOrderService>(            new OrderService());
             _logger.LogInformation("IOrderService registered");
-            Status = "Successful register 4/8 database service";
+            Status = "Successful register 4/9 database service";
             _locator.RegisterConstant<IProductService>(          new ProductService(_locator.GetService<IProductRepository>()!, programLoggerFactory.CreateLogger<ProductService>()));
             _logger.LogInformation("IProductService registered");
-            Status = "Successful register 5/8 database service";
+            Status = "Successful register 5/9 database service";
             _locator.RegisterConstant<IProductCategoryService>(          new ProductCategoryService(_locator.GetService<IProductCategoryRepository>()!, programLoggerFactory.CreateLogger<ProductCategoryService>()));
             _logger.LogInformation("IProductCategoryService registered");
-            Status = "Successful register 6/8 database service";
+            Status = "Successful register 6/9 database service";
             _locator.RegisterConstant<IRoleService>(             new RoleService());
             _logger.LogInformation("IRoleService registered");
-            Status = "Successful register 7/8 database service";
+            Status = "Successful register 7/9 database service";
             _locator.RegisterConstant<IUserService>(             new UserService(_locator.GetService<IUserRepository>()!, programLoggerFactory.CreateLogger<UserService>()));
             _logger.LogInformation("IUserService registered");
-            Status = "Successful register 8/8 database service";
+            Status = "Successful register 8/9 database service";
             _locator.RegisterConstant<IWarehouseService>(        new WarehouseService());
             _logger.LogInformation("IWarehouseService registered");
             Status = "Successful register 9/9 database service";
@@ -191,9 +194,10 @@ public class AppViewModel : ViewModelBase
             _locator.Register<SignOutViewModel>(() => new SignOutViewModel(_locator.GetService<IUserStorageService>()!));
             _locator.Register<HomeViewModel>(() => new HomeViewModel());
             _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
+            _locator.Register<ProductCategoriesViewModel>(() => new ProductCategoriesViewModel( _locator.GetService<IProductCategoryService>()!, _locator.GetService<IDialogService>()!));
             
             // register constant ViewModels
-            _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!));
+            _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
             _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!));
     
             // register Views
@@ -204,6 +208,7 @@ public class AppViewModel : ViewModelBase
             _locator.Register(() => new SignOutView(), typeof(IViewFor<SignOutViewModel>));
             _locator.Register(() => new ProductsView(), typeof(IViewFor<ProductsViewModel>));
             _locator.Register(() => new CreateProductView(), typeof(IViewFor<CreateProductViewModel>));
+            _locator.Register(() => new ProductCategoriesView(), typeof(IViewFor<ProductCategoriesViewModel>));
             Status = "Successful register all views";
     
             Status = "Starting...";
