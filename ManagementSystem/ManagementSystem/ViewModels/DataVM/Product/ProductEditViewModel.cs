@@ -7,15 +7,17 @@ namespace ManagementSystem.ViewModels.DataVM.Product;
 
 public class ProductEditViewModel : ViewModelBase
 {
-    // TODO: need complete VM
+    private readonly ProductModel _originalProduct;
+    private ProductModel _changedProduct;
+    
     [Required]
-    public int Id { get; set; } = 0;
+    public int Id => _originalProduct.Id;
 
     private string _title = string.Empty;
     [Required]
     public string Title
     {
-        get => _title;
+        get => _changedProduct.Title;
         set => this.RaiseAndSetIfChanged(ref _title, value);
     }
 
@@ -42,6 +44,11 @@ public class ProductEditViewModel : ViewModelBase
     {
         get => _categoryId;
         set => this.RaiseAndSetIfChanged(ref _categoryId, value);
+    }
+
+    public ProductEditViewModel()
+    {
+        
     }
 
     public ProductEditModel ToBaseModel()

@@ -80,6 +80,13 @@ public class CreateProductViewModel : RoutableViewModelBase
         });
         SaveCommand = ReactiveCommand.CreateFromTask(async () =>
         {
+            var modelIsValidResult = Model.IsValid();
+            if (!modelIsValidResult.IsSuccess)
+            {
+                Status = $"Saving failed, reasons:\n\t* {string.Join("\n\t* ", modelIsValidResult.Statuses)}";
+                return;
+            }
+
             var saveResult = await _productService.AddProduct(Model);
             if (!saveResult.IsSuccess)
             {

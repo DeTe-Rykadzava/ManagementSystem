@@ -38,6 +38,7 @@ public class ProductsViewModel : RoutableViewModelBase
     
     // commands
     public ICommand CreateProductCommand { get; }
+    public ReactiveCommand<ProductViewModel, Unit> EditProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> DeleteProductCommand { get; }
 
     public ProductsViewModel(IUserStorageService userStorageService,
@@ -58,7 +59,27 @@ public class ProductsViewModel : RoutableViewModelBase
             // }
                 await RootNavManager.NavigateTo<CreateProductViewModel>();
         });
-        DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) => { });
+        EditProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
+        {
+            
+        });
+        DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
+        {
+            var dialogResult = await dialogService.ShowPopupDialogAsync("Question",
+                "Are you sure you want to delete a product? In this case, the related orders will also be deleted, make sure that the data is saved.", ButtonEnum.YesNo, Icon.Question);
+            if (dialogResult == ButtonResult.No) 
+                return;
+            var deleteResult = await _productService.DeleteProduct(product.Id);
+            if (deleteResult.IsSuccess == false)
+            {
+                await dialogService.ShowPopupDialogAsync("Error",
+                    $"Sorry deleted is failed. Reasons:\n\t* {string.Join("\n\t* ", deleteResult.Statuses)}", icon: Icon.Error);
+                return;
+            }
+            await dialogService.ShowPopupDialogAsync("Success",
+                $"Success deleted", icon: Icon.Success);
+            Products.Remove(product);
+        });
         Task.Run(LoadProducts);
     }
 
@@ -70,6 +91,7 @@ public class ProductsViewModel : RoutableViewModelBase
 
     private async Task LoadProducts()
     {
+        Products.Clear();
         var productsResult = await _productService.GetProducts();
         if(!productsResult.IsSuccess || productsResult.Value == null)
             return;

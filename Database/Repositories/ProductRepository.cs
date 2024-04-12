@@ -21,7 +21,9 @@ public class ProductRepository : IProductRepository
         var result = new ActionResultModel<IEnumerable<ProductModel>>();
         try
         {
-            var products = await _context.Products.Select(s => new ProductModel(s)).ToListAsync();
+            var products = await _context.Products.Include(i => i.Category)
+                                                                  .Select(s => new ProductModel(s))
+                                                                  .ToListAsync();
             result.IsSuccess = true;
             result.ResultTypes.Add(ActionResultType.SuccessGet);
             result.Value = products;

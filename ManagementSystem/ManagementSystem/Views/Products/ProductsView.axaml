@@ -3,9 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
+             xmlns:converter="clr-namespace:ManagementSystem.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.ProductsView"
              x:DataType="vm:ProductsViewModel">
+    <UserControl.Resources>
+        <converter:BytesImageConverter x:Key="ImageConverter"/>
+    </UserControl.Resources>
     <Grid RowDefinitions="Auto *"
           Margin="5">
         <DockPanel Grid.Row="0">
@@ -32,65 +36,77 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
         </Border>
-        <ItemsControl Grid.Row="1"
-                      ItemsSource="{Binding Products}"
-                      IsVisible="{Binding !ProductsIsEmpty}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="{StaticResource SaladColor}"
-                            Padding="10"
-                            CornerRadius="8"
-                            Margin="10">
-                        <Border.Effect>
-                            <DropShadowEffect Color="Black" OffsetX="5" OffsetY="5" BlurRadius="2.5"/>
-                        </Border.Effect>
-                        <Grid ColumnDefinitions="* Auto">
-                            <Grid Grid.Column="0" 
-                                  RowDefinitions="2* *"
-                                  Margin="5">
-                                <Image Grid.Row="0"
-                                       Source="{Binding Images[0]}"
-                                       Stretch="Uniform"/>
-                                <StackPanel Grid.Row="1" Spacing="20">
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="10">
-                                        <TextBlock Text="Title:"
-                                                   FontWeight="Bold"
-                                                   FontSize="16"/>
-                                        <TextBlock Text="{Binding Title}"
-                                                   FontSize="16"/>
-                                    </StackPanel>
-                                    <StackPanel Spacing="10">
+        <ScrollViewer Grid.Row="0"
+                      Padding="0 0 20 0">
+            <ItemsControl ItemsSource="{Binding Products}"
+                          IsVisible="{Binding !ProductsIsEmpty}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource DarkerColor}"
+                                Padding="10"
+                                CornerRadius="8"
+                                Margin="10">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" OffsetX="5" OffsetY="5" BlurRadius="2.5"/>
+                            </Border.Effect>
+                            <Grid ColumnDefinitions="* Auto">
+                                <Grid Grid.Column="0" 
+                                      RowDefinitions="2* *"
+                                      Margin="5">
+                                    <Image Grid.Row="0"
+                                           Source="{Binding Images[0], Converter={StaticResource ImageConverter}}"
+                                           Stretch="Uniform"/>
+                                    <StackPanel Grid.Row="1" Spacing="20">
                                         <StackPanel Orientation="Horizontal"
                                                     Spacing="10">
-                                            <TextBlock Text="Description:"
-                                                       FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding Description}"/>
+                                            <TextBlock Text="Title:"
+                                                       FontWeight="Bold"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="16"/>
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal"
-                                                    Spacing="10">
-                                            <TextBlock Text="Cost:"
-                                                       FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding Cost}"
-                                                       Foreground="{StaticResource DarkerColor}"/>
+                                        <StackPanel Spacing="10">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="10">
+                                                <TextBlock Text="Description:"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Description}"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="10">
+                                                <TextBlock Text="Cost:"
+                                                           FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Cost}"
+                                                           Foreground="{StaticResource DarkerColor}"/>
+                                            </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
+                                </Grid>
+                                <StackPanel Grid.Column="1"
+                                            Spacing="10">
+                                    <Button Padding="6"
+                                            Background="Coral">
+                                        <Image Source="avares://ManagementSystem/Assets/edit.png"
+                                               Width="32"
+                                               Height="32"/>
+                                    </Button>
+                                    <Button Padding="6"
+                                            Background="Brown">
+                                        <Image Source="avares://ManagementSystem/Assets/trash.png"
+                                               Width="32"
+                                               Height="32"/>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
-                            <StackPanel Grid.Column="1"
-                                        Spacing="10">
-                                <Button Padding="0"></Button>
-                                <Button Padding="0"></Button>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

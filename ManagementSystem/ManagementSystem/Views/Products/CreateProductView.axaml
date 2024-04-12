@@ -47,8 +47,7 @@
                                 Orientation="Vertical">
                         <TextBlock Text="category"/>
                         <ComboBox ItemsSource="{Binding Categories}"
-                                  SelectedValueBinding="{Binding Id}"
-                                  SelectedItem="{Binding Model.CategoryId}">
+                                  SelectedItem="{Binding Model.Category}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="productVms:ProductCategoryViewModel">
                                     <TextBlock Text="{Binding CategoryName}"/>

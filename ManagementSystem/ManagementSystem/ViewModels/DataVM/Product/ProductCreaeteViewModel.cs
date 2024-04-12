@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,12 +38,12 @@ public class ProductCreateViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _cost, value);
     }
 
-    private int _categoryId;
+    private ProductCategoryViewModel? _category;
     [Required(ErrorMessage = "Category is required")]
-    public int CategoryId
+    public ProductCategoryViewModel? Category
     {
-        get => _categoryId;
-        set => this.RaiseAndSetIfChanged(ref _categoryId, value);
+        get => _category;
+        set => this.RaiseAndSetIfChanged(ref _category, value);
     }
 
     private bool _imagesIsEmpty = true;
@@ -61,14 +62,33 @@ public class ProductCreateViewModel : ViewModelBase
             ImagesIsEmpty = !Images.Any();
         };
     }
-    
+
+    public ActionResultViewModel<object> IsValid()
+    {
+        var validationContext = new ValidationContext(this);
+        var results = new List<ValidationResult>();
+        var validationResult = Validator.TryValidateObject(this, validationContext, results, true);
+
+        var result = new ActionResultViewModel<object>();
+        result.IsSuccess = validationResult;
+        result.Statuses.AddRange(results.Select(s => s.ErrorMessage).ToList()!);
+        return result;
+    }
+
     public ProductCreateModel ToBaseModel()
     {
+        var validationContext = new ValidationContext(this);
+        var results = new List<ValidationResult>();
+        var validationResult = Validator.TryValidateObject(this, validationContext, results, true);
+
+        if (Category == null)
+            throw new ArgumentException($"{nameof(Category)} cannot be null", nameof(Category));
+        
         return new ProductCreateModel
         {
             Cost = this.Cost,
             Description = this.Description,
-            CategoryId = this.CategoryId,
+            CategoryId = this.Category.Id,
             Title = this.Title,
             Images = this.Images.ToList()
         };
