@@ -2,6 +2,7 @@
 using Database.DataDatabase;
 using Database.Interfaces;
 using Database.Models.Basket;
+using Database.Models.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,22 +16,38 @@ public class BasketRepository : IBasketRepository
     public BasketRepository(IManagementSystemDatabaseContext context, ILogger<BasketRepository> logger) =>
         (_context, _logger) = (context, logger);
     
-    public async Task<BasketModel?> Get(int userId)
+    public async Task<ActionResultModel<BasketModel>> Get(int userId)
     {
+        var result = new ActionResultModel<BasketModel>();
         try
         {
-            var basket = await _context.UserBaskets.FirstOrDefaultAsync(x => x.UserId == userId);
-            return basket == null ? null : new BasketModel(basket);
+            var basket = await _context.UserBaskets
+                .Include(i => i.BasketProducts)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+            if (basket == null)
+            {
+                result.ResultTypes.Add(ActionResultType.FailGet);
+                result.ResultTypes.Add(ActionResultType.ObjectNotExist);
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.ResultTypes.Add(ActionResultType.SuccessGet);
+                result.Value = new BasketModel(basket);
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Error with get user basket from database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
-            return null;
+            result.ResultTypes.Add(ActionResultType.FailGet);
         }
+        return result;
     }
 
-    public async Task<bool> CreateBasket(int userId)
+    public async Task<ActionResultModel<BasketModel>> CreateBasket(int userId)
     {
+        var result = new ActionResultModel<BasketModel>();
         try
         {
             var basket = new UserBasket
@@ -41,13 +58,19 @@ public class BasketRepository : IBasketRepository
             await _context.UserBaskets.AddAsync(basket);
             await _context.SaveChangesAsync();
             
-            return true;
+            result.ResultTypes.Add(ActionResultType.SuccessAdd);
+            result.ResultTypes.Add(ActionResultType.SuccessSave);
+            result.IsSuccess = true;
+            result.Value = new BasketModel(basket);
         }
         catch (Exception e)
         {
             _logger.LogError("Error with get user basket from database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
-            return false;
+            result.ResultTypes.Add(ActionResultType.FailAdd);
+            result.ResultTypes.Add(ActionResultType.FailSave);
         }
+
+        return result;
     }
 
     public async Task<bool> AddIntoBasket(ManageProductIntoBasketModel model)

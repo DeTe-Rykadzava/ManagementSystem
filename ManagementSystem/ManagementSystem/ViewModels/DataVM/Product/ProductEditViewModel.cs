@@ -7,17 +7,14 @@ namespace ManagementSystem.ViewModels.DataVM.Product;
 
 public class ProductEditViewModel : ViewModelBase
 {
-    private readonly ProductModel _originalProduct;
-    private ProductModel _changedProduct;
-    
-    [Required]
-    public int Id => _originalProduct.Id;
+    [Required] 
+    public int Id { get; set; }
 
     private string _title = string.Empty;
     [Required]
     public string Title
     {
-        get => _changedProduct.Title;
+        get => _title;
         set => this.RaiseAndSetIfChanged(ref _title, value);
     }
 
@@ -29,10 +26,10 @@ public class ProductEditViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _description, value);
     }
 
-    private double _cost = 0D;
+    private decimal _cost = 0M;
     [Required]
-    [Range(0D,double.MaxValue)]
-    public double Cost
+    [Range(0, int.MaxValue)]
+    public decimal Cost
     {
         get => _cost;
         set => this.RaiseAndSetIfChanged(ref _cost, value);

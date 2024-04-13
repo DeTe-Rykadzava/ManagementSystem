@@ -13,6 +13,8 @@ public class UserViewModel : ViewModelBase
 {
     private readonly UserModel _user;
 
+    public int Id => _user.Id;
+    
     public int UserInfoId => _user.UserInfoId;
     
     public string Login => _user.Login;

@@ -11,7 +11,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     public ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
         : base(options)
     {
-        Database.EnsureCreated();
+        // Database.EnsureCreated();
     }
 
     public virtual DbSet<BasketProduct> BasketProducts { get; set; }

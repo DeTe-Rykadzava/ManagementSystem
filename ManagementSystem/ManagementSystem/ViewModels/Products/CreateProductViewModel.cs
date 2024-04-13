@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
@@ -37,13 +38,6 @@ public class CreateProductViewModel : RoutableViewModelBase
     private readonly IDialogService _dialogService;
     
     // fields
-    private bool _canUserCreateProduct = false;
-    public bool CanUserCreateProduct
-    {
-        get => _canUserCreateProduct;
-        set => this.RaiseAndSetIfChanged(ref _canUserCreateProduct, value);
-    }
-
     private string? _status;
     public string? Status
     {
@@ -60,7 +54,7 @@ public class CreateProductViewModel : RoutableViewModelBase
     public ICommand CanselCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand AddProductPhotoCommand { get; }
-
+    public ReactiveCommand<byte[], Unit> RemoveProductPhotoCommand { get; }
 
     public CreateProductViewModel(IUserStorageService userStorageService,
                                   IProductService productService,
@@ -123,6 +117,11 @@ public class CreateProductViewModel : RoutableViewModelBase
             {
                 await _dialogService.ShowPopupDialogAsync("Error", "Sorry, but we have a problem with adding photo to product");
             }
+        });
+        RemoveProductPhotoCommand = ReactiveCommand.CreateFromTask(async (byte[] productPhoto) =>
+        {
+            Model.Images.Remove(productPhoto);
+            Model.ImagesIsEmpty = Model.Images.Any();
         });
     }
 

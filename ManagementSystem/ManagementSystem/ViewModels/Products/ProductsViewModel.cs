@@ -35,12 +35,18 @@ public class ProductsViewModel : RoutableViewModelBase
         get => _productsIsEmpty;
         set => this.RaiseAndSetIfChanged(ref _productsIsEmpty, value);
     }
-    
+
+    public ObservableCollection<ProductViewModel> OrderProducts { get; } = new();
+
     // commands
     public ICommand CreateProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> EditProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> DeleteProductCommand { get; }
-
+    public ReactiveCommand<ProductViewModel, Unit> AddProductToUserBasketCommand { get; }
+    public ReactiveCommand<ProductViewModel, Unit> AddProductToOrderCommand { get; }
+    public ReactiveCommand<ProductViewModel, Unit> RemoveProductFromUserBasketCommand { get; }
+    public ReactiveCommand<ProductViewModel, Unit> RemoveProductFromOrderCommand { get; }
+    
     public ProductsViewModel(IUserStorageService userStorageService,
                              IProductService productService,
                              IDialogService dialogService)
@@ -50,14 +56,14 @@ public class ProductsViewModel : RoutableViewModelBase
         _dialogService = dialogService;
         CreateProductCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            // if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
-            // {
-            //     await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
-            // }
-            // else
-            // {
-            // }
+            if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
+            }
+            else
+            {
                 await RootNavManager.NavigateTo<CreateProductViewModel>();
+            }
         });
         EditProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
@@ -65,22 +71,32 @@ public class ProductsViewModel : RoutableViewModelBase
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            var dialogResult = await dialogService.ShowPopupDialogAsync("Question",
-                "Are you sure you want to delete a product? In this case, the related orders will also be deleted, make sure that the data is saved.", ButtonEnum.YesNo, Icon.Question);
-            if (dialogResult == ButtonResult.No) 
-                return;
-            var deleteResult = await _productService.DeleteProduct(product.Id);
-            if (deleteResult.IsSuccess == false)
+            if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
             {
-                await dialogService.ShowPopupDialogAsync("Error",
-                    $"Sorry deleted is failed. Reasons:\n\t* {string.Join("\n\t* ", deleteResult.Statuses)}", icon: Icon.Error);
-                return;
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot delete product from system", icon: Icon.Error);
             }
-            await dialogService.ShowPopupDialogAsync("Success",
-                $"Success deleted", icon: Icon.Success);
-            Products.Remove(product);
+            else
+            {
+                var dialogResult = await dialogService.ShowPopupDialogAsync("Question",
+                    "Are you sure you want to delete a product? In this case, the related orders will also be deleted, make sure that the data is saved.", ButtonEnum.YesNo, Icon.Question);
+                if (dialogResult == ButtonResult.No) 
+                    return;
+                var deleteResult = await _productService.DeleteProduct(product.Id);
+                if (deleteResult.IsSuccess == false)
+                {
+                    await dialogService.ShowPopupDialogAsync("Error",
+                        $"Sorry deleted is failed. Reasons:\n\t* {string.Join("\n\t* ", deleteResult.Statuses)}", icon: Icon.Error);
+                    return;
+                }
+                await dialogService.ShowPopupDialogAsync("Success",
+                    $"Success deleted", icon: Icon.Success);
+                Products.Remove(product);
+            }
         });
-        Task.Run(LoadProducts);
+        AddProductToUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
+        AddProductToOrderCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
+        RemoveProductFromUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
+        RemoveProductFromOrderCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
     }
 
     public override Task OnShowed()

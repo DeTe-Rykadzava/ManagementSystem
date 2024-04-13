@@ -22,6 +22,7 @@ public class ProductRepository : IProductRepository
         try
         {
             var products = await _context.Products.Include(i => i.Category)
+                                                                  .Include(i => i.ProductPhotos)
                                                                   .Select(s => new ProductModel(s))
                                                                   .ToListAsync();
             result.IsSuccess = true;
