@@ -24,6 +24,7 @@ public class UserRepository : IUserRepository
                 .AsQueryable()
                 .AsNoTracking()
                 .Include(i => i.UserInfo)
+                .ThenInclude(i => i.Role)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
@@ -123,11 +124,24 @@ public class UserRepository : IUserRepository
                     user.UserInfoId = userInfo.Id;
                     await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
-                    
-                    result.Value = new UserModel(user);
-                    result.IsSuccess = true;
-                    result.ResultTypes.Add(ActionResultType.SuccessAdd);
-                    result.ResultTypes.Add(ActionResultType.SuccessSave);
+
+                    var userFromBd = await GetUserById(user.Id);
+
+                    if (!userFromBd.IsSuccess)
+                    {
+                        result.IsSuccess = false;
+                        result.ResultTypes.Add(ActionResultType.SuccessAdd);
+                        result.ResultTypes.Add(ActionResultType.SuccessSave);
+                        result.ResultTypes.Add(ActionResultType.FailGet);
+                    }
+                    else
+                    {
+                        result.Value = userFromBd.Value;
+                        result.IsSuccess = true;
+                        result.ResultTypes.Add(ActionResultType.SuccessAdd);
+                        result.ResultTypes.Add(ActionResultType.SuccessSave);
+                        result.ResultTypes.Add(ActionResultType.SuccessGet);
+                    }
                 }
             }
         }

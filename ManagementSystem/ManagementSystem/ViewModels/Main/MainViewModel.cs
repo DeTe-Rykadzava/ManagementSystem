@@ -76,13 +76,12 @@ public class MainViewModel : RoutableViewModelBase
         {
             if (UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || UserStorageService.CurrentUser == null)
             {
-                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot create product into system", icon: Icon.Error);
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with product categories", icon: Icon.Stop);
             }
             else
             {
                 await SubNavigationService.NavigateTo<ProductCategoriesViewModel>();
             }
-            // await SubNavigationService.NavigateTo<ProductCategoriesViewModel>();
         });
         GoToWarehousesCommand = ReactiveCommand.CreateFromTask(async () =>
         {

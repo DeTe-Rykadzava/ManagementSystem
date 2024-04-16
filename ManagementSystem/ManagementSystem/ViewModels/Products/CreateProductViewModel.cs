@@ -120,8 +120,11 @@ public class CreateProductViewModel : RoutableViewModelBase
         });
         RemoveProductPhotoCommand = ReactiveCommand.CreateFromTask(async (byte[] productPhoto) =>
         {
-            Model.Images.Remove(productPhoto);
-            Model.ImagesIsEmpty = Model.Images.Any();
+            Dispatcher.UIThread.Invoke(new Action(() =>
+            {
+                Model.Images.Remove(productPhoto);
+                Model.ImagesIsEmpty = !Model.Images.Any();
+            }));
         });
     }
 

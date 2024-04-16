@@ -6,6 +6,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
@@ -89,7 +90,10 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
     {
         Task.Run(new Action(async () =>
         {
-            Categories.Clear();
+            Dispatcher.UIThread.Invoke(new Action(() =>
+            {
+                Categories.Clear();
+            }));
             var categoriesResult = await _productCategoryService.GetAll();
             if (!categoriesResult.IsSuccess || categoriesResult.Value == null || !categoriesResult.Value.Any())
             {
@@ -99,7 +103,10 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
             CategoriesEmpty = false;
             foreach (var category in categoriesResult.Value)
             {
-                Categories.Add(category);
+                Dispatcher.UIThread.Invoke(new Action(() =>
+                {
+                    Categories.Add(category);
+                }));
             }
         }));
     }

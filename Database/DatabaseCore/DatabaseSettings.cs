@@ -58,7 +58,9 @@ public abstract class DatabaseSettings
     public static IManagementSystemDatabaseContext GetDbContext()
     {
         var builder = new DbContextOptionsBuilder<ManagementSystemDatabaseContext>();
-        
+        builder.EnableSensitiveDataLogging();
+        builder.EnableDetailedErrors();
+        builder.EnableThreadSafetyChecks();
         var connectionString = GetConnectionString().GetAwaiter().GetResult();
         if (CurrentSelectedServer == DatabaseServers.PostgreSql)
             builder.UseNpgsql(connectionString);

@@ -77,8 +77,15 @@ public class ProductsViewModel : RoutableViewModelBase
         });
         EditProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            var editRouteVm = _editProductFactory.Create(product);
-            await RootNavManager.NavigateTo(editRouteVm);
+            // if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
+            // {
+            //     await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot edit product from system", icon: Icon.Error);
+            // }
+            // else
+            // {
+                var editRouteVm = _editProductFactory.Create(product);
+                await RootNavManager.NavigateTo(editRouteVm);
+            // }
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {

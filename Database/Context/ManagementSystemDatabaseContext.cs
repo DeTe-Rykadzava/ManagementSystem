@@ -51,6 +51,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseSerialColumns();
         modelBuilder.Entity<BasketProduct>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("basket_product_pk");
@@ -204,7 +205,6 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
             entity.HasIndex(e => e.CategoryId, "IX_product_category_id");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.Cost).HasColumnName("cost");

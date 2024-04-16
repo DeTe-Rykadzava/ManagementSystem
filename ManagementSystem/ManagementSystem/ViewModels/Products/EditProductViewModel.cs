@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using DynamicData;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
@@ -85,15 +86,7 @@ public class EditProductViewModel : RoutableViewModelBase
         set => this.RaiseAndSetIfChanged(ref _imagesIsEmpty, value);
     }
 
-    public ObservableCollection<ProductPhotoViewModel> Images { get; } = new();
-
-    private bool _productIsInitialized = false;
-
-    public bool ProductIsInitialized
-    {
-        get => _productIsInitialized;
-        set => this.RaiseAndSetIfChanged(ref _productIsInitialized, value);
-    }
+    public ObservableCollection<ProductPhotoViewModel> Images { get; private set; } = new();
 
     // commands
     public ICommand CanselCommand { get; }
@@ -114,7 +107,7 @@ public class EditProductViewModel : RoutableViewModelBase
         _userStorageService = userStorageService;
         _storageService = storageService;
         _dialogService = dialogService;
-        Images = new ObservableCollection<ProductPhotoViewModel>(_currentProduct.Images.ToList());
+        
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await RootNavManager.GoBack();
@@ -237,7 +230,8 @@ public class EditProductViewModel : RoutableViewModelBase
             Images.Remove(productPhoto);
             ImagesIsEmpty = Images.Any();
         });
-        SetProductData();
+        
+        Task.Run(SetProductData);
     }
     
     private void SetProductData()
@@ -246,6 +240,12 @@ public class EditProductViewModel : RoutableViewModelBase
         Description = _currentProduct.Description;
         Cost = _currentProduct.Cost;
         Status = null;
+
+        Dispatcher.UIThread.Invoke(new Action(() =>
+        {
+            Images.AddRange(_currentProduct.Images.ToList());
+            ImagesIsEmpty = !Images.Any();
+        }));
     }
 
     public override async Task OnShowed()

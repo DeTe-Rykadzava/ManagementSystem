@@ -15,7 +15,7 @@ public class StaticResources
     
     public static string NoImagePicture { get; } = "avares://ManagementSystem/Assets/no-image.png";
 
-    public static int ClientRoleId { get; } = 1;
+    public static int ClientRoleId { get; } = 3;
 
     public static string AdminRoleName { get; } = "admin";
 

@@ -74,11 +74,12 @@ public class ProductRepository : IProductRepository
                 Cost = product.Cost,
                 Description = product.Description,
                 CategoryId = product.CategoryId,
-                Title = product.Title
+                Title = product.Title,
+                Id = default
             };
             await _context.Products.AddAsync(newProduct);
-            result.ResultTypes.Add(ActionResultType.SuccessAdd);
             await _context.SaveChangesAsync();
+            result.ResultTypes.Add(ActionResultType.SuccessAdd);
             result.ResultTypes.Add(ActionResultType.SuccessSave);
             foreach (var image in product.Images)
             {
