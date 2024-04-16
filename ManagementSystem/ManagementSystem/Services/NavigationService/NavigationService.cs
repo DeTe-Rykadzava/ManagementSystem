@@ -68,6 +68,25 @@ public sealed class NavigationService : INavigationService
         await CurrentViewModel.OnShowed();
     }
 
+    public async Task NavigateTo(RoutableViewModelBase viewModel)
+    {
+        var historyVm = _history.FirstOrDefault(x => x.ViewModelViewPath == viewModel.ViewModelViewPath);
+        _currentIndex += 1;
+        if (historyVm != null)
+        {
+            _history.Remove(historyVm);
+            _currentIndex -= 1;
+            _history.Insert(_currentIndex, historyVm);
+        }
+        else
+        {
+            _history.Insert(_currentIndex, viewModel);
+        }
+        CurrentViewModel = viewModel;
+        CurrentViewModel.OnInitialized(this); 
+        await CurrentViewModel.OnShowed();
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

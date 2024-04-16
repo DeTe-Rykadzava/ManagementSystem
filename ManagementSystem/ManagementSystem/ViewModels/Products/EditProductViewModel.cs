@@ -33,8 +33,8 @@ public class EditProductViewModel : RoutableViewModelBase
     private readonly IStorageService _storageService;
     private readonly IDialogService _dialogService;
     
-    // fileds 
-    private ProductViewModel? _currentProduct = null;
+    // fields 
+    private readonly ProductViewModel _currentProduct;
     
     private string? _status = "Product is not initialized";
     public string? Status
@@ -102,24 +102,25 @@ public class EditProductViewModel : RoutableViewModelBase
     public ReactiveCommand<ProductPhotoViewModel, Unit> RemoveProductPhotoCommand { get; }
     
     public EditProductViewModel(IUserStorageService userStorageService,
-                                  IProductService productService,
-                                  IStorageService storageService,
-                                  IDialogService dialogService,
-                                  IProductCategoryService productCategoryService)
+                                IProductService productService,
+                                IStorageService storageService,
+                                IDialogService dialogService,
+                                IProductCategoryService productCategoryService,
+                                ProductViewModel product)
     {
+        _currentProduct = product;
         _productService = productService;
         _productCategoryService = productCategoryService;
         _userStorageService = userStorageService;
         _storageService = storageService;
         _dialogService = dialogService;
-        // Model = new ProductCreateViewModel();
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await RootNavManager.GoBack();
         });
         SaveCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            if (_currentProduct == null || !ProductIsInitialized)
+            if (_currentProduct.Id == 0)
             {
                 await _dialogService.ShowPopupDialogAsync("Error", "Cannot save current edited product. Purpose: product is not initialized", icon: Icon.Error);
                 Status = "Cannot save current edited product. Purpose: product is not initialized";
@@ -167,7 +168,7 @@ public class EditProductViewModel : RoutableViewModelBase
         });
         AddProductPhotoCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            if (_currentProduct == null || !ProductIsInitialized)
+            if (_currentProduct.Id == 0)
             {
                 await _dialogService.ShowPopupDialogAsync("Error", "Cannot add photo to current product. Purpose: product is not initialized", icon: Icon.Error);
                 Status = "Cannot add photo to current product. Purpose: product is not initialized";
@@ -209,8 +210,8 @@ public class EditProductViewModel : RoutableViewModelBase
         });
         RemoveProductPhotoCommand = ReactiveCommand.CreateFromTask(async (ProductPhotoViewModel productPhoto) =>
         {
-            if (_currentProduct == null || !ProductIsInitialized)
-            { 
+            if (_currentProduct.Id == 0)
+            {
                 await _dialogService.ShowPopupDialogAsync("Error", "Cannot remove photo from current product. Purpose: product is not initialized", icon: Icon.Error);
                 Status = "Cannot remove photo from current product. Purpose: product is not initialized";
                 return;
@@ -235,32 +236,36 @@ public class EditProductViewModel : RoutableViewModelBase
             Images.Remove(productPhoto);
             ImagesIsEmpty = Images.Any();
         });
+        SetProductData();
     }
     
-    public async void InitProduct(ProductViewModel product)
+    private void SetProductData()
     {
-        ProductIsInitialized = true;
-        Title = product.Title;
-        Description = product.Description;
-        Cost = product.Cost;
-        if (Categories.Any())
-        {
-            Category = Categories.FirstOrDefault(x => x.Id == product.CategoryId);
-        }
-        else
-        {
-            await Task.Run(LoadCategories);
-            Category = Categories.FirstOrDefault(x => x.Id == product.CategoryId);
-        }
-
+        Title = _currentProduct.Title;
+        Description = _currentProduct.Description;
+        Cost = _currentProduct.Cost;
         Status = null;
     }
 
     public override async Task OnShowed()
     {
         await Task.Run(LoadCategories);
+        await Task.Run(SetProductCategory);
     }
-    
+
+    private async Task SetProductCategory()
+    {
+        if (Categories.Any())
+        {
+            Category = Categories.FirstOrDefault(x => x.Id == _currentProduct.CategoryId);
+        }
+        else
+        {
+            await Task.Run(LoadCategories);
+            Category = Categories.FirstOrDefault(x => x.Id == _currentProduct.CategoryId);
+        }
+    }
+
     private async Task LoadCategories()
     {
         try

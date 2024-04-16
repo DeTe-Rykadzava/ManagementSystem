@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using Avalonia.Threading;
 using Database.Context;
 using Database.Interfaces;
 using Database.Repositories;
+using ManagementSystem.Services.BasketService;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DatabaseServices.Services;
 using ManagementSystem.Services.DialogService;
@@ -21,6 +21,7 @@ using ManagementSystem.ViewModels.Auth;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.Main;
 using ManagementSystem.ViewModels.Products;
+using ManagementSystem.ViewModels.Products.Factories;
 using ManagementSystem.Views.Auth;
 using ManagementSystem.Views.Main;
 using ManagementSystem.Views.Products;
@@ -124,7 +125,7 @@ public class AppViewModel : ViewModelBase
             // register database services
             _logger.LogInformation("Register database services");
             Status = "Start register database services";  
-            _locator.RegisterConstant<IBasketService>(           new BasketService());
+            _locator.RegisterConstant<IBasketService>(           new BasketService(_locator.GetService<IBasketRepository>()!, loggerFactory.CreateLogger<BasketService>()));
             _logger.LogInformation("IBasketService registered");
             Status = "Successful register 1/9 database service";
             _locator.RegisterConstant<IOrderPaymentTypeService>( new OrderPaymentTypeService());
@@ -159,10 +160,13 @@ public class AppViewModel : ViewModelBase
             Status = "Start register program services";  
             _locator.RegisterConstant(new NavigationService(_locator), typeof(INavigationService), "MainNavManager");
             _logger.LogInformation("INavigationService registered");
-            Status = "Successful register 1/2 program service";
+            Status = "Successful register 1/4 program service";
             _locator.RegisterConstant(new UserStorageService(), typeof(IUserStorageService));
             _logger.LogInformation("IUserStorageService registered");
-            Status = "Successful register 2/3 program service";
+            Status = "Successful register 2/4 program service";
+            _locator.RegisterConstant(new UserBasketService(_locator.GetService<IUserStorageService>()!, _locator.GetService<IBasketService>()!), typeof(IUserBasketService));
+            _logger.LogInformation("IUserStorageService registered");
+            Status = "Successful register 3/4 program service";
             TopLevel? topLevel = null;
             if (lifeRuntime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
@@ -181,10 +185,16 @@ public class AppViewModel : ViewModelBase
             }
             _locator.RegisterConstant(new StorageService(topLevel.StorageProvider, loggerFactory.CreateLogger<StorageService>()), typeof(IStorageService));
             _logger.LogInformation("IStorageService registered");
-            Status = "Successful register 3/3 program service";
+            Status = "Successful register 4/4 program service";
             Status = "Successful register all program services";
             _logger.LogInformation("Successful register program services");
     
+            // register factories
+            _logger.LogInformation("Register program factories");
+            _locator.RegisterConstant(new EditProductViewModelFactory(_locator.GetService<IUserStorageService>()!,_locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!), typeof(IEditProductViewModelFactory));
+            _logger.LogInformation("IEditProductViewModelFactory registered");
+            _logger.LogInformation("Successful register program factories");
+            
             Status = "Start register views";
             // register ViewModels
             _locator.Register<SignInViewModel>(() =>
