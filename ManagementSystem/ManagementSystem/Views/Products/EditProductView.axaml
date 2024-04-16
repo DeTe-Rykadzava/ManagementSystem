@@ -38,8 +38,7 @@
                                 Orientation="Vertical">
                         <TextBlock Text="title"/>
                         <TextBox Watermark="Title of product"
-                                 Text="{Binding Title}"
-                                 IsEnabled="{Binding ProductIsInitialized}"/>
+                                 Text="{Binding Title}"/>
                     </StackPanel>
                     <StackPanel Spacing="0"
                                 Orientation="Vertical">
@@ -47,22 +46,19 @@
                         <TextBox Watermark="Description of product"
                                  Text="{Binding Description}"
                                  TextWrapping="Wrap"
-                                 MaxHeight="150"
-                                 IsEnabled="{Binding ProductIsInitialized}"/>
+                                 MaxHeight="150"/>
                     </StackPanel>
                     <StackPanel Spacing="0"
                                 Orientation="Vertical">
                         <TextBlock Text="cost"/>
                         <TextBox Watermark="Cost of product"
-                                 Text="{Binding Cost}"
-                                 IsEnabled="{Binding ProductIsInitialized}"/>
+                                 Text="{Binding Cost}"/>
                     </StackPanel>
                     <StackPanel Spacing="30"
                                 Orientation="Vertical">
                         <TextBlock Text="category"/>
                         <ComboBox ItemsSource="{Binding Categories}"
-                                  SelectedItem="{Binding Category}"
-                                  IsEnabled="{Binding ProductIsInitialized}">
+                                  SelectedItem="{Binding Category}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate x:DataType="productVms:ProductCategoryViewModel">
                                     <TextBlock Text="{Binding CategoryName}"/>

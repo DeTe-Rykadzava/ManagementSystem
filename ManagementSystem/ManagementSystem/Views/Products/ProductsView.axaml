@@ -9,6 +9,7 @@
              x:DataType="vm:ProductsViewModel">
     <UserControl.Resources>
         <converter:BytesImageConverter x:Key="ImageConverter"/>
+        <converter:BytesImageConverter x:Key="ContainsObjectConverter"/>
     </UserControl.Resources>
     <Grid RowDefinitions="Auto *"
           Margin="5">
@@ -112,28 +113,37 @@
                                     <StackPanel DockPanel.Dock="Top"
                                                 Spacing="10">
                                         <Button Padding="6"
-                                                Background="Coral">
+                                                Background="Coral"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).EditProductCommand}"
+                                                CommandParameter="{Binding .}">
                                             <Image Source="avares://ManagementSystem/Assets/edit.png"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
                                         <Button Padding="6"
-                                                Background="Brown">
+                                                Background="Brown"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).DeleteProductCommand}"
+                                                CommandParameter="{Binding .}">
                                             <Image Source="avares://ManagementSystem/Assets/trash.png"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
                                     </StackPanel>
                                     <StackPanel DockPanel.Dock="Bottom"
-                                                Spacing="10">
+                                                Spacing="10"
+                                                IsVisible="{Binding ., Converter={StaticResource ContainsObjectConverter}, ConverterParameter={Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).UserBasketService.Products}}">
                                         <Button Padding="6"
-                                                Background="Peru">
+                                                Background="Peru"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).AddProductToUserBasketCommand}"
+                                                CommandParameter="{Binding .}">
                                             <Image Source="avares://ManagementSystem/Assets/basket.png"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
                                         <Button Padding="6"
-                                                Background="Green">
+                                                Background="Green"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).AddProductToOrderCommand}"
+                                                CommandParameter="{Binding .}">
                                             <Image Source="avares://ManagementSystem/Assets/shopping-basket.png"
                                                    Width="32"
                                                    Height="32"/>

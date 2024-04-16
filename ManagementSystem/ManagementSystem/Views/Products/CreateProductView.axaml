@@ -100,23 +100,26 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid ColumnDefinitions="* 20 Auto">
-                                    <Image Width="250"
-                                           Height="250"
-                                           Stretch="Uniform"
-                                           Source="{Binding ., Converter={StaticResource ImageConverter}}"
-                                           Margin="0 0  25 0"/>
-                                    <Button Grid.Column="2"
-                                            VerticalAlignment="Bottom"
-                                            Padding="0"
-                                            Command="{Binding $parent[UserControl].((vm:CreateProductViewModel)DataContext).RemoveProductPhotoCommand}"
-                                            CommandParameter="{Binding .}"
-                                            Background="Brown">
-                                        <Image Width="32"
-                                               Height="32"
-                                               Source="avares://ManagementSystem/Assets/trash.png"/>
-                                    </Button>
-                                </Grid>
+                                <Border Margin="0 0 25 0"
+                                        Padding="10"
+                                        Background="{StaticResource LighterColorV2}">
+                                    <Grid ColumnDefinitions="* 10 Auto">
+                                        <Image Width="250"
+                                               Height="250"
+                                               Stretch="Uniform"
+                                               Source="{Binding ., Converter={StaticResource ImageConverter}}"/>
+                                        <Button Grid.Column="2"
+                                                VerticalAlignment="Bottom"
+                                                Padding="0"
+                                                Command="{Binding $parent[UserControl].((vm:CreateProductViewModel)DataContext).RemoveProductPhotoCommand}"
+                                                CommandParameter="{Binding .}"
+                                                Background="Brown">
+                                            <Image Width="32"
+                                                   Height="32"
+                                                   Source="avares://ManagementSystem/Assets/trash.png"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

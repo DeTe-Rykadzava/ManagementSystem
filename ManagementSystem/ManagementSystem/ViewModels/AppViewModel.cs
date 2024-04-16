@@ -195,29 +195,27 @@ public class AppViewModel : ViewModelBase
             _logger.LogInformation("IEditProductViewModelFactory registered");
             _logger.LogInformation("Successful register program factories");
             
-            Status = "Start register views";
             // register ViewModels
-            _locator.Register<SignInViewModel>(() =>
-                new SignInViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IUserService>()!));
-            _locator.Register<SignUpViewModel>(() =>
-                new SignUpViewModel(_locator.GetService<IUserService>()!, _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
-            _locator.Register<SignOutViewModel>(() => new SignOutViewModel(_locator.GetService<IUserStorageService>()!));
-            _locator.Register<HomeViewModel>(() => new HomeViewModel());
-            _locator.Register<CreateProductViewModel>(() => new CreateProductViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
+            Status = "Start register views";
+            _locator.Register<SignInViewModel>(           () => new SignInViewModel(               _locator.GetService<IUserStorageService>()!,       _locator.GetService<IUserService>()!));
+            _locator.Register<SignUpViewModel>(           () => new SignUpViewModel(                    _locator.GetService<IUserService>()!,         _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<SignOutViewModel>(          () => new SignOutViewModel(                             _locator.GetService<IUserStorageService>()!));
+            _locator.Register<HomeViewModel>(             () => new HomeViewModel());
+            _locator.Register<CreateProductViewModel>(    () => new CreateProductViewModel(        _locator.GetService<IUserStorageService>()!,    _locator.GetService<IProductService>()!,     _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
             _locator.Register<ProductCategoriesViewModel>(() => new ProductCategoriesViewModel( _locator.GetService<IProductCategoryService>()!, _locator.GetService<IDialogService>()!));
             
             // register constant ViewModels
-            _locator.RegisterConstant<MainViewModel>(new MainViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
-            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!));
+            _locator.RegisterConstant<MainViewModel>(    new MainViewModel(    _locator.GetService<IUserStorageService>()!,  _locator.GetService<IDialogService>()!));
+            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IEditProductViewModelFactory>()!, _locator.GetService<IUserBasketService>()!));
     
             // register Views
-            _locator.Register(() => new MainView(), typeof(IViewFor<MainViewModel>));
-            _locator.Register(() => new HomeView(), typeof(IViewFor<HomeViewModel>));
-            _locator.Register(() => new SignInView(), typeof(IViewFor<SignInViewModel>));
-            _locator.Register(() => new SignUpView(), typeof(IViewFor<SignUpViewModel>));
-            _locator.Register(() => new SignOutView(), typeof(IViewFor<SignOutViewModel>));
-            _locator.Register(() => new ProductsView(), typeof(IViewFor<ProductsViewModel>));
-            _locator.Register(() => new CreateProductView(), typeof(IViewFor<CreateProductViewModel>));
+            _locator.Register(() => new MainView(),              typeof(IViewFor<MainViewModel>));
+            _locator.Register(() => new HomeView(),              typeof(IViewFor<HomeViewModel>));
+            _locator.Register(() => new SignInView(),            typeof(IViewFor<SignInViewModel>));
+            _locator.Register(() => new SignUpView(),            typeof(IViewFor<SignUpViewModel>));
+            _locator.Register(() => new SignOutView(),           typeof(IViewFor<SignOutViewModel>));
+            _locator.Register(() => new ProductsView(),          typeof(IViewFor<ProductsViewModel>));
+            _locator.Register(() => new CreateProductView(),     typeof(IViewFor<CreateProductViewModel>));
             _locator.Register(() => new ProductCategoriesView(), typeof(IViewFor<ProductCategoriesViewModel>));
             Status = "Successful register all views";
     

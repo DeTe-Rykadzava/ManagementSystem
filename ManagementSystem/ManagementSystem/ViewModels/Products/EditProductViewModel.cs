@@ -114,6 +114,7 @@ public class EditProductViewModel : RoutableViewModelBase
         _userStorageService = userStorageService;
         _storageService = storageService;
         _dialogService = dialogService;
+        Images = new ObservableCollection<ProductPhotoViewModel>(_currentProduct.Images.ToList());
         CanselCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await RootNavManager.GoBack();

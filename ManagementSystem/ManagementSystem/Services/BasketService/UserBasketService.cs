@@ -31,7 +31,8 @@ public class UserBasketService : IUserBasketService
         if(_userStorageService.CurrentUser == null)
             return false;
         
-        Products.Add(product);
+        if(!Products.Contains(product))
+            Products.Add(product);
         return true;
     }
 
@@ -39,8 +40,9 @@ public class UserBasketService : IUserBasketService
     {
         if(_userStorageService.CurrentUser == null)
             return false;
-        
-        Products.Remove(product);
+
+        if (Products.Contains(product))
+            Products.Remove(product);
         return true;
     }
 }

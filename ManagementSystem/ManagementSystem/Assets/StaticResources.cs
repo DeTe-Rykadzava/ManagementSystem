@@ -12,6 +12,8 @@ public class StaticResources
     public static string AppIcon { get; } = "Assets/icon.png";
     
     public static string AppIconResourceLink { get; } = "avares://ManagementSystem/Assets/icon.png";
+    
+    public static string NoImagePicture { get; } = "avares://ManagementSystem/Assets/no-image.png";
 
     public static int ClientRoleId { get; } = 1;
 

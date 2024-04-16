@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml.Converters;
 using Avalonia.Media.Imaging;
+using ManagementSystem.Assets;
 
 namespace ManagementSystem.Converters;
 
@@ -15,7 +16,7 @@ public class BytesImageConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not byte[] imageBytes)
-            return null;
+            return StaticResources.NoImagePicture;
         Bitmap? image = null;
         var ms = new MemoryStream(imageBytes); 
         image = new Bitmap(ms);

@@ -140,7 +140,7 @@ public class CreateProductViewModel : RoutableViewModelBase
                 Dispatcher.UIThread.Invoke(new Action(async() =>
                 {
                     if(categoriesResult.Statuses.Any())
-                        await _dialogService.ShowPopupDialogAsync("error", $"sorry but categories of product is empty =( Purposes:\n\t{string.Join("\n\t", categoriesResult.Statuses)}");
+                        await _dialogService.ShowPopupDialogAsync("error", $"sorry but categories of product is empty, you cannot create product =( Purposes:\n\t{string.Join("\n\t", categoriesResult.Statuses)}");
                     else
                         await _dialogService.ShowPopupDialogAsync("error", "sorry but categories of product is empty =(");
                 }));

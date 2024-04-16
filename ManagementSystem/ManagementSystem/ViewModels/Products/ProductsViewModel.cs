@@ -1,15 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using ManagementSystem.Assets;
+using ManagementSystem.Services.BasketService;
 using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
+using ManagementSystem.ViewModels.Products.Factories;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using ReactiveUI;
@@ -25,7 +29,9 @@ public class ProductsViewModel : RoutableViewModelBase
     private readonly IProductService _productService;
     private readonly IDialogService _dialogService;
     private readonly IUserStorageService _userStorageService;
-    
+    private readonly IEditProductViewModelFactory _editProductFactory;
+    public IUserBasketService UserBasketService { get; }
+
     // fields
     public ObservableCollection<ProductViewModel> Products { get; } = new ObservableCollection<ProductViewModel>();
 
@@ -49,11 +55,15 @@ public class ProductsViewModel : RoutableViewModelBase
     
     public ProductsViewModel(IUserStorageService userStorageService,
                              IProductService productService,
-                             IDialogService dialogService)
+                             IDialogService dialogService,
+                             IEditProductViewModelFactory editProductFactory,
+                             IUserBasketService userBasketService)
     {
         _productService = productService;
         _userStorageService = userStorageService;
         _dialogService = dialogService;
+        _editProductFactory = editProductFactory;
+        UserBasketService = userBasketService;
         CreateProductCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
@@ -67,7 +77,8 @@ public class ProductsViewModel : RoutableViewModelBase
         });
         EditProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            
+            var editRouteVm = _editProductFactory.Create(product);
+            await RootNavManager.NavigateTo(editRouteVm);
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
@@ -93,27 +104,44 @@ public class ProductsViewModel : RoutableViewModelBase
                 Products.Remove(product);
             }
         });
-        AddProductToUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
-        AddProductToOrderCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
-        RemoveProductFromUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
-        RemoveProductFromOrderCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel productService) => { });
+        AddProductToUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
+        {
+            await UserBasketService.AddToUserBasket(product);
+        });
+        AddProductToOrderCommand = ReactiveCommand.Create((ProductViewModel product) =>
+        {
+            OrderProducts.Add(product);
+        });
+        RemoveProductFromUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
+        {
+            await UserBasketService.RemoveFromUserBasket(product);
+        });
+        RemoveProductFromOrderCommand = ReactiveCommand.Create((ProductViewModel product) =>
+        {
+            OrderProducts.Remove(product);
+        });
     }
 
-    public override Task OnShowed()
+    public override async Task OnShowed()
     {
-        Task.Run(LoadProducts);
-        return Task.FromResult(Unit.Default);
+        await Task.Run(LoadProducts);
     }
 
     private async Task LoadProducts()
     {
-        Products.Clear();
+        Dispatcher.UIThread.Invoke(new Action(() =>
+        {
+            Products.Clear();
+        }));
         var productsResult = await _productService.GetProducts();
         if(!productsResult.IsSuccess || productsResult.Value == null)
             return;
         foreach (var product in productsResult.Value)
         {
-            Products.Add(product);
+            Dispatcher.UIThread.Invoke(new Action(() =>
+            {
+                Products.Add(product);
+            }));
         }
         ProductsIsEmpty = Products.Count == 0;
     }
