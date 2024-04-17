@@ -19,8 +19,8 @@ namespace ManagementSystem.ViewModels.Products;
 
 public class ProductCategoriesViewModel : RoutableViewModelBase
 {
-    public override INavigationService RootNavManager { get; protected set; } = null!;
     public override string ViewModelViewPath { get; } = "categories";
+    public override INavigationService RootNavManager { get; protected set; } = null!;
 
     // services
     private readonly IProductCategoryService _productCategoryService;

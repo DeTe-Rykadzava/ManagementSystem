@@ -2,7 +2,7 @@
 
 namespace ManagementSystem.ViewModels.Products.Factories;
 
-public interface IEditProductViewModelFactory
+public interface IEditProductFactory
 {
     public EditProductViewModel Create(ProductViewModel product);
 }

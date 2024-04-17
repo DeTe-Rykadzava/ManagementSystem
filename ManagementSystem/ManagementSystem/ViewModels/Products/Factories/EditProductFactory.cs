@@ -6,7 +6,7 @@ using ManagementSystem.ViewModels.DataVM.Product;
 
 namespace ManagementSystem.ViewModels.Products.Factories;
 
-public class EditProductViewModelFactory : IEditProductViewModelFactory
+public class EditProductFactory : IEditProductFactory
 {
     // services
     private readonly IUserStorageService _userStorageService;
@@ -15,7 +15,7 @@ public class EditProductViewModelFactory : IEditProductViewModelFactory
     private readonly IDialogService _dialogService;
     private readonly IProductCategoryService _productCategoryService;
 
-    public EditProductViewModelFactory(IUserStorageService userStorageService,
+    public EditProductFactory(IUserStorageService userStorageService,
                                         IProductService productService,
                                         IStorageService storageService,
                                         IDialogService dialogService,

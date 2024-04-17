@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
              xmlns:productVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Product"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.ProductCategoriesView"
              x:DataType="vm:ProductCategoriesViewModel">
@@ -70,7 +71,7 @@
                                             CommandParameter="{Binding .}">
                                         <Image Width="32"
                                                Height="32"
-                                               Source="avares://ManagementSystem/Assets/trash.png"/>
+                                               Source="{x:Static local:StaticResources.TrashIconImage}"/>
                                     </Button>
                                     <TextBlock Text="{Binding CategoryName}"
                                                FontSize="14"

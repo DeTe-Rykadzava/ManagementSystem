@@ -124,7 +124,10 @@ public class ProductRepository : IProductRepository
             
                 await _context.ProductPhotos.AddAsync(photo);
                 await _context.SaveChangesAsync();
-            
+                result.IsSuccess = true;
+                result.ResultTypes.Add(ActionResultType.SuccessAdd);
+                result.ResultTypes.Add(ActionResultType.SuccessSave);
+                result.Value = new ProductPhotoModel(photo);
             }
         }
         catch (Exception e)

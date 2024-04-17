@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
@@ -11,6 +13,7 @@ using ManagementSystem.Services.DatabaseServices.Interfaces;
 using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
+using ManagementSystem.ViewModels.Basket;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
 using ManagementSystem.ViewModels.Products.Factories;
@@ -29,7 +32,7 @@ public class ProductsViewModel : RoutableViewModelBase
     private readonly IProductService _productService;
     private readonly IDialogService _dialogService;
     private readonly IUserStorageService _userStorageService;
-    private readonly IEditProductViewModelFactory _editProductFactory;
+    private readonly IEditProductFactory _editProductFactory;
     public IUserBasketService UserBasketService { get; }
 
     // fields
@@ -44,7 +47,15 @@ public class ProductsViewModel : RoutableViewModelBase
 
     public ObservableCollection<ProductViewModel> OrderProducts { get; } = new();
 
+    private bool _showGoToBasketUser = false;
+    public bool ShowGoToBasketUser
+    {
+        get => _showGoToBasketUser;
+        set => this.RaiseAndSetIfChanged(ref _showGoToBasketUser, value);
+    }
+
     // commands
+    public ICommand GoToUserBasketCommand { get; }
     public ICommand CreateProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> EditProductCommand { get; }
     public ReactiveCommand<ProductViewModel, Unit> DeleteProductCommand { get; }
@@ -56,7 +67,7 @@ public class ProductsViewModel : RoutableViewModelBase
     public ProductsViewModel(IUserStorageService userStorageService,
                              IProductService productService,
                              IDialogService dialogService,
-                             IEditProductViewModelFactory editProductFactory,
+                             IEditProductFactory editProductFactory,
                              IUserBasketService userBasketService)
     {
         _productService = productService;
@@ -77,15 +88,15 @@ public class ProductsViewModel : RoutableViewModelBase
         });
         EditProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            // if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
-            // {
-            //     await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot edit product from system", icon: Icon.Error);
-            // }
-            // else
-            // {
+            if (_userStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || _userStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry but you cannot edit product from system", icon: Icon.Error);
+            }
+            else
+            {
                 var editRouteVm = _editProductFactory.Create(product);
                 await RootNavManager.NavigateTo(editRouteVm);
-            // }
+            }
         });
         DeleteProductCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
@@ -113,20 +124,33 @@ public class ProductsViewModel : RoutableViewModelBase
         });
         AddProductToUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            await UserBasketService.AddToUserBasket(product);
+            var result = await UserBasketService.AddToUserBasket(product);
+            if (result)
+                product.InUserBasket = true;
+
         });
         AddProductToOrderCommand = ReactiveCommand.Create((ProductViewModel product) =>
         {
             OrderProducts.Add(product);
+            product.InUserOrder = true;
         });
         RemoveProductFromUserBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
-            await UserBasketService.RemoveFromUserBasket(product);
+            var result = await UserBasketService.RemoveFromUserBasket(product);
+            if (result)
+                product.InUserBasket = false;
         });
         RemoveProductFromOrderCommand = ReactiveCommand.Create((ProductViewModel product) =>
         {
-            OrderProducts.Remove(product);
+             var result = OrderProducts.Remove(product);
+             if (result)
+                product.InUserOrder = false;
         });
+        var canGoToBasket = this.WhenAnyValue(x => x.ShowGoToBasketUser).DistinctUntilChanged();
+        GoToUserBasketCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await RootNavManager.NavigateTo<UserBasketViewModel>();
+        }, canGoToBasket);
     }
 
     public override async Task OnShowed()
@@ -148,6 +172,11 @@ public class ProductsViewModel : RoutableViewModelBase
             Dispatcher.UIThread.Invoke(new Action(() =>
             {
                 Products.Add(product);
+                if (_userStorageService.CurrentUser == null) return;
+                if (UserBasketService.Products.FirstOrDefault(x => x.Id == product.Id) != null)
+                {
+                    product.InUserBasket = true;
+                }
             }));
         }
         ProductsIsEmpty = Products.Count == 0;

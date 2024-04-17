@@ -16,7 +16,7 @@ public class BytesImageConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not byte[] imageBytes)
-            return StaticResources.NoImagePicture;
+            return StaticResources.NoImagePictureImage;
         Bitmap? image = null;
         var ms = new MemoryStream(imageBytes); 
         image = new Bitmap(ms);

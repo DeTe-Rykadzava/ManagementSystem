@@ -2,6 +2,7 @@
 using System.Linq;
 using Database.Models.Product;
 using ManagementSystem.ViewModels.Core;
+using ReactiveUI;
 
 namespace ManagementSystem.ViewModels.DataVM.Product;
 
@@ -25,6 +26,20 @@ public class ProductViewModel : ViewModelBase
 
     public int CountOnStocks => _product.CountOnStocks;
 
+    private bool _inUserBasket = false;
+    public bool InUserBasket
+    {
+        get => _inUserBasket;
+        set => this.RaiseAndSetIfChanged(ref _inUserBasket, value);
+    }
+
+    private bool _inUserOrder = false;
+    public bool InUserOrder
+    {
+        get => _inUserOrder;
+        set => this.RaiseAndSetIfChanged(ref _inUserOrder, value);
+    }
+    
     public ProductViewModel(ProductModel product)
     {
         _product = product;

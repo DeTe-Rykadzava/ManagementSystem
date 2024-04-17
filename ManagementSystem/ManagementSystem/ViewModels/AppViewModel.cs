@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Database.Context;
+using Database.DatabaseCore;
 using Database.Interfaces;
 using Database.Repositories;
 using ManagementSystem.Services.BasketService;
@@ -18,12 +19,17 @@ using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.Storage;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Auth;
+using ManagementSystem.ViewModels.Basket;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.Main;
+using ManagementSystem.ViewModels.Order;
+using ManagementSystem.ViewModels.Order.Factories;
 using ManagementSystem.ViewModels.Products;
 using ManagementSystem.ViewModels.Products.Factories;
 using ManagementSystem.Views.Auth;
+using ManagementSystem.Views.Basket;
 using ManagementSystem.Views.Main;
+using ManagementSystem.Views.Order;
 using ManagementSystem.Views.Products;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
@@ -140,7 +146,7 @@ public class AppViewModel : ViewModelBase
             _locator.RegisterConstant<IProductService>(          new ProductService(_locator.GetService<IProductRepository>()!, programLoggerFactory.CreateLogger<ProductService>()));
             _logger.LogInformation("IProductService registered");
             Status = "Successful register 5/9 database service";
-            _locator.RegisterConstant<IProductCategoryService>(          new ProductCategoryService(_locator.GetService<IProductCategoryRepository>()!, programLoggerFactory.CreateLogger<ProductCategoryService>()));
+            _locator.RegisterConstant<IProductCategoryService>(  new ProductCategoryService(_locator.GetService<IProductCategoryRepository>()!, programLoggerFactory.CreateLogger<ProductCategoryService>()));
             _logger.LogInformation("IProductCategoryService registered");
             Status = "Successful register 6/9 database service";
             _locator.RegisterConstant<IRoleService>(             new RoleService());
@@ -164,7 +170,7 @@ public class AppViewModel : ViewModelBase
             _locator.RegisterConstant(new UserStorageService(), typeof(IUserStorageService));
             _logger.LogInformation("IUserStorageService registered");
             Status = "Successful register 2/4 program service";
-            _locator.RegisterConstant(new UserBasketService(_locator.GetService<IUserStorageService>()!, _locator.GetService<IBasketService>()!), typeof(IUserBasketService));
+            _locator.RegisterConstant(new UserBasketService(_locator.GetService<IUserStorageService>()!, _locator.GetService<IBasketService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductService>()!), typeof(IUserBasketService));
             _logger.LogInformation("IUserStorageService registered");
             Status = "Successful register 3/4 program service";
             TopLevel? topLevel = null;
@@ -191,8 +197,9 @@ public class AppViewModel : ViewModelBase
     
             // register factories
             _logger.LogInformation("Register program factories");
-            _locator.RegisterConstant(new EditProductViewModelFactory(_locator.GetService<IUserStorageService>()!,_locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!), typeof(IEditProductViewModelFactory));
-            _logger.LogInformation("IEditProductViewModelFactory registered");
+            _locator.RegisterConstant(new EditProductFactory(_locator.GetService<IUserStorageService>()!,_locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!), typeof(IEditProductFactory));
+            _locator.RegisterConstant(new CreateOrderFactory(), typeof(ICreateOrderFactory));
+            _logger.LogInformation("IEditProductFactory registered");
             _logger.LogInformation("Successful register program factories");
             
             // register ViewModels
@@ -203,11 +210,13 @@ public class AppViewModel : ViewModelBase
             _locator.Register<HomeViewModel>(             () => new HomeViewModel());
             _locator.Register<CreateProductViewModel>(    () => new CreateProductViewModel(        _locator.GetService<IUserStorageService>()!,    _locator.GetService<IProductService>()!,     _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
             _locator.Register<ProductCategoriesViewModel>(() => new ProductCategoriesViewModel( _locator.GetService<IProductCategoryService>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<UserBasketViewModel>(       () => new UserBasketViewModel(_locator.GetService<IUserBasketService>()!, _locator.GetService<IUserStorageService>()!,_locator.GetService<IDialogService>()!, _locator.GetService<ICreateOrderFactory>()!));
+            
             
             // register constant ViewModels
             _locator.RegisterConstant<MainViewModel>(    new MainViewModel(    _locator.GetService<IUserStorageService>()!,  _locator.GetService<IDialogService>()!));
-            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IEditProductViewModelFactory>()!, _locator.GetService<IUserBasketService>()!));
-    
+            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IEditProductFactory>()!, _locator.GetService<IUserBasketService>()!));
+            
             // register Views
             _locator.Register(() => new MainView(),              typeof(IViewFor<MainViewModel>));
             _locator.Register(() => new HomeView(),              typeof(IViewFor<HomeViewModel>));
@@ -216,7 +225,13 @@ public class AppViewModel : ViewModelBase
             _locator.Register(() => new SignOutView(),           typeof(IViewFor<SignOutViewModel>));
             _locator.Register(() => new ProductsView(),          typeof(IViewFor<ProductsViewModel>));
             _locator.Register(() => new CreateProductView(),     typeof(IViewFor<CreateProductViewModel>));
+            _locator.Register(() => new EditProductView(),       typeof(IViewFor<EditProductViewModel>));
             _locator.Register(() => new ProductCategoriesView(), typeof(IViewFor<ProductCategoriesViewModel>));
+            _locator.Register(() => new UserBasketView(),        typeof(IViewFor<UserBasketViewModel>));
+            _locator.Register(() => new OrdersView(),            typeof(IViewFor<OrdersViewModel>));
+            _locator.Register(() => new CreateOrderView(),       typeof(IViewFor<CreateOrderViewModel>));
+            _locator.Register(() => new UserOrdersView(),        typeof(IViewFor<UserOrdersViewModel>));
+            
             Status = "Successful register all views";
     
             Status = "Starting...";

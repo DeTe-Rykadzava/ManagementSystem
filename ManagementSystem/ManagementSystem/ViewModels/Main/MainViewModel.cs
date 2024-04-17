@@ -7,6 +7,7 @@ using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
 using ManagementSystem.Services.UserStorage;
 using ManagementSystem.ViewModels.Auth;
+using ManagementSystem.ViewModels.Basket;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.User;
 using ManagementSystem.ViewModels.Products;
@@ -89,7 +90,14 @@ public class MainViewModel : RoutableViewModelBase
         });
         GoToUserBasketCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await SubNavigationService.NavigateTo<ProductsViewModel>();
+            if (UserStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry, but you can't view your basket because you're not logged in.", icon: Icon.Stop);
+            }
+            else
+            {
+                await SubNavigationService.NavigateTo<UserBasketViewModel>();
+            }
         });
         GoToUserOrdersCommand = ReactiveCommand.CreateFromTask(async () =>
         {

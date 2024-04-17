@@ -9,8 +9,8 @@ internal class DatabaseContextFactory : IDesignTimeDbContextFactory<ManagementSy
     public ManagementSystemDatabaseContext CreateDbContext(string[] args)
     {
         // select database server
-        // DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
-        DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
+        DatabaseSettings.ChangeSelectedServer(DatabaseServers.Mssql);
+        // DatabaseSettings.ChangeSelectedServer(DatabaseServers.PostgreSql);
 
         try
         {
@@ -20,8 +20,8 @@ internal class DatabaseContextFactory : IDesignTimeDbContextFactory<ManagementSy
             Console.WriteLine(connectionString);
         
             // configure builder for selected server
-            // builder.UseSqlServer(connectionString);
-            builder.UseNpgsql(connectionString);
+            builder.UseSqlServer(connectionString);
+            // builder.UseNpgsql(connectionString);
         
             return new ManagementSystemDatabaseContext(builder.Options);
         }

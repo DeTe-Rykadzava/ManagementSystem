@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
              xmlns:converter='clr-namespace:ManagementSystem.Converters'
              xmlns:productVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Product"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.EditProductView"
              x:DataType="vm:EditProductViewModel">
@@ -107,7 +108,7 @@
                                         <Image Width="250"
                                                Height="250"
                                                Stretch="UniformToFill"
-                                               Source="{Binding .Image, Converter={StaticResource ImageConverter}}"/>
+                                               Source="{Binding Image, Converter={StaticResource ImageConverter}}"/>
                                         <Button Grid.Column="2"
                                                 VerticalAlignment="Bottom"
                                                 Padding="0"
@@ -116,7 +117,7 @@
                                                 Background="Brown">
                                             <Image Width="32"
                                                    Height="32"
-                                                   Source="avares://ManagementSystem/Assets/trash.png"/>
+                                                   Source="{x:Static local:StaticResources.TrashIconImage}"/>
                                         </Button>
                                     </Grid>
                                 </Border>

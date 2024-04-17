@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
              xmlns:converter="clr-namespace:ManagementSystem.Converters"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.ProductsView"
-             x:DataType="vm:ProductsViewModel">
+             x:DataType="vm:ProductsViewModel"
+             Name="View">
     <UserControl.Resources>
         <converter:BytesImageConverter x:Key="ImageConverter"/>
-        <converter:BytesImageConverter x:Key="ContainsObjectConverter"/>
     </UserControl.Resources>
     <Grid RowDefinitions="Auto *"
           Margin="5">
@@ -62,19 +63,23 @@
                                     <Image Grid.Row="0"
                                            Source="{Binding Images[0].Image, Converter={StaticResource ImageConverter}}"
                                            Stretch="UniformToFill"
-                                           MaxWidth="350"
-                                           MaxHeight="350"/>
-                                    <!-- <Panel Grid.Row="0" -->
-                                    <!--        Background="White" -->
-                                    <!--        IsVisible="{Binding Images[0], Converter={x:Static ObjectConverters.IsNull}}" -->
-                                    <!--        MaxWidth="350" -->
-                                    <!--        MaxHeight="350"> -->
-                                    <!--     <Image Source="avares://ManagementSystem/Assets/no-image.png" -->
-                                    <!--            Width="96" -->
-                                    <!--            Height="96" -->
-                                    <!--            Margin="100" -->
-                                    <!--            Stretch="Uniform"/> -->
-                                    <!-- </Panel> -->
+                                           MinHeight="250"
+                                           MinWidth="250"
+                                           MaxWidth="250"
+                                           MaxHeight="250"/>
+                                    <Panel Grid.Row="0"
+                                           Background="White"
+                                           IsVisible="{Binding Images[0], Converter={x:Static ObjectConverters.IsNull}}"
+                                           MinHeight="250"
+                                           MinWidth="250"
+                                           MaxWidth="250"
+                                           MaxHeight="250">
+                                        <Image Source="{x:Static local:StaticResources.NoImagePictureImage}"
+                                               Width="96"
+                                               Height="96"
+                                               Margin="100"
+                                               Stretch="Uniform"/>
+                                    </Panel>
                                     <StackPanel Grid.Row="1" 
                                                 Margin="0 20 0 0"
                                                 Spacing="20">
@@ -109,14 +114,15 @@
                                     </StackPanel>
                                 </Grid>
                                 <DockPanel Grid.Column="1"
-                                           LastChildFill="False">
+                                           LastChildFill="False"
+                                           Margin="2 5">
                                     <StackPanel DockPanel.Dock="Top"
                                                 Spacing="10">
                                         <Button Padding="6"
                                                 Background="Coral"
                                                 Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).EditProductCommand}"
                                                 CommandParameter="{Binding .}">
-                                            <Image Source="avares://ManagementSystem/Assets/edit.png"
+                                            <Image Source="{x:Static local:StaticResources.EditIconImage}"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
@@ -124,27 +130,46 @@
                                                 Background="Brown"
                                                 Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).DeleteProductCommand}"
                                                 CommandParameter="{Binding .}">
-                                            <Image Source="avares://ManagementSystem/Assets/trash.png"
+                                            <Image Source="{x:Static local:StaticResources.TrashIconImage}"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
                                     </StackPanel>
                                     <StackPanel DockPanel.Dock="Bottom"
-                                                Spacing="10"
-                                                IsVisible="{Binding ., Converter={StaticResource ContainsObjectConverter}, ConverterParameter={Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).UserBasketService.Products}}">
+                                                Spacing="10">
+                                        <Button Padding="6"
+                                                Background="Orange"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).AddProductToUserBasketCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="{Binding InUserBasket, Converter={x:Static BoolConverters.Not}}">
+                                            <Image Source="{x:Static local:StaticResources.BasketAddIconImage}"
+                                                   Width="32"
+                                                   Height="32"/>
+                                        </Button>
                                         <Button Padding="6"
                                                 Background="Peru"
-                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).AddProductToUserBasketCommand}"
-                                                CommandParameter="{Binding .}">
-                                            <Image Source="avares://ManagementSystem/Assets/basket.png"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).RemoveProductFromUserBasketCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="{Binding InUserBasket}">
+                                            <Image Source="{x:Static local:StaticResources.BasketRemoveIconImage}"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>
                                         <Button Padding="6"
                                                 Background="Green"
                                                 Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).AddProductToOrderCommand}"
-                                                CommandParameter="{Binding .}">
-                                            <Image Source="avares://ManagementSystem/Assets/shopping-basket.png"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="{Binding InUserOrder, Converter={x:Static BoolConverters.Not}}">
+                                            <Image Source="{x:Static local:StaticResources.ShoppingBasketAddIconImage}"
+                                                   Width="32"
+                                                   Height="32"/>
+                                        </Button>
+                                        <Button Padding="6"
+                                                Background="Brown"
+                                                Command="{Binding $parent[UserControl].((vm:ProductsViewModel)DataContext).RemoveProductFromOrderCommand}"
+                                                CommandParameter="{Binding .}"
+                                                IsVisible="{Binding InUserOrder}">
+                                            <Image Source="{x:Static local:StaticResources.ShoppingBasketRemoveIconImage}"
                                                    Width="32"
                                                    Height="32"/>
                                         </Button>

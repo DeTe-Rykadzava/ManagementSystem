@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:main="clr-namespace:ManagementSystem.ViewModels.Main"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Main.MainViewNavigation"
-             xmlns:local="clr-namespace:ManagementSystem.Assets"
              x:DataType="main:MainViewModel">
     <Panel Background="{StaticResource ResourceKey=DarkerColor}">
         <Grid RowDefinitions="Auto *" Margin="5">
@@ -20,12 +20,12 @@
                     VerticalContentAlignment="Center"
                     Command="{Binding GoToHomeCommand}">
                 <DockPanel>
-                    <Image Source="avares://ManagementSystem/Assets/icon-white.png"
+                    <Image Source="{x:Static local:StaticResources.AppIconWhiteImage}"
                            Width="32"
                            Height="32"
                            DockPanel.Dock="Left"
                            Margin="5 0"/>
-                    <TextBlock Text="{Binding Source={x:Static local:StaticResources.AppName}}"
+                    <TextBlock Text="{x:Static local:StaticResources.AppName}"
                                FontSize="16"
                                FontWeight="Bold"
                                VerticalAlignment="Center"/>

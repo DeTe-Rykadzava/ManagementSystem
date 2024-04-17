@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Products"
              xmlns:productVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Product"
              xmlns:converter="clr-namespace:ManagementSystem.Converters"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ManagementSystem.Views.Products.CreateProductView"
              x:DataType="vm:CreateProductViewModel">
@@ -116,7 +117,7 @@
                                                 Background="Brown">
                                             <Image Width="32"
                                                    Height="32"
-                                                   Source="avares://ManagementSystem/Assets/trash.png"/>
+                                                   Source="{x:Static local:StaticResources.TrashIconImage}"/>
                                         </Button>
                                     </Grid>
                                 </Border>
