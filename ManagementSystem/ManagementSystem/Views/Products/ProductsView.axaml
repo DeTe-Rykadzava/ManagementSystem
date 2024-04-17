@@ -61,20 +61,20 @@
                                       Margin="5">
                                     <Image Grid.Row="0"
                                            Source="{Binding Images[0].Image, Converter={StaticResource ImageConverter}}"
-                                           Stretch="Uniform"
+                                           Stretch="UniformToFill"
                                            MaxWidth="350"
                                            MaxHeight="350"/>
-                                    <Panel Grid.Row="0"
-                                           Background="White"
-                                           IsVisible="{Binding Images[0], Converter={x:Static ObjectConverters.IsNull}}"
-                                           MaxWidth="350"
-                                           MaxHeight="350">
-                                        <Image Source="avares://ManagementSystem/Assets/no-image.png"
-                                               Width="96"
-                                               Height="96"
-                                               Margin="100"
-                                               Stretch="Uniform"/>
-                                    </Panel>
+                                    <!-- <Panel Grid.Row="0" -->
+                                    <!--        Background="White" -->
+                                    <!--        IsVisible="{Binding Images[0], Converter={x:Static ObjectConverters.IsNull}}" -->
+                                    <!--        MaxWidth="350" -->
+                                    <!--        MaxHeight="350"> -->
+                                    <!--     <Image Source="avares://ManagementSystem/Assets/no-image.png" -->
+                                    <!--            Width="96" -->
+                                    <!--            Height="96" -->
+                                    <!--            Margin="100" -->
+                                    <!--            Stretch="Uniform"/> -->
+                                    <!-- </Panel> -->
                                     <StackPanel Grid.Row="1" 
                                                 Margin="0 20 0 0"
                                                 Spacing="20">

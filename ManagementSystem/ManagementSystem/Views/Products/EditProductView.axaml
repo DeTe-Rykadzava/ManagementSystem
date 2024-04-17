@@ -106,7 +106,7 @@
                                     <Grid ColumnDefinitions="* 10 Auto">
                                         <Image Width="250"
                                                Height="250"
-                                               Stretch="Uniform"
+                                               Stretch="UniformToFill"
                                                Source="{Binding .Image, Converter={StaticResource ImageConverter}}"/>
                                         <Button Grid.Column="2"
                                                 VerticalAlignment="Bottom"
