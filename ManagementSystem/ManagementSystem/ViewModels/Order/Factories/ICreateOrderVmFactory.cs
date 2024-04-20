@@ -3,7 +3,7 @@ using ManagementSystem.ViewModels.DataVM.Product;
 
 namespace ManagementSystem.ViewModels.Order.Factories;
 
-public interface ICreateOrderFactory
+public interface ICreateOrderVmFactory
 {
     public CreateOrderViewModel CreateCreateOrderViewModel(IEnumerable<ProductViewModel> products);
 }

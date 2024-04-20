@@ -39,14 +39,6 @@
                         HorizontalContentAlignment="Center"
                         FontSize="14"
                         Command="{Binding GoToProductsCommand}"/>
-                <Button Content="Categories"
-                        HorizontalContentAlignment="Center"
-                        FontSize="14"
-                        Command="{Binding GoToProductCategoriesCommand}"/>
-                <Button Content="Warehouse"
-                        HorizontalContentAlignment="Center"
-                        FontSize="14"
-                        Command="{Binding GoToWarehousesCommand}"/>
                 <Button Content="Basket"
                         HorizontalContentAlignment="Center"
                         FontSize="14"
@@ -54,7 +46,23 @@
                 <Button Content="Orders"
                         HorizontalContentAlignment="Center"
                         FontSize="14"
-                        Command="{Binding GoToUserOrdersCommand}"/>
+                        Command="{Binding GoToOrdersCommand}"/>
+                <Button Content="Categories"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"
+                        Command="{Binding GoToProductCategoriesCommand}"/>
+                <Button Content="Warehouses"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"
+                        Command="{Binding GoToWarehousesCommand}"/>
+                <Button Content="Payment types"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"
+                        Command="{Binding GoToPaymentTypesCommand}"/>
+                <Button Content="Sale types"
+                        HorizontalContentAlignment="Center"
+                        FontSize="14"
+                        Command="{Binding GoToSaleTypesCommand}"/>
             </StackPanel>
         </Grid> 
     </Panel>

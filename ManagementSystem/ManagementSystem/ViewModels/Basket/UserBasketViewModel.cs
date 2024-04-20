@@ -2,7 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using ManagementSystem.Services.BasketService;
 using ManagementSystem.Services.DialogService;
 using ManagementSystem.Services.NavigationService;
@@ -25,10 +28,17 @@ public class UserBasketViewModel : RoutableViewModelBase
     public IUserBasketService UserBasketService { get; }
     public IUserStorageService UserStorageService { get; }
     private readonly IDialogService _dialogService;
-    private readonly ICreateOrderFactory _createOrderFactory;
+    private readonly ICreateOrderVmFactory _createOrderVmFactory;
 
     // fields
     public ObservableCollection<ProductViewModel> InOrderProducts { get; } = new ();
+
+    private bool _anyProductsInOrder = false;
+    public bool AnyProductsInOrder
+    {
+        get => _anyProductsInOrder;
+        set => this.RaiseAndSetIfChanged(ref _anyProductsInOrder, value);
+    }
 
     // commands
     public ReactiveCommand<ProductViewModel, Unit> RemoveFromBasketCommand { get; }
@@ -36,12 +46,12 @@ public class UserBasketViewModel : RoutableViewModelBase
     public ReactiveCommand<ProductViewModel, Unit> RemoveFromOrderCommand { get; }
     public ICommand GoToOrderCommand { get; }
 
-    public UserBasketViewModel(IUserBasketService userBasketService, IUserStorageService userStorageService, IDialogService dialogService, ICreateOrderFactory createOrderFactory)
+    public UserBasketViewModel(IUserBasketService userBasketService, IUserStorageService userStorageService, IDialogService dialogService, ICreateOrderVmFactory createOrderVmFactory)
     {
         UserBasketService = userBasketService;
         UserStorageService = userStorageService;
         _dialogService = dialogService;
-        _createOrderFactory = createOrderFactory;
+        _createOrderVmFactory = createOrderVmFactory;
         RemoveFromBasketCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
             var result = await UserBasketService.RemoveFromUserBasket(product);
@@ -52,6 +62,7 @@ public class UserBasketViewModel : RoutableViewModelBase
         {
             InOrderProducts.Add(product);
             product.InUserOrder = true;
+            AnyProductsInOrder = InOrderProducts.Any();
         });
         RemoveFromOrderCommand = ReactiveCommand.CreateFromTask(async (ProductViewModel product) =>
         {
@@ -60,26 +71,36 @@ public class UserBasketViewModel : RoutableViewModelBase
                 product.InUserOrder = false;
             else
             {
-                await _dialogService.ShowPopupDialogAsync("Error", "Sorry, but we cannot remove product from basket", icon: Icon.Stop);
+                await _dialogService.ShowPopupDialogAsync("Error", "Sorry, but we cannot remove product from order, it does not exits in to sequence", icon: Icon.Stop);
             }
+            AnyProductsInOrder = InOrderProducts.Any();
         });
+        var canGoToOrder = this.WhenAnyValue(x => x.AnyProductsInOrder).DistinctUntilChanged();
         GoToOrderCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             if (!InOrderProducts.Any())
-            { 
+            {
                 await _dialogService.ShowPopupDialogAsync("Stop", "No products in order", icon: Icon.Stop);
             }
 
             try
             {
-                var createOrderVm = _createOrderFactory.CreateCreateOrderViewModel(InOrderProducts);
+                var createOrderVm = _createOrderVmFactory.CreateCreateOrderViewModel(InOrderProducts);
                 await RootNavManager.NavigateTo(createOrderVm);
             }
             catch (Exception)
             {
                 return;
             }
-        });
+        }, canGoToOrder);
     }
 
+    public override async Task OnShowed()
+    {
+        Dispatcher.UIThread.Invoke(new Action(() => 
+        {
+            InOrderProducts.Clear();
+            AnyProductsInOrder = false;
+        }));
+    }
 }

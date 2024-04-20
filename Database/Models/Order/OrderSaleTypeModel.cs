@@ -7,9 +7,9 @@ public class OrderSaleTypeModel
     public int Id { get; }
     public string Type { get; }
     
-    public OrderSaleTypeModel(OrderTypeSale typeSale)
+    public OrderSaleTypeModel(OrderSaleType saleType)
     {
-        Id = typeSale.Id;
-        Type = typeSale.TypeName;
+        Id = saleType.Id;
+        Type = saleType.Type;
     }
 }

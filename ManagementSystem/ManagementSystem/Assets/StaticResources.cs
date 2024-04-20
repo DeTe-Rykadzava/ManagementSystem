@@ -109,6 +109,36 @@ public class StaticResources
         }
     }
     
+    public static string AppendIconResourceLink { get; } = "avares://ManagementSystem/Assets/add.png";
+    public static Bitmap? AppendIconImage
+    {
+        get
+        {
+            var exist = AssetLoader.Exists(new Uri(AppendIconResourceLink));
+            if (!exist)
+                return null;
+            var imageStream = new MemoryStream();
+            AssetLoader.Open(new Uri(AppendIconResourceLink)).CopyTo(imageStream);
+            imageStream.Position = 0;
+            return new Bitmap(imageStream);
+        }
+    }
+    
+    public static string MinusIconResourceLink { get; } = "avares://ManagementSystem/Assets/minus.png";
+    public static Bitmap? MinusIconImage
+    {
+        get
+        {
+            var exist = AssetLoader.Exists(new Uri(MinusIconResourceLink));
+            if (!exist)
+                return null;
+            var imageStream = new MemoryStream();
+            AssetLoader.Open(new Uri(MinusIconResourceLink)).CopyTo(imageStream);
+            imageStream.Position = 0;
+            return new Bitmap(imageStream);
+        }
+    }
+    
     public static string ShoppingBasketAddIconResourceLink { get; } = "avares://ManagementSystem/Assets/shopping-basket.png";
     public static Bitmap? ShoppingBasketAddIconImage
     {
@@ -155,8 +185,16 @@ public class StaticResources
     }
     
     // other
+
+    public static double ImageWidth => 250D;
+    public static double ImageHeight => 250D;
+    public static double ImageWidthAlt => 125D;
+    public static double ImageHeightAlt => 125D;
+
     public static int ClientRoleId { get; } = 3;
 
     public static string AdminRoleName { get; } = "admin";
+    
+    public static string StorekeeperRoleName { get; } = "storekeeper";
 
 }

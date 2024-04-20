@@ -8,6 +8,6 @@ public interface IBasketService
 {
     Task<ActionResultViewModel<BasketViewModel>> Get(int userId);
     Task<ActionResultViewModel<BasketViewModel>> CreateBasket(int userId);
-    Task<bool> AddIntoBasket(int userId, int productId);
-    Task<bool> RemoveFromBasket(int userId, int productId);
+    Task<ActionResultViewModel<bool>> AddIntoBasket(int userId, int productId);
+    Task<ActionResultViewModel<bool>> RemoveFromBasket(int userId, int productId);
 }

@@ -1,0 +1,89 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Order"
+             xmlns:orderVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Order"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ManagementSystem.Views.Order.OrderPaymentTypesView"
+             x:DataType="vm:OrderPaymentTypesViewModel">
+    <Grid RowDefinitions="Auto 20 *">
+        <Panel Grid.Row="0"
+               Background="{StaticResource LighterColor}">
+            <Grid RowDefinitions="Auto *"
+                  Margin="20">
+                <TextBlock Grid.Row="0"
+                           Text="New type of payment"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0 0 0 10"/>
+                <DockPanel Grid.Row="1">
+                    <Button Content="Add"
+                            FontWeight="Bold"
+                            FontSize="14"
+                            Padding="20 5"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Command="{Binding AddTypeCommand}"/>
+                    <TextBox Text="{Binding NewTypeName}"
+                             FontSize="14"
+                             Margin="0 0 20 0"/>
+                </DockPanel>
+            </Grid>
+        </Panel>
+        <Panel Grid.Row="2"
+               Background="{StaticResource LighterColor}">
+            <Grid RowDefinitions="Auto *"
+                  Margin="20">
+                <TextBlock Grid.Row="0"
+                           Text="Payment types"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0 0 0 10"/>
+                <Border Grid.Row="1"
+                        Padding="10"
+                        CornerRadius="8"
+                        Background="White"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding TypesIsEmpty}">
+                    <TextBlock Text="Payment types is empty"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                <ItemsControl Grid.Row="1"
+                              ItemsSource="{Binding Types}"
+                              IsVisible="{Binding !TypesIsEmpty}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="orderVms:OrderPaymentTypeViewModel">
+                            <Border Margin="20"
+                                    BorderBrush="{StaticResource DarkerColor}"
+                                    BorderThickness=" 0 0 0 2">
+                                <DockPanel Margin="20">
+                                    <Button FontWeight="Bold"
+                                            FontSize="14"
+                                            Background="Brown"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            DockPanel.Dock="Right"
+                                            Command="{Binding $parent[UserControl].((vm:OrderPaymentTypesViewModel)DataContext).DeleteTypeCommand}"
+                                            CommandParameter="{Binding .}">
+                                        <Image Width="32"
+                                               Height="32"
+                                               Source="{x:Static local:StaticResources.TrashIconImage}"/>
+                                    </Button>
+                                    <TextBlock Text="{Binding Type}"
+                                               FontSize="14"
+                                               Padding="20 0"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Bold"/>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Panel>
+    </Grid>
+</UserControl>

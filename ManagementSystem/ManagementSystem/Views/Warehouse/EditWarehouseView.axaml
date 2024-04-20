@@ -1,0 +1,189 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Warehouse"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
+             xmlns:productVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Product"
+             xmlns:warehouseVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Warehouse"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ManagementSystem.Views.Warehouse.EditWarehouseView"
+             x:DataType="vm:EditWarehouseViewModel">
+    <ScrollViewer>
+        <Grid RowDefinitions="Auto * Auto">
+            <Panel Grid.Row="0"
+                   Background="{StaticResource LighterColor}"
+                   Margin=" 0 0 0 10">
+                <TextBlock Text="{Binding Warehouse.Name, StringFormat='Edit \{0}'}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="20"/>
+            </Panel>
+            
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="* 20 *"
+                  Margin="0 0 0 10">
+                <Panel Grid.Column="0"
+                       Background="{StaticResource LighterColor}">
+                    <Grid RowDefinitions="Auto *">
+                        <TextBlock Grid.Row="0"
+                                   Text="Products in warehouse"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="20"/>
+                        
+                        <Border Grid.Row="1"
+                                Padding="10"
+                                CornerRadius="8"
+                                Background="White"
+                                IsVisible="{Binding WarehouseProductsIsEmpty}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="List of products in warehouse is empty"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <ItemsControl Grid.Row="1"
+                                      ItemsSource="{Binding Warehouse.Products}"
+                                      IsVisible="{Binding !WarehouseProductsIsEmpty}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="warehouseVms:WarehouseProductViewModel">
+                                    <Border Margin="20"
+                                            BorderBrush="{StaticResource DarkerColor}"
+                                            BorderThickness=" 0 0 0 2">
+                                        <DockPanel Margin="20">
+                                            <Button FontWeight="Bold"
+                                                    FontSize="14"
+                                                    Background="Brown"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right"
+                                                    Command="{Binding $parent[UserControl].((vm:EditWarehouseViewModel)DataContext).RemoveProductFromWarehouseCommand}"
+                                                    CommandParameter="{Binding .}">
+                                                <Image Width="32"
+                                                       Height="32"
+                                                       Source="{x:Static local:StaticResources.MinusIconImage}"/>
+                                            </Button>
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="20"
+                                                        Margin="20 0">
+                                                <TextBlock Text="Count:"
+                                                           FontSize="14"
+                                                           VerticalAlignment="Center"/>
+                                                <TextBox Text="{Binding CountOnStock}"
+                                                         FontSize="14"
+                                                         MaxWidth="80"
+                                                         MinWidth="80"
+                                                         Background="White"
+                                                         BorderBrush="{StaticResource DarkerColor}"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="14"
+                                                       Padding="20 0"
+                                                       VerticalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       FontWeight="Bold"/>
+                                        </DockPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Panel>
+                
+                <Panel Grid.Column="2"
+                       Background="{StaticResource LighterColor}">
+                    <Grid RowDefinitions="Auto *">
+                        <TextBlock Grid.Row="0"
+                                   Text="Products in system"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="20"/>
+                        
+                        <Border Grid.Row="1"
+                                Padding="10"
+                                CornerRadius="8"
+                                Background="White"
+                                IsVisible="{Binding ProductsIsEmpty}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="List of products in system is empty"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        
+                         <ItemsControl Grid.Row="1"
+                                      ItemsSource="{Binding Products}"
+                                      IsVisible="{Binding !ProductsIsEmpty}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="productVms:ProductViewModelMinimalData">
+                                    <Border Margin="20"
+                                            BorderBrush="{StaticResource DarkerColor}"
+                                            BorderThickness=" 0 0 0 2">
+                                        <DockPanel Margin="20">
+                                            <Button FontWeight="Bold"
+                                                    FontSize="14"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right"
+                                                    Command="{Binding $parent[UserControl].((vm:EditWarehouseViewModel)DataContext).AddProductIntoWarehouseCommand}"
+                                                    CommandParameter="{Binding .}">
+                                                <Image Width="32"
+                                                       Height="32"
+                                                       Source="{x:Static local:StaticResources.AppendIconImage}"/>
+                                            </Button>
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="14"
+                                                       Padding="20 0"
+                                                       VerticalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       FontWeight="Bold"/>
+                                        </DockPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                    </Grid>
+                </Panel>
+            </Grid>
+            
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="* 2 Auto">
+                <DockPanel Grid.Column="0">
+                    <Button Content="Save products count"
+                            Padding="20 5"
+                            Margin="20 2.5"
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            Command="{Binding SaveChangesProductCountsIntoWarehouseCommand}"/>
+                    <Panel Background="Brown"
+                           IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding Status, StringFormat='errors: \{0}'}"
+                                   Foreground="White"
+                                   FontSize="14"
+                                   TextWrapping="Wrap"
+                                   Margin="20"/>
+                    </Panel>
+                </DockPanel>
+                <Panel Grid.Column="1"
+                       Background="{StaticResource DarkerColor}"/>
+                <Button Grid.Column="2"
+                        Classes="Flat"
+                        Content="Cansel"
+                        Margin="10 0 0 0"
+                        Padding="10 5"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Foreground="Black"
+                        Command="{Binding CanselCommand}"/>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

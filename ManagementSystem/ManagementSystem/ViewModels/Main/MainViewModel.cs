@@ -10,7 +10,9 @@ using ManagementSystem.ViewModels.Auth;
 using ManagementSystem.ViewModels.Basket;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.User;
+using ManagementSystem.ViewModels.Order;
 using ManagementSystem.ViewModels.Products;
+using ManagementSystem.ViewModels.Warehouse;
 using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using Splat;
@@ -38,7 +40,9 @@ public class MainViewModel : RoutableViewModelBase
     public ICommand GoToProductCategoriesCommand { get; }
     public ICommand GoToWarehousesCommand { get; }
     public ICommand GoToUserBasketCommand { get; }
-    public ICommand GoToUserOrdersCommand { get; }
+    public ICommand GoToOrdersCommand { get; }
+    public ICommand GoToPaymentTypesCommand { get; }
+    public ICommand GoToSaleTypesCommand { get; }
 
     public MainViewModel(IUserStorageService userStorageService,
                          IDialogService dialogService)
@@ -77,7 +81,7 @@ public class MainViewModel : RoutableViewModelBase
         {
             if (UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || UserStorageService.CurrentUser == null)
             {
-                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with product categories", icon: Icon.Stop);
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with product categories.", icon: Icon.Stop);
             }
             else
             {
@@ -86,7 +90,14 @@ public class MainViewModel : RoutableViewModelBase
         });
         GoToWarehousesCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await SubNavigationService.NavigateTo<ProductsViewModel>();
+            if (UserStorageService.CurrentUser == null || UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName && UserStorageService.CurrentUser?.Role != StaticResources.StorekeeperRoleName)
+            {
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with warehouses.", icon: Icon.Stop);
+            }
+            else
+            {
+                await SubNavigationService.NavigateTo<WarehousesViewModel>();
+            }
         });
         GoToUserBasketCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -99,11 +110,46 @@ public class MainViewModel : RoutableViewModelBase
                 await SubNavigationService.NavigateTo<UserBasketViewModel>();
             }
         });
-        GoToUserOrdersCommand = ReactiveCommand.CreateFromTask(async () =>
+        GoToOrdersCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await SubNavigationService.NavigateTo<ProductsViewModel>();
+            if (UserStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry, but you can't view your basket because you're not logged in.", icon: Icon.Stop);
+            }
+            else
+            {
+                if (UserStorageService.CurrentUser.Role == StaticResources.AdminRoleName)
+                    await SubNavigationService.NavigateTo<OrdersViewModel>();
+                else
+                    await SubNavigationService.NavigateTo<UserOrdersViewModel>();
+            }
         });
+        GoToPaymentTypesCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || UserStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with payment types", icon: Icon.Stop);
+            }
+            else
+            {
+                await SubNavigationService.NavigateTo<OrderPaymentTypesViewModel>();
+            }
+        });
+        GoToSaleTypesCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (UserStorageService.CurrentUser?.Role != StaticResources.AdminRoleName || UserStorageService.CurrentUser == null)
+            {
+                await _dialogService.ShowPopupDialogAsync("Stop", "Sorry but you cannot manipulate with sale types", icon: Icon.Stop);
+            }
+            else
+            {
+                await SubNavigationService.NavigateTo<OrderSaleTypesViewModel>();
+            }
+        });
+    }
 
+    public override async Task OnShowed()
+    {
         GoToHomeCommand.Execute(null);
     }
 }

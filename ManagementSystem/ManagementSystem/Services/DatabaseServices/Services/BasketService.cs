@@ -72,8 +72,9 @@ public class BasketService : IBasketService
         return result;
     }
 
-    public async Task<bool> AddIntoBasket(int userId, int productId)
+    public async Task<ActionResultViewModel<bool>> AddIntoBasket(int userId, int productId)
     {
+        var result = new ActionResultViewModel<bool>();
         try
         {
             var model = new ManageProductIntoBasketModel
@@ -82,17 +83,32 @@ public class BasketService : IBasketService
                 ProductId = productId
             };
             var addResult = await _basketRepository.AddIntoBasket(model);
-            return addResult;
+            if (!addResult)
+            {
+                result.Statuses.Add("Fail add");
+                result.Statuses.Add("Fail save");
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.Statuses.Add("Success add");
+                result.Statuses.Add("Success save");
+                result.Value = addResult;
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Exception with inset product to user basket.\nMessage: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
-            return false;
+            result.Statuses.Add("Fail add");
+            result.Statuses.Add("Fail save");
+            result.Statuses.Add("Unknown problem");
         }
+        return result;
     }
 
-    public async Task<bool> RemoveFromBasket(int userId, int productId)
+    public async Task<ActionResultViewModel<bool>> RemoveFromBasket(int userId, int productId)
     {
+        var result = new ActionResultViewModel<bool>();
         try
         {
             var model = new ManageProductIntoBasketModel
@@ -101,12 +117,26 @@ public class BasketService : IBasketService
                 ProductId = productId
             };
             var removeResult = await _basketRepository.AddIntoBasket(model);
-            return removeResult;
+            if (!removeResult)
+            {
+                result.Statuses.Add("Fail remove");
+                result.Statuses.Add("Fail save");
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.Statuses.Add("Success remove");
+                result.Statuses.Add("Success save");
+                result.Value = removeResult;
+            }
         }
         catch (Exception e)
         {
             _logger.LogError("Exception with remove product from user basket.\nMessage: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
-            return false;
+            result.Statuses.Add("Fail remove");
+            result.Statuses.Add("Fail save");
+            result.Statuses.Add("Unknown problem");
         }
+        return result;
     }
 }

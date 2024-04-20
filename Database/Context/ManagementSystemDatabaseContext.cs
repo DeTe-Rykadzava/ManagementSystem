@@ -11,7 +11,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     public ManagementSystemDatabaseContext(DbContextOptions<ManagementSystemDatabaseContext> options)
         : base(options)
     {
-        // Database.EnsureCreated();
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
     public virtual DbSet<BasketProduct> BasketProducts { get; set; }
@@ -24,7 +24,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
 
     public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
 
-    public virtual DbSet<OrderTypeSale> OrderTypeSales { get; set; }
+    public virtual DbSet<OrderSaleType> OrderSaleTypes { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
@@ -87,7 +87,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     //
     //         entity.HasIndex(e => e.StatusId, "IX_order_status_id");
     //
-    //         entity.HasIndex(e => e.TypeSaleId, "IX_order_type_sale_id");
+    //         entity.HasIndex(e => e.SaleTypeId, "IX_order_type_sale_id");
     //
     //         entity.HasIndex(e => e.UserId, "IX_order_user_id");
     //
@@ -121,7 +121,7 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     //                 .HasColumnName("status_update_date");
     //         }
     //
-    //         entity.Property(e => e.TypeSaleId).HasColumnName("type_sale_id");
+    //         entity.Property(e => e.SaleTypeId).HasColumnName("type_sale_id");
     //         entity.Property(e => e.UserId).HasColumnName("user_id");
     //
     //         entity.HasOne(d => d.PaymentType).WithMany(p => p.Orders)
@@ -133,8 +133,8 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     //             .HasForeignKey(d => d.StatusId)
     //             .HasConstraintName("order_status_fk");
     //
-    //         entity.HasOne(d => d.TypeSale).WithMany(p => p.Orders)
-    //             .HasForeignKey(d => d.TypeSaleId)
+    //         entity.HasOne(d => d.SaleType).WithMany(p => p.Orders)
+    //             .HasForeignKey(d => d.SaleTypeId)
     //             .HasConstraintName("order_type_sale_fk");
     //
     //         entity.HasOne(d => d.User).WithMany(p => p.Orders)
@@ -186,14 +186,14 @@ public partial class ManagementSystemDatabaseContext : DbContext, IManagementSys
     //         entity.Property(e => e.StatusName).HasColumnName("status_name");
     //     });
     //
-    //     modelBuilder.Entity<OrderTypeSale>(entity =>
+    //     modelBuilder.Entity<OrderSaleType>(entity =>
     //     {
     //         entity.HasKey(e => e.Id).HasName("order_type_sale_pk");
     //
     //         entity.ToTable("order_type_sale");
     //
     //         entity.Property(e => e.Id).HasColumnName("id");
-    //         entity.Property(e => e.TypeName).HasColumnName("type_name");
+    //         entity.Property(e => e.Type).HasColumnName("type_name");
     //     });
     //
     //     modelBuilder.Entity<Product>(entity =>

@@ -66,7 +66,7 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
                 {
                     await dialogService.ShowPopupDialogAsync("Success", $"Success add category", icon: Icon.Success);
                     Categories.Add(result.Value);
-                    CategoriesEmpty = false;
+                    CategoriesEmpty = !Categories.Any();
                 }
             },
             canAddNewCategory);
@@ -83,6 +83,7 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
                 return;
             }
             Categories.Remove(category);
+            CategoriesEmpty = !Categories.Any();
         });
     }
 
@@ -100,7 +101,6 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
                 CategoriesEmpty = true;
                 return;
             }
-            CategoriesEmpty = false;
             foreach (var category in categoriesResult.Value)
             {
                 Dispatcher.UIThread.Invoke(new Action(() =>
@@ -108,6 +108,7 @@ public class ProductCategoriesViewModel : RoutableViewModelBase
                     Categories.Add(category);
                 }));
             }
+            CategoriesEmpty = !Categories.Any();
         }));
     }
 }

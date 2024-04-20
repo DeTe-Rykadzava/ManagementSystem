@@ -118,13 +118,23 @@ public class UserRepository : IUserRepository
                         Login = model.Login,
                         HashPassword = BCrypt.Net.BCrypt.HashPassword(model.Password),
                     };
-        
+                    
                     await _context.UserInfos.AddAsync(userInfo);
                     await _context.SaveChangesAsync();
+
+                    
                     user.UserInfoId = userInfo.Id;
                     await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
+                    
+                    var userBasket = new UserBasket
+                    {
+                        UserId = user.Id
+                    };
 
+                    await _context.UserBaskets.AddAsync(userBasket);
+                    await _context.SaveChangesAsync();
+                    
                     var userFromBd = await GetUserById(user.Id);
 
                     if (!userFromBd.IsSuccess)

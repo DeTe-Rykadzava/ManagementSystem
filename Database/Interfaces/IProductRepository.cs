@@ -6,6 +6,7 @@ namespace Database.Interfaces;
 public interface IProductRepository
 {
     public Task<ActionResultModel<IEnumerable<ProductModel>>> GetProducts();
+    public Task<ActionResultModel<IEnumerable<ProductModelMinimalData>>> GetProductsWithMinimalData();
     public Task<ActionResultModel<ProductModel>> GetProduct(int id);
     public Task<ActionResultModel<ProductModel>> AddProduct(ProductCreateModel product);
     public Task<ActionResultModel<ProductPhotoModel>> AddProductPhoto(ProductPhotoAppendModel photo);

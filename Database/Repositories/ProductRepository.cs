@@ -23,8 +23,30 @@ public class ProductRepository : IProductRepository
         {
             var products = await _context.Products.Include(i => i.Category)
                                                                   .Include(i => i.ProductPhotos)
+                                                                  .Include(i => i.ProductWarehouses)
                                                                   .Select(s => new ProductModel(s))
                                                                   .ToListAsync();
+            result.IsSuccess = true;
+            result.ResultTypes.Add(ActionResultType.SuccessGet);
+            result.Value = products;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error with get products from database.\nException:\t{Message}.\nInner Exception:\t{InnerException}", e.Message, e.InnerException);
+            result.ResultTypes.Add(ActionResultType.FailGet);
+        }
+        return result;
+    }
+    
+    public async Task<ActionResultModel<IEnumerable<ProductModelMinimalData>>> GetProductsWithMinimalData()
+    {
+        var result = new ActionResultModel<IEnumerable<ProductModelMinimalData>>();
+        try
+        {
+            var products = await _context.Products
+                .Include(i => i.Category)
+                .Select(s => new ProductModelMinimalData(s))
+                .ToListAsync();
             result.IsSuccess = true;
             result.ResultTypes.Add(ActionResultType.SuccessGet);
             result.Value = products;
@@ -42,7 +64,11 @@ public class ProductRepository : IProductRepository
         var result = new ActionResultModel<ProductModel>();
         try
         {
-            var product = await _context.Products.FirstOrDefaultAsync(s => s.Id == id);
+            var product = await _context.Products
+                .Include(i => i.Category)
+                .Include(i => i.ProductWarehouses)
+                .Include(i => i.ProductPhotos)
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (product == null)
             {
                 result.ResultTypes.Add(ActionResultType.FailGet);    
@@ -92,10 +118,19 @@ public class ProductRepository : IProductRepository
                 await _context.SaveChangesAsync();
             }
 
-            result.IsSuccess = true;
             result.ResultTypes.Add(ActionResultType.SuccessAdd);
             result.ResultTypes.Add(ActionResultType.SuccessSave);
-            result.Value = new ProductModel(newProduct);
+            var getResult = await GetProduct(newProduct.Id);
+            if (!getResult.IsSuccess || getResult.Value == null)
+            {
+                result.ResultTypes.Add(ActionResultType.FailGet);
+            }
+            else
+            {
+                result.IsSuccess = true;
+                result.ResultTypes.Add(ActionResultType.SuccessGet);
+                result.Value = getResult.Value;
+            }
         }
         catch (Exception e)
         {

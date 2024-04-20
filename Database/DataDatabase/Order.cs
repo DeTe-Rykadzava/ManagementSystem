@@ -21,8 +21,8 @@ public partial class Order
 
     public string BuyerEmail { get; set; }
 
-    public int TypeSaleId { get; set; }
-
+    public int SaleTypeId { get; set; }
+    
     public DateTime StatusUpdateDate { get; set; }
 
     public decimal Cost { get; set; }
@@ -37,7 +37,7 @@ public partial class Order
 
     public virtual OrderStatus Status { get; set; } = null!;
 
-    public virtual OrderTypeSale TypeSale { get; set; } = null!;
+    public virtual OrderSaleType SaleType { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

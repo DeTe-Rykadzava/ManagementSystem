@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <converter:BytesImageConverter x:Key="ImageConverter"/>
     </UserControl.Resources>
-    <Grid RowDefinitions="Auto *"
+    <Grid RowDefinitions="Auto * Auto"
           Margin="5">
         <DockPanel Grid.Row="0">
             <Button DockPanel.Dock="Right"
@@ -63,17 +63,17 @@
                                     <Image Grid.Row="0"
                                            Source="{Binding Images[0].Image, Converter={StaticResource ImageConverter}}"
                                            Stretch="UniformToFill"
-                                           MinHeight="250"
-                                           MinWidth="250"
-                                           MaxWidth="250"
-                                           MaxHeight="250"/>
+                                           MinHeight="{x:Static local:StaticResources.ImageHeight}"
+                                           MinWidth="{x:Static local:StaticResources.ImageWidth}"
+                                           MaxWidth="{x:Static local:StaticResources.ImageWidth}"
+                                           MaxHeight="{x:Static local:StaticResources.ImageHeight}"/>
                                     <Panel Grid.Row="0"
                                            Background="White"
                                            IsVisible="{Binding Images[0], Converter={x:Static ObjectConverters.IsNull}}"
-                                           MinHeight="250"
-                                           MinWidth="250"
-                                           MaxWidth="250"
-                                           MaxHeight="250">
+                                           MinHeight="{x:Static local:StaticResources.ImageHeight}"
+                                           MinWidth="{x:Static local:StaticResources.ImageWidth}"
+                                           MaxWidth="{x:Static local:StaticResources.ImageWidth}"
+                                           MaxHeight="{x:Static local:StaticResources.ImageHeight}">
                                         <Image Source="{x:Static local:StaticResources.NoImagePictureImage}"
                                                Width="96"
                                                Height="96"
@@ -181,5 +181,25 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        <Panel Grid.Row="2"
+               Background="{StaticResource LighterColor}"
+               IsVisible="{Binding ShowGoToOrder}">
+            <WrapPanel Orientation="Horizontal"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Stretch"
+                       Margin="10">
+                <TextBlock Text="{Binding OrderProducts.Count, StringFormat='In order \{0} count of products'}"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           FontStyle="Italic"
+                           Margin="0 0 10 0"/>
+                <Button Content="To the order"
+                        Padding="20 5"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Command="{Binding GoToOrderCommand}"/>
+            </WrapPanel>
+        </Panel>
     </Grid>
 </UserControl>

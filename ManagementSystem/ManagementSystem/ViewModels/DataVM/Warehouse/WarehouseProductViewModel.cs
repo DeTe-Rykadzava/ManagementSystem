@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Database.Models.Warehouse;
 using ManagementSystem.ViewModels.Core;
 using ManagementSystem.ViewModels.DataVM.Product;
+using ReactiveUI;
 
 namespace ManagementSystem.ViewModels.DataVM.Warehouse;
 
@@ -17,14 +19,17 @@ public class WarehouseProductViewModel : ViewModelBase
 
     public string Title => _warehouseProduct.Title;
 
-    public ObservableCollection<ProductPhotoViewModel> Images { get; }
-
-    public int CountOnStock => _warehouseProduct.CountOnStock;
+    private int _countOnStock;
+    [Required]
+    public int CountOnStock
+    {
+        get => _countOnStock;
+        set => this.RaiseAndSetIfChanged(ref _countOnStock, value);
+    }
 
     public WarehouseProductViewModel(WarehouseProductModel warehouseProduct)
     {
         _warehouseProduct = warehouseProduct;
-        Images = new ObservableCollection<ProductPhotoViewModel>(_warehouseProduct.Images
-            .Select(s => new ProductPhotoViewModel(s)).ToList());
+        _countOnStock = _warehouseProduct.CountOnStock;
     }
 }

@@ -1,3 +1,5 @@
+using Database.Models.Product;
+
 namespace Database.Models.Order;
 
 public class OrderModel
@@ -14,7 +16,11 @@ public class OrderModel
     
     public string PaymentTypeName { get; }
 
+    public string SaleTypeName { get; }
+
     public string BuyerEmail { get; }
+
+    public List<ProductModelMinimalData> Products { get; }
 
     public OrderModel(DataDatabase.Order order)
     {
@@ -24,6 +30,11 @@ public class OrderModel
         StatusUpdateDate = order.StatusUpdateDate;
         Cost = order.Cost;
         PaymentTypeName = order.PaymentType.Type;
+        SaleTypeName = order.SaleType.Type;
         BuyerEmail = order.BuyerEmail;
+        Products = order.OrderCompositions
+            .Select(s => s.Product)
+            .Select(s => new ProductModelMinimalData(s))
+            .ToList();
     }
 }

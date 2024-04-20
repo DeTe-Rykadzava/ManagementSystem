@@ -46,7 +46,35 @@ public class ProductService : IProductService
         }
         return result;
     }
-
+    
+    public async Task<ActionResultViewModel<IEnumerable<ProductViewModelMinimalData>>> GetProductsWithMinimalData()
+    {
+        var result = new ActionResultViewModel<IEnumerable<ProductViewModelMinimalData>>();
+        try
+        { 
+            var productsResult = await _productRepository.GetProductsWithMinimalData();
+            if (!productsResult.IsSuccess || productsResult.Value == null)
+            {
+                result.Statuses.Add("Failed get");
+                result.Statuses.Add("Products is null");
+            }
+            else
+            {
+                var productVms = productsResult.Value.Select(s => new ProductViewModelMinimalData(s)).ToList();
+                result.Value = productVms;
+                result.IsSuccess = true;
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "Exception with get all products.\nException: {Message}.\nInnerException: {InnerException}", e.Message, e.InnerException);
+            result.Statuses.Add("Failed get");
+            result.Statuses.Add("Unknown problem");
+        }
+        return result;
+    }
+    
     public async Task<ActionResultViewModel<ProductViewModel>> GetProduct(int id)
     {
         var result = new ActionResultViewModel<ProductViewModel>();

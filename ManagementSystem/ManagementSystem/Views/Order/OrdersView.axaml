@@ -2,7 +2,164 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ManagementSystem.ViewModels.Order"
+             xmlns:local="clr-namespace:ManagementSystem.Assets"
+             xmlns:orderVms="clr-namespace:ManagementSystem.ViewModels.DataVM.Order"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ManagementSystem.Views.Order.OrdersView">
-    Welcome to Avalonia!
+             x:Class="ManagementSystem.Views.Order.OrdersView"
+             x:DataType="vm:OrdersViewModel">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <Grid RowDefinitions="Auto *"
+              Margin="0 0 25 0">
+            <Panel Grid.Row="0"
+                   Background="{StaticResource LighterColor}"
+                   Margin="0 0 0 10">
+                <TextBlock Text="All orders"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="20"/>
+            </Panel>
+            <Border Grid.Row="1"
+                    Padding="10"
+                    CornerRadius="8"
+                    Background="White"
+                    IsVisible="{Binding OrdersIsEmpty}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+                <TextBlock Text="List of user orders is empty"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding Orders}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Create date"      Width="*" Binding="{Binding CreateDate}"/>
+                    <DataGridTextColumn Header="Last update date" Width="*" Binding="{Binding StatusUpdateDate}"/>
+                    <DataGridTextColumn Header="Email"            Width="*" Binding="{Binding BuyerEmail}"/>
+                    <DataGridTextColumn Header="Cost"             Width="*" Binding="{Binding Cost}"/>
+                    <DataGridTextColumn Header="Payment type"     Width="*" Binding="{Binding PaymentTypeName}"/>
+                    <DataGridTextColumn Header="Sale type"        Width="*" Binding="{Binding SaleTypeName}"/>
+                    <DataGridTextColumn Header="Status"           Width="*" Binding="{Binding StatusName}"/>
+                    <DataGridTemplateColumn Width="*">
+                        <DataTemplate DataType="orderVms:OrderViewModel">
+                            <WrapPanel Grid.Column="6"
+                                       Orientation="Horizontal"
+                                       Margin="10 0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
+                                <Button Padding="6"
+                                        Background="Coral"
+                                        Margin="0 0 5 0"
+                                        Command="{Binding $parent[UserControl].((vm:OrdersViewModel)DataContext).EditOrderCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <Image Source="{x:Static local:StaticResources.EditIconImage}"
+                                           Width="32"
+                                           Height="32"/>
+                                </Button>
+                                <Button Padding="6"
+                                        Background="Brown"
+                                        Margin="5 0 0 0"
+                                        Command="{Binding $parent[UserControl].((vm:OrdersViewModel)DataContext).RemoveOrderCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <Image Source="{x:Static local:StaticResources.TrashIconImage}"
+                                           Width="32"
+                                           Height="32"/>
+                                </Button>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!-- <ItemsControl Grid.Row="1" -->
+            <!--               ItemsSource="{Binding Orders}" -->
+            <!--               IsVisible="{Binding !OrdersIsEmpty}"> -->
+            <!--     <ItemsControl.ItemTemplate> -->
+            <!--         <DataTemplate> -->
+            <!--             <Border Margin="20" -->
+            <!--                     BorderBrush="{StaticResource DarkerColor}" -->
+            <!--                     BorderThickness=" 0 0 0 2"> -->
+            <!--                 <Grid ColumnDefinitions="* * * * * * *"> -->
+            <!--                     <TextBlock Grid.Column="0" -->
+            <!--                                HorizontalAlignment="Center" -->
+            <!--                                VerticalAlignment="Center" -->
+            <!--                                TextWrapping="Wrap" -->
+            <!--                                Text="{Binding CreateDate, StringFormat='Created at: \{0}'}"/> -->
+            <!--                     <TextBlock Grid.Column="1" -->
+            <!--                                HorizontalAlignment="Center" -->
+            <!--                                VerticalAlignment="Center" -->
+            <!--                                TextWrapping="Wrap" -->
+            <!--                                Text="{Binding StatusUpdateDate, StringFormat='Last update at: \{0}'}"/> -->
+            <!--                     <TextBlock Grid.Column="2" -->
+            <!--                                HorizontalAlignment="Center" -->
+            <!--                                VerticalAlignment="Center" -->
+            <!--                                TextWrapping="Wrap" -->
+            <!--                                Text="{Binding BuyerEmail, StringFormat='Email: \{0}'}"/> -->
+            <!--                     <DockPanel Grid.Column="3"> -->
+            <!--                         <TextBlock Text="Composition" -->
+            <!--                                    DockPanel.Dock="Top" -->
+            <!--                                    HorizontalAlignment="Center" -->
+            <!--                                    Margin="0 5"/> -->
+            <!--                         <TextBlock HorizontalAlignment="Center" -->
+            <!--                                    VerticalAlignment="Center" -->
+            <!--                                    TextWrapping="Wrap" -->
+            <!--                                    DockPanel.Dock="Bottom" -->
+            <!--                                    Margin="10" -->
+            <!--                                    Text="{Binding Cost, StringFormat='Cost: \{0}'}"/> -->
+            <!--                         <ItemsControl ItemsSource="{Binding Products}"> -->
+            <!--                             <ItemsControl.ItemTemplate> -->
+            <!--                                 <DataTemplate> -->
+            <!--                                     <StackPanel> -->
+            <!--                                         <TextBlock Text="{Binding Title}" -->
+            <!--                                                    TextWrapping="Wrap"/> -->
+            <!--                                     </StackPanel> -->
+            <!--                                 </DataTemplate> -->
+            <!--                             </ItemsControl.ItemTemplate> -->
+            <!--                         </ItemsControl> -->
+            <!--                     </DockPanel> -->
+            <!--                     <StackPanel Grid.Column="4" -->
+            <!--                                 HorizontalAlignment="Center" -->
+            <!--                                 VerticalAlignment="Center"> -->
+            <!--                         <TextBlock TextWrapping="Wrap" -->
+            <!--                                    Text="{Binding PaymentTypeName, StringFormat='Payment type: \{0}'}"/> -->
+            <!--                         <TextBlock TextWrapping="Wrap" -->
+            <!--                                    Text="{Binding SaleTypeName, StringFormat='Sale type: \{0}'}"/> -->
+            <!--                     </StackPanel> -->
+            <!--                     <TextBlock Grid.Column="5" -->
+            <!--                                HorizontalAlignment="Center" -->
+            <!--                                VerticalAlignment="Center" -->
+            <!--                                TextWrapping="Wrap" -->
+            <!--                                Text="{Binding StatusName, StringFormat='Status: \{0}'}"/> -->
+            <!--                     <WrapPanel Grid.Column="6" -->
+            <!--                                Orientation="Horizontal" -->
+            <!--                                Margin="10 0" -->
+            <!--                                VerticalAlignment="Center" -->
+            <!--                                HorizontalAlignment="Center"> -->
+            <!--                         <Button Padding="6" -->
+            <!--                                 Background="Coral" -->
+            <!--                                 Margin="0 0 5 0" -->
+            <!--                                 Command="{Binding $parent[UserControl].((vm:OrdersViewModel)DataContext).EditOrderCommand}" -->
+            <!--                                 CommandParameter="{Binding .}"> -->
+            <!--                             <Image Source="{x:Static local:StaticResources.EditIconImage}" -->
+            <!--                                    Width="32" -->
+            <!--                                    Height="32"/> -->
+            <!--                         </Button> -->
+            <!--                         <Button Padding="6" -->
+            <!--                                 Background="Brown" -->
+            <!--                                 Margin="5 0 0 0" -->
+            <!--                                 Command="{Binding $parent[UserControl].((vm:OrdersViewModel)DataContext).RemoveOrderCommand}" -->
+            <!--                                 CommandParameter="{Binding .}"> -->
+            <!--                             <Image Source="{x:Static local:StaticResources.TrashIconImage}" -->
+            <!--                                    Width="32" -->
+            <!--                                    Height="32"/> -->
+            <!--                         </Button> -->
+            <!--                     </WrapPanel> -->
+            <!--                 </Grid> -->
+            <!--             </Border> -->
+            <!--         </DataTemplate> -->
+            <!--     </ItemsControl.ItemTemplate> -->
+            <!-- </ItemsControl> -->
+        </Grid>
+    </ScrollViewer>
 </UserControl>

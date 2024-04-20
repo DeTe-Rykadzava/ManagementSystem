@@ -8,6 +8,7 @@ namespace ManagementSystem.Services.DatabaseServices.Interfaces;
 public interface IProductService
 {
     public Task<ActionResultViewModel<IEnumerable<ProductViewModel>>> GetProducts();
+    public Task<ActionResultViewModel<IEnumerable<ProductViewModelMinimalData>>> GetProductsWithMinimalData();
     public Task<ActionResultViewModel<ProductViewModel>> GetProduct(int id);
     public Task<ActionResultViewModel<ProductViewModel>> AddProduct(ProductCreateViewModel model);
     public Task<ActionResultViewModel<ProductPhotoViewModel>> AddProductPhoto(int productId, byte[] image);

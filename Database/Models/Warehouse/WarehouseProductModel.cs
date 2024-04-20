@@ -10,9 +10,7 @@ public class WarehouseProductModel
     public int ProductId { get; }
     
     public string Title { get; }
-
-    public List<ProductPhotoModel> Images { get; }
-
+    
     public int CountOnStock { get; }
 
     public WarehouseProductModel(ProductWarehouse productWarehouse)
@@ -20,7 +18,6 @@ public class WarehouseProductModel
         Id = productWarehouse.Id;
         ProductId = productWarehouse.ProductId;
         Title = productWarehouse.Product.Title;
-        Images = productWarehouse.Product.ProductPhotos.Select(s => new ProductPhotoModel(s)).ToList();
         CountOnStock = productWarehouse.Count;
     }
 }

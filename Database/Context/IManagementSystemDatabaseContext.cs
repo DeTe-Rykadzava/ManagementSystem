@@ -18,7 +18,7 @@ public interface IManagementSystemDatabaseContext
 
     public DbSet<OrderStatus> OrderStatuses { get; set; }
 
-    public DbSet<OrderTypeSale> OrderTypeSales { get; set; }
+    public DbSet<OrderSaleType> OrderSaleTypes { get; set; }
 
     public DbSet<Product> Products { get; set; }
 

@@ -26,11 +26,14 @@ using ManagementSystem.ViewModels.Order;
 using ManagementSystem.ViewModels.Order.Factories;
 using ManagementSystem.ViewModels.Products;
 using ManagementSystem.ViewModels.Products.Factories;
+using ManagementSystem.ViewModels.Warehouse;
+using ManagementSystem.ViewModels.Warehouse.Factories;
 using ManagementSystem.Views.Auth;
 using ManagementSystem.Views.Basket;
 using ManagementSystem.Views.Main;
 using ManagementSystem.Views.Order;
 using ManagementSystem.Views.Products;
+using ManagementSystem.Views.Warehouse;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using Splat;
@@ -100,64 +103,70 @@ public class AppViewModel : ViewModelBase
             Status = "Start register database repository";        
             _locator.RegisterConstant<IUserRepository>(            new UserRepository(            _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<UserRepository>()));
             _logger.LogInformation("IUserRepository registered");
-            Status = "Successful register 1/9 database repository";
+            Status = "Successful register 1/10 database repository";
             _locator.RegisterConstant<IRoleRepository>(            new RoleRepository(            _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<RoleRepository>()));
             _logger.LogInformation("IRoleRepository registered");
-            Status = "Successful register 2/9 database repository";
+            Status = "Successful register 2/10 database repository";
             _locator.RegisterConstant<IBasketRepository>(          new BasketRepository(          _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<BasketRepository>()));
             _logger.LogInformation("IBasketRepository registered");
-            Status = "Successful register 3/9 database repository";
+            Status = "Successful register 3/10 database repository";
             _locator.RegisterConstant<IOrderPaymentTypeRepository>(new OrderPaymentTypeRepository(_locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderPaymentTypeRepository>()));
             _logger.LogInformation("IOrderPaymentTypeRepository registered");
-            Status = "Successful register 4/9 database repository";
+            Status = "Successful register 4/10 database repository";
             _locator.RegisterConstant<IOrderRepository>(           new OrderRepository(           _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderRepository>()));
             _logger.LogInformation("IOrderRepository registered");
-            Status = "Successful register 5/9 database repository";
+            Status = "Successful register 5/10 database repository";
             _locator.RegisterConstant<IOrderSaleTypeRepository>(   new OrderSaleTypeRepository(   _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderSaleTypeRepository>()));
             _logger.LogInformation("IOrderSaleTypeRepository registered");
-            Status = "Successful register 6/9 database repository";
+            Status = "Successful register 6/10 database repository";
             _locator.RegisterConstant<IProductRepository>(         new ProductRepository(         _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<ProductRepository>()));
             _logger.LogInformation("IProductRepository registered");
-            Status = "Successful register 7/9 database repository";
+            Status = "Successful register 7/10 database repository";
             _locator.RegisterConstant<IProductCategoryRepository>( new ProductCategoryRepository( _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<ProductCategoryRepository>()));
             _logger.LogInformation("IProductRepository registered");
-            Status = "Successful register 8/9 database repository";
+            Status = "Successful register 8/10 database repository";
             _locator.RegisterConstant<IWarehouseRepository>(       new WarehouseRepository(       _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<WarehouseRepository>()));
             _logger.LogInformation("IWarehouseRepository registered");
-            Status = "Successful register 9/9 database repository";
+            Status = "Successful register 9/10 database repository";
+            _locator.RegisterConstant<IOrderStatusRepository>(     new OrderStatusRepository(     _locator.GetService<IManagementSystemDatabaseContext>()!, programLoggerFactory.CreateLogger<OrderStatusRepository>()));
+            _logger.LogInformation("IOrderStatusRepository registered");
+            Status = "Successful register 10/10 database repository";
             Status = "Successful register all database repository";
             _logger.LogInformation("Successful register database repositories");
     
             // register database services
             _logger.LogInformation("Register database services");
             Status = "Start register database services";  
-            _locator.RegisterConstant<IBasketService>(           new BasketService(_locator.GetService<IBasketRepository>()!, loggerFactory.CreateLogger<BasketService>()));
+            _locator.RegisterConstant<IBasketService>(           new BasketService(     _locator.GetService<IBasketRepository>()!,           programLoggerFactory.CreateLogger<BasketService>()));
             _logger.LogInformation("IBasketService registered");
-            Status = "Successful register 1/9 database service";
-            _locator.RegisterConstant<IOrderPaymentTypeService>( new OrderPaymentTypeService());
+            Status = "Successful register 1/10 database service";
+            _locator.RegisterConstant<IOrderPaymentTypeService>( new OrderPaymentTypeService(_locator.GetService<IOrderPaymentTypeRepository>()!, programLoggerFactory.CreateLogger<OrderPaymentTypeService>()));
             _logger.LogInformation("IOrderPaymentTypeService registered");
-            Status = "Successful register 2/9 database service";
-            _locator.RegisterConstant<IOrderSaleTypeService>(    new OrderSaleTypeService());
+            Status = "Successful register 2/10 database service";
+            _locator.RegisterConstant<IOrderSaleTypeService>(    new OrderSaleTypeService(   _locator.GetService<IOrderSaleTypeRepository>()!,    programLoggerFactory.CreateLogger<OrderSaleTypeService>()));
             _logger.LogInformation("IOrderSaleTypeService registered");
-            Status = "Successful register 3/9 database service";
-            _locator.RegisterConstant<IOrderService>(            new OrderService());
+            Status = "Successful register 3/10 database service";
+            _locator.RegisterConstant<IOrderService>(            new OrderService(           _locator.GetService<IOrderRepository>()!,            programLoggerFactory.CreateLogger<OrderService>()));
             _logger.LogInformation("IOrderService registered");
-            Status = "Successful register 4/9 database service";
-            _locator.RegisterConstant<IProductService>(          new ProductService(_locator.GetService<IProductRepository>()!, programLoggerFactory.CreateLogger<ProductService>()));
+            Status = "Successful register 4/10 database service";
+            _locator.RegisterConstant<IProductService>(          new ProductService(   _locator.GetService<IProductRepository>()!,          programLoggerFactory.CreateLogger<ProductService>()));
             _logger.LogInformation("IProductService registered");
-            Status = "Successful register 5/9 database service";
-            _locator.RegisterConstant<IProductCategoryService>(  new ProductCategoryService(_locator.GetService<IProductCategoryRepository>()!, programLoggerFactory.CreateLogger<ProductCategoryService>()));
+            Status = "Successful register 5/10 database service";
+            _locator.RegisterConstant<IProductCategoryService>(  new ProductCategoryService( _locator.GetService<IProductCategoryRepository>()!,  programLoggerFactory.CreateLogger<ProductCategoryService>()));
             _logger.LogInformation("IProductCategoryService registered");
-            Status = "Successful register 6/9 database service";
-            _locator.RegisterConstant<IRoleService>(             new RoleService());
+            Status = "Successful register 6/10 database service";
+            _locator.RegisterConstant<IRoleService>(             new RoleService(            _locator.GetService<IRoleRepository>()!,             programLoggerFactory.CreateLogger<RoleService>()));
             _logger.LogInformation("IRoleService registered");
-            Status = "Successful register 7/9 database service";
-            _locator.RegisterConstant<IUserService>(             new UserService(_locator.GetService<IUserRepository>()!, programLoggerFactory.CreateLogger<UserService>()));
+            Status = "Successful register 7/10 database service";
+            _locator.RegisterConstant<IUserService>(             new UserService(         _locator.GetService<IUserRepository>()!,             programLoggerFactory.CreateLogger<UserService>()));
             _logger.LogInformation("IUserService registered");
-            Status = "Successful register 8/9 database service";
-            _locator.RegisterConstant<IWarehouseService>(        new WarehouseService());
+            Status = "Successful register 8/10 database service";
+            _locator.RegisterConstant<IWarehouseService>(        new WarehouseService(       _locator.GetService<IWarehouseRepository>()!,         programLoggerFactory.CreateLogger<WarehouseService>()));
             _logger.LogInformation("IWarehouseService registered");
-            Status = "Successful register 9/9 database service";
+            Status = "Successful register 9/10 database service";
+            _locator.RegisterConstant<IOrderStatusService>(      new OrderStatusService(     _locator.GetService<IOrderStatusRepository>()!,       programLoggerFactory.CreateLogger<OrderStatusService>()));
+            _logger.LogInformation("IOrderStatusService registered");
+            Status = "Successful register 10/10 database service";
             Status = "Successful register all database services";
             _logger.LogInformation("Successful register database services");
             
@@ -177,19 +186,19 @@ public class AppViewModel : ViewModelBase
             if (lifeRuntime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 topLevel = TopLevel.GetTopLevel(desktopLifetime.MainWindow);
-                _locator.RegisterConstant(new DialogService(desktopLifetime.MainWindow!, loggerFactory.CreateLogger<DialogService>()), typeof(IDialogService));
+                _locator.RegisterConstant(new DialogService(desktopLifetime.MainWindow!, programLoggerFactory.CreateLogger<DialogService>()), typeof(IDialogService));
             }
             else if (lifeRuntime is ISingleViewApplicationLifetime singleViewLifetime)
             {
                 topLevel = TopLevel.GetTopLevel(singleViewLifetime.MainView);
-                _locator.RegisterConstant(new DialogService((ContentControl)singleViewLifetime.MainView!, loggerFactory.CreateLogger<DialogService>()), typeof(IDialogService));
+                _locator.RegisterConstant(new DialogService((ContentControl)singleViewLifetime.MainView!, programLoggerFactory.CreateLogger<DialogService>()), typeof(IDialogService));
             }
             if (topLevel == null)
             {
                 Status = "The program cannot obtain the storage provider, so the application will stop running, contact your administrator.";
                 return;
             }
-            _locator.RegisterConstant(new StorageService(topLevel.StorageProvider, loggerFactory.CreateLogger<StorageService>()), typeof(IStorageService));
+            _locator.RegisterConstant(new StorageService(topLevel.StorageProvider, programLoggerFactory.CreateLogger<StorageService>()), typeof(IStorageService));
             _logger.LogInformation("IStorageService registered");
             Status = "Successful register 4/4 program service";
             Status = "Successful register all program services";
@@ -198,24 +207,29 @@ public class AppViewModel : ViewModelBase
             // register factories
             _logger.LogInformation("Register program factories");
             _locator.RegisterConstant(new EditProductFactory(_locator.GetService<IUserStorageService>()!,_locator.GetService<IProductService>()!, _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!), typeof(IEditProductFactory));
-            _locator.RegisterConstant(new CreateOrderFactory(), typeof(ICreateOrderFactory));
-            _logger.LogInformation("IEditProductFactory registered");
+            _locator.RegisterConstant(new EditWarehouseFactory(_locator.GetService<IWarehouseService>()!,_locator.GetService<IProductService>()!,  _locator.GetService<IDialogService>()!), typeof(IEditWarehouseFactory));
+            _locator.RegisterConstant(new CreateOrderVmFactory(_locator.GetService<IOrderService>()!, _locator.GetService<IOrderSaleTypeService>()!, _locator.GetService<IOrderPaymentTypeService>()!, _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!), typeof(ICreateOrderVmFactory));
+            _locator.RegisterConstant(new OrderMoreInfoVmFactory(_locator.GetService<IOrderService>()!, _locator.GetService<IOrderStatusService>()!, _locator.GetService<IDialogService>()!), typeof(IOrderMoreInfoVmFactory));
             _logger.LogInformation("Successful register program factories");
             
             // register ViewModels
             Status = "Start register views";
-            _locator.Register<SignInViewModel>(           () => new SignInViewModel(               _locator.GetService<IUserStorageService>()!,       _locator.GetService<IUserService>()!));
-            _locator.Register<SignUpViewModel>(           () => new SignUpViewModel(                    _locator.GetService<IUserService>()!,         _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
-            _locator.Register<SignOutViewModel>(          () => new SignOutViewModel(                             _locator.GetService<IUserStorageService>()!));
-            _locator.Register<HomeViewModel>(             () => new HomeViewModel());
-            _locator.Register<CreateProductViewModel>(    () => new CreateProductViewModel(        _locator.GetService<IUserStorageService>()!,    _locator.GetService<IProductService>()!,     _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
-            _locator.Register<ProductCategoriesViewModel>(() => new ProductCategoriesViewModel( _locator.GetService<IProductCategoryService>()!, _locator.GetService<IDialogService>()!));
-            _locator.Register<UserBasketViewModel>(       () => new UserBasketViewModel(_locator.GetService<IUserBasketService>()!, _locator.GetService<IUserStorageService>()!,_locator.GetService<IDialogService>()!, _locator.GetService<ICreateOrderFactory>()!));
-            
+            _locator.Register<SignInViewModel>(            () => new SignInViewModel(               _locator.GetService<IUserStorageService>()!,       _locator.GetService<IUserService>()!));
+            _locator.Register<SignUpViewModel>(            () => new SignUpViewModel(                    _locator.GetService<IUserService>()!,         _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<SignOutViewModel>(           () => new SignOutViewModel(                             _locator.GetService<IUserStorageService>()!));
+            _locator.Register<HomeViewModel>(              () => new HomeViewModel());
+            _locator.Register<CreateProductViewModel>(     () => new CreateProductViewModel(        _locator.GetService<IUserStorageService>()!,    _locator.GetService<IProductService>()!,     _locator.GetService<IStorageService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IProductCategoryService>()!));
+            _locator.Register<ProductCategoriesViewModel>( () => new ProductCategoriesViewModel( _locator.GetService<IProductCategoryService>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<UserBasketViewModel>(        () => new UserBasketViewModel(_locator.GetService<IUserBasketService>()!, _locator.GetService<IUserStorageService>()!,_locator.GetService<IDialogService>()!, _locator.GetService<ICreateOrderVmFactory>()!));
+            _locator.Register<OrderPaymentTypesViewModel>( () => new OrderPaymentTypesViewModel(_locator.GetService<IOrderPaymentTypeService>()!,_locator.GetService<IDialogService>()!));
+            _locator.Register<OrderSaleTypesViewModel>(    () => new OrderSaleTypesViewModel(_locator.GetService<IOrderSaleTypeService>()!,_locator.GetService<IDialogService>()!));
+            _locator.Register<WarehousesViewModel>(        () => new WarehousesViewModel(_locator.GetService<IWarehouseService>()!, _locator.GetService<IEditWarehouseFactory>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<OrdersViewModel>(            () => new OrdersViewModel(_locator.GetService<IOrderService>()!, _locator.GetService<IOrderMoreInfoVmFactory>()!, _locator.GetService<IDialogService>()!));
+            _locator.Register<UserOrdersViewModel>(        () => new UserOrdersViewModel(_locator.GetService<IOrderService>()!, _locator.GetService<IUserStorageService>()!, _locator.GetService<IDialogService>()!));
             
             // register constant ViewModels
             _locator.RegisterConstant<MainViewModel>(    new MainViewModel(    _locator.GetService<IUserStorageService>()!,  _locator.GetService<IDialogService>()!));
-            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IEditProductFactory>()!, _locator.GetService<IUserBasketService>()!));
+            _locator.RegisterConstant<ProductsViewModel>(new ProductsViewModel(_locator.GetService<IUserStorageService>()!, _locator.GetService<IProductService>()!, _locator.GetService<IDialogService>()!, _locator.GetService<IEditProductFactory>()!, _locator.GetService<IUserBasketService>()!, _locator.GetService<ICreateOrderVmFactory>()!));
             
             // register Views
             _locator.Register(() => new MainView(),              typeof(IViewFor<MainViewModel>));
@@ -231,6 +245,11 @@ public class AppViewModel : ViewModelBase
             _locator.Register(() => new OrdersView(),            typeof(IViewFor<OrdersViewModel>));
             _locator.Register(() => new CreateOrderView(),       typeof(IViewFor<CreateOrderViewModel>));
             _locator.Register(() => new UserOrdersView(),        typeof(IViewFor<UserOrdersViewModel>));
+            _locator.Register(() => new OrderMoreInfoView(),     typeof(IViewFor<OrderMoreInfoViewModel>));
+            _locator.Register(() => new OrderPaymentTypesView(), typeof(IViewFor<OrderPaymentTypesViewModel>));
+            _locator.Register(() => new OrderSaleTypesView(),    typeof(IViewFor<OrderSaleTypesViewModel>));
+            _locator.Register(() => new WarehousesView(),        typeof(IViewFor<WarehousesViewModel>));
+            _locator.Register(() => new EditWarehouseView(),     typeof(IViewFor<EditWarehouseViewModel>));
             
             Status = "Successful register all views";
     
